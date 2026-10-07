@@ -1,0 +1,18 @@
+{
+  "name": "Wonder Buddies",
+  "short_name": "Wonder Buddies",
+  "description": "Fun science for children aged 2 to 12: toddler games, nine science worlds, real scientists, and School Science with certificates.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#E6F7EE",
+  "theme_color": "#1f9d6b",
+  "lang": "en-NG",
+  "categories": ["education", "kids"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
