@@ -1107,7 +1107,7 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px;box-shadow:0 0 0 
     <h2>School Science</h2><button class="hear" aria-label="Hear it again"><svg viewBox="0 0 24 24" fill="none" stroke="#2a2540" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z" fill="#ffd43b"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg></button></header>
   <p class="lead">Your class lessons, term by term. Primary 1 to 3 is Basic Science. Primary 4 to 6 is Basic Science and Technology.</p>
   <div class="grid classes" id="classes"></div>
-  <div class="soon"><svg viewBox="0 0 24 24"><path d="M12 3 L21 20 H3 Z" fill="#ff8a5b" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M8 15 h8" stroke="#fff" stroke-width="2"/></svg>Primary 1 is open! More classes coming soon.</div>
+  <div class="soon"><svg viewBox="0 0 24 24"><path d="M12 3 L21 20 H3 Z" fill="#ff8a5b" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M8 15 h8" stroke="#fff" stroke-width="2"/></svg>Primary 1 and 2 are open! More classes coming soon.</div>
 </div></div>
 
 <div class="sheet" id="sh-bud" hidden><div class="card">
@@ -1480,7 +1480,7 @@ $("#todFace").src = FACES.chick;
 /* ---------- rooms ---------- */
 let openSheet = null;
 const sheetLines = {
-  "sh-sch": "School Science! Your class lessons, term by term. Primary 1 to 3 is Basic Science. Primary 4 to 6 is Basic Science and Technology. Primary 1 is open. Tap it to start!",
+  "sh-sch": "School Science! Your class lessons, term by term. Primary 1 to 3 is Basic Science. Primary 4 to 6 is Basic Science and Technology. Primary 1 and Primary 2 are open. Tap one to start!",
   "sh-bud": "Pick your buddy! Who will explore with you today?",
   "sh-adult": ""
 };
@@ -1502,7 +1502,7 @@ document.addEventListener("keydown", e => { if(e.key === "Escape") close(); });
 document.querySelectorAll(".door").forEach(d => d.addEventListener("click", () => { pop(); if(d.dataset.go === "tod") enterTod(); else if(d.dataset.go === "arc") enterArc(); else open("sh-" + d.dataset.go); }));
 $("#chip").addEventListener("click", () => { pop(); open("sh-bud"); });
 
-const SCHOOL_OPEN = 1;   /* highest class built so far */
+const SCHOOL_OPEN = 2;   /* highest class built so far */
 const clsEl = $("#classes");
 CLASSES.forEach(c => {
   const b = document.createElement("button"); b.className = "cls"; b.style.setProperty("--t", c.t);
@@ -8789,6 +8789,774 @@ SM2.gens.push(
   () => Q3("What should you do before using a see-saw?", "Sit down and hold on tight", ["Stand on it", "Jump off at the top"], { ex:"Play safely." }),
   () => Q3("How can you make a ramp easier to push things up?", "Make it longer and gentler", ["Make it short and steep", "Make it bumpy"], { ex:"A gentle slope needs less push." }));
 
+/* ======================= SCHOOL P2: icons (100 x 100) ======================= */
+Object.assign(ICO, {
+  dog:`<path d="M24 52 Q24 36 40 36 H70 Q82 36 82 50 V60 H24Z" fill="#c98a4b" ${SK()}/><path d="M30 60 V84 M42 60 V84 M64 60 V84 M76 60 V84" stroke="${INK}" stroke-width="7" stroke-linecap="round"/><path d="M30 60 V84 M42 60 V84 M64 60 V84 M76 60 V84" stroke="#c98a4b" stroke-width="3" stroke-linecap="round"/><path d="M82 46 Q96 42 92 30 Q86 22 78 26 Q70 30 74 40" fill="#c98a4b" ${SK(3)}/><circle cx="84" cy="32" r="2.5" fill="${INK}"/><path d="M80 24 Q76 12 84 14" fill="#8a5a3c" ${SK(2.5)}/><path d="M24 46 Q12 40 14 28" fill="none" ${SK(4)}/>`,
+  cat:`<path d="M26 86 Q20 54 40 46 H62 Q80 54 74 86Z" fill="#ffb02e" ${SK()}/><circle cx="50" cy="34" r="20" fill="#ffb02e" ${SK()}/><path d="M33 22 L32 6 L44 16 M67 22 L68 6 L56 16" fill="#ffb02e" ${SK(3)}/>${EYE(43, 32, 2.6)}${EYE(57, 32, 2.6)}<path d="M47 40 L50 43 L53 40" fill="none" ${SK(2)}/><path d="M30 40 H16 M30 44 H18 M70 40 H84 M70 44 H82" ${SK(1.5)}/><path d="M74 80 Q94 76 88 56" fill="none" ${SK(4)}/>`,
+  sheep:`${[30, 44, 58, 72].map(x => `<circle cx="${x}" cy="48" r="14" fill="#fff" ${SK(3)}/>`).join("")}<ellipse cx="50" cy="52" rx="30" ry="16" fill="#fff"/><path d="M34 66 V86 M66 66 V86" stroke="${INK}" stroke-width="6" stroke-linecap="round"/><ellipse cx="84" cy="44" rx="10" ry="12" fill="#3a3a44" ${SK(3)}/><circle cx="87" cy="42" r="2" fill="#fff"/>`,
+  spider:`<ellipse cx="50" cy="56" rx="16" ry="18" fill="#3a3a44" ${SK(3)}/><circle cx="50" cy="34" r="10" fill="#3a3a44" ${SK(3)}/>${[-1, 1].map(s => [0, 1, 2, 3].map(i => `<path d="M${50 + s * 12} ${48 + i * 6} Q${50 + s * 30} ${34 + i * 10} ${50 + s * 40} ${50 + i * 12}" fill="none" stroke="${INK}" stroke-width="3.5" stroke-linecap="round"/>`).join("")).join("")}<circle cx="46" cy="32" r="2.5" fill="#fff"/><circle cx="54" cy="32" r="2.5" fill="#fff"/>`,
+  snail:`<path d="M10 80 H84 Q92 80 92 72 Q92 62 82 66 L76 70" fill="#c9a37a" ${SK()}/><circle cx="46" cy="52" r="26" fill="#d98c4a" ${SK()}/><path d="M46 52 m-14 0 a14 14 0 1 1 14 14 a8 8 0 1 1 -6 -10" fill="none" ${SK(3)}/><path d="M82 66 L86 50 M88 66 L94 52" ${SK(3)}/>`,
+  cotton:`<path d="M50 96 V60" stroke="#6b4428" stroke-width="5"/>${[[36, 40], [64, 40], [50, 26], [40, 56], [60, 56]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="15" fill="#fff" ${SK(3)}/>`).join("")}<path d="M34 66 L50 60 L66 66 L50 74Z" fill="#6b4428" ${SK(2.5)}/>`,
+  tap:`<path d="M10 30 H60 Q72 30 72 44 V52" fill="none" stroke="${INK}" stroke-width="16" stroke-linecap="round"/><path d="M10 30 H60 Q72 30 72 44 V52" fill="none" stroke="#b9c0cf" stroke-width="9" stroke-linecap="round"/><rect x="34" y="12" width="14" height="10" fill="#e53950" ${SK(2.5)}/><path d="M40 22 V26" ${SK(4)}/><path d="M72 62 v8 M72 78 v8" stroke="#3ea8e0" stroke-width="6" stroke-linecap="round" class="lp-drip"/>`,
+  boat:`<path d="M8 62 H92 L80 82 H20Z" fill="#c98a4b" ${SK()}/><path d="M50 62 V10" ${SK(4)}/><path d="M52 12 L84 56 H52Z" fill="#fff" ${SK(3)}/><path d="M48 18 L20 56 H48Z" fill="#ffd43b" ${SK(3)}/><path d="M0 88 Q25 80 50 88 T100 88" fill="none" stroke="#3ea8e0" stroke-width="5"/>`,
+  cork:`<path d="M30 30 H70 L64 80 H36Z" fill="#c9a37a" ${SK()}/><ellipse cx="50" cy="30" rx="20" ry="6" fill="#e0bf94" ${SK(3)}/>${[[42, 50], [56, 62], [48, 70], [58, 44]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2" fill="#8a5a3c"/>`).join("")}`,
+  key:`<circle cx="28" cy="50" r="18" fill="#ffc93c" ${SK()}/><circle cx="28" cy="50" r="7" fill="#fff" ${SK(2.5)}/><path d="M46 50 H92 M80 50 V64 M90 50 V60" ${SK(7)}/><path d="M46 50 H92 M80 50 V64 M90 50 V60" stroke="#ffc93c" stroke-width="3"/>`,
+  marble:`<circle cx="50" cy="52" r="32" fill="#7fd2ef" ${SK()}/><path d="M30 60 Q50 30 72 48" fill="none" stroke="#2bb673" stroke-width="7"/><circle cx="40" cy="38" r="6" fill="#fff" opacity=".8"/>`,
+  slipper:`<path d="M20 20 Q50 6 76 22 Q90 50 76 82 Q50 96 26 82 Q10 50 20 20Z" fill="#3ea8e0" ${SK()}/><path d="M28 40 Q50 52 72 40" fill="none" stroke="#e53950" stroke-width="7" stroke-linecap="round"/><path d="M50 46 V30" stroke="#e53950" stroke-width="5"/>`,
+  lifejacket:`<path d="M30 14 L42 22 H58 L70 14 L84 30 V86 H58 V40 H42 V86 H16 V30Z" fill="#ff8a5b" ${SK()}/><path d="M16 56 H42 M58 56 H84" stroke="#fff" stroke-width="5"/><path d="M42 70 H58" ${SK(4)}/>`,
+  ship:`<path d="M4 58 H96 L84 84 H16Z" fill="#e53950" ${SK()}/><rect x="22" y="38" width="56" height="20" fill="#fff" ${SK(3)}/><rect x="38" y="22" width="24" height="16" fill="#fff" ${SK(3)}/><rect x="60" y="8" width="10" height="20" fill="#3a3a44" ${SK(2.5)}/>${[30, 44, 58].map(x => `<circle cx="${x}" cy="48" r="3.5" fill="#7fd2ef" ${SK(1.5)}/>`).join("")}<path d="M0 90 Q25 82 50 90 T100 90" fill="none" stroke="#3ea8e0" stroke-width="5"/>`,
+  beads:`<path d="M12 30 Q50 96 88 30" fill="none" stroke="#8a5a3c" stroke-width="2.5"/>${[[14, 34], [22, 50], [32, 63], [44, 70], [56, 70], [68, 63], [78, 50], [86, 34]].map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="7" fill="${["#b5652f", "#ff8a5b", "#ffd43b", "#2bb673"][i % 4]}" ${SK(2.5)}/>`).join("")}`,
+  bricks:`${[0, 1, 2].map(r => [0, 1, 2].map(c => `<rect x="${8 + c * 28 + (r % 2 ? 14 : 0)}" y="${30 + r * 20}" width="28" height="20" fill="#c0442a" ${SK(2.5)}/>`).join("")).join("")}`,
+  kiln:`<path d="M14 90 V50 Q14 18 50 18 Q86 18 86 50 V90Z" fill="#c98a4b" ${SK()}/><path d="M34 90 V66 Q34 52 50 52 Q66 52 66 66 V90Z" fill="#3a3a44" ${SK(3)}/><path d="M42 88 q-4 -12 4 -18 q0 10 6 6 q4 6 -2 12z" fill="#ff8a5b"/><path d="M50 18 V4" stroke="#8b93a8" stroke-width="6"/>`,
+  claybowl:`<path d="M10 44 H90 Q86 84 50 84 Q14 84 10 44Z" fill="#b5652f" ${SK()}/><ellipse cx="50" cy="44" rx="40" ry="10" fill="#8a4a24" ${SK(3)}/>`,
+  terracotta:`<path d="M30 30 Q30 8 50 8 Q70 8 70 30 V58 Q70 78 50 80 Q30 78 30 58Z" fill="#c0703a" ${SK()}/><path d="M36 38 Q42 32 48 38 M52 38 Q58 32 64 38" fill="none" ${SK(3)}/><ellipse cx="42" cy="40" rx="4" ry="2.5" fill="${INK}"/><ellipse cx="58" cy="40" rx="4" ry="2.5" fill="${INK}"/><path d="M50 44 V56 M44 64 Q50 68 56 64" fill="none" ${SK(2.5)}/><path d="M40 80 L36 94 H64 L60 80" fill="#c0703a" ${SK(3)}/>`,
+  palette:`<path d="M50 10 Q90 10 92 48 Q92 64 76 62 Q66 60 66 70 Q68 88 50 90 Q10 88 10 50 Q10 10 50 10Z" fill="#f6ead2" ${SK()}/>${[["#e53950", 30, 34], ["#ffd43b", 50, 24], ["#3ea8e0", 70, 32], ["#2bb673", 26, 56], ["#c99cff", 40, 74]].map(([c, x, y]) => `<circle cx="${x}" cy="${y}" r="8" fill="${c}" ${SK(2.5)}/>`).join("")}`,
+  shekere:`<path d="M50 20 Q86 26 84 62 Q80 92 50 92 Q20 92 16 62 Q14 26 50 20Z" fill="#d9b44a" ${SK()}/><path d="M44 20 V6 H56 V20" fill="#c98a4b" ${SK(3)}/>${[[30, 46], [44, 40], [58, 42], [70, 50], [26, 64], [40, 60], [54, 62], [68, 68], [36, 78], [52, 80], [64, 82]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="3.5" fill="#fff" ${SK(1.5)}/>`).join("")}<path d="M24 52 L76 56 M22 70 L78 74" stroke="${INK}" stroke-width="1.5" opacity=".5"/>`,
+  udu:`<path d="M40 8 H60 L58 22 Q90 32 88 62 Q84 92 50 92 Q16 92 12 62 Q10 32 42 22Z" fill="#8a4a24" ${SK()}/><circle cx="70" cy="52" r="7" fill="#3a2016" ${SK(2.5)}/><path d="M22 70 Q50 80 78 70" fill="none" stroke="#e0a070" stroke-width="2.5"/>`,
+  whistle:`<path d="M12 40 H58 Q86 40 86 62 Q86 84 62 84 Q40 84 38 62 V54 H12Z" fill="#b9c0cf" ${SK()}/><rect x="22" y="40" width="14" height="8" fill="#3a3a44"/><circle cx="62" cy="62" r="8" fill="#8b93a8" ${SK(2.5)}/><path d="M90 30 l6 -6 M88 22 l2 -8" ${SK(3)}/>`,
+  kite:`<path d="M50 6 L82 40 L50 78 L18 40Z" fill="#e53950" ${SK()}/><path d="M50 6 V78 M18 40 H82" ${SK(2.5)}/><path d="M50 78 Q40 86 50 92 Q60 98 52 100" fill="none" ${SK(2.5)}/><path d="M44 86 l6 2 -4 4z M52 96 l6 0 -3 4z" fill="#ffd43b" ${SK(1.5)}/>`,
+  bubbles:`${[[34, 60, 22], [66, 40, 16], [64, 74, 11], [30, 26, 9]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#e6f6ff" fill-opacity=".6" ${SK(3)}/><path d="M${x - r * .5} ${y - r * .3} q${r * .2} ${-r * .4} ${r * .5} ${-r * .45}" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>`).join("")}`,
+  windmill:`<path d="M44 46 L38 94 H62 L56 46Z" fill="#fff" ${SK()}/>${[0, 90, 180, 270].map(a => `<path d="M50 40 L46 6 H58Z" fill="#ffd43b" ${SK(2.5)} transform="rotate(${a} 50 40)"/>`).join("")}<circle cx="50" cy="40" r="6" fill="#3a3a44"/>`,
+  tyre:`<circle cx="50" cy="50" r="40" fill="#3a3a44" ${SK()}/><circle cx="50" cy="50" r="18" fill="#c9d1e0" ${SK(3)}/>${Array.from({ length: 12 }, (_, i) => `<path d="M50 12 V20" stroke="#8b93a8" stroke-width="3" transform="rotate(${i * 30} 50 50)"/>`).join("")}`,
+  cupcotton:`<path d="M22 40 H78 L72 90 H28Z" fill="#bfe8ff" fill-opacity=".8" ${SK()}/><path d="M26 60 Q50 54 74 60 L72 90 H28Z" fill="#fff" ${SK(2)}/><ellipse cx="44" cy="58" rx="8" ry="6" fill="#d9b44a" ${SK(2)}/><path d="M44 52 Q44 30 54 22" fill="none" stroke="#2bb673" stroke-width="4"/><path d="M54 22 Q64 14 70 20 Q62 28 54 22Z" fill="#2bb673" ${SK(2)}/>`,
+  oilspill:`<path d="M-2 40 Q25 34 50 40 T102 40 V100 H-2Z" fill="#3ea8e0"/><path d="M14 50 Q30 40 50 50 Q72 44 84 56 Q78 76 52 72 Q24 78 14 62Z" fill="#2a2540"/><path d="M28 54 Q40 50 50 56" stroke="#8b93a8" stroke-width="2" fill="none"/><path d="M60 82 Q66 74 74 82 Q66 90 60 82Z" fill="#8b93a8" ${SK(2)}/>`,
+  firstaid:`<rect x="10" y="30" width="80" height="58" rx="8" fill="#fff" ${SK()}/><path d="M38 30 V20 H62 V30" fill="none" ${SK(4)}/><path d="M50 44 V74 M35 59 H65" stroke="#2bb673" stroke-width="10" stroke-linecap="round"/>`,
+  plaster:`<rect x="8" y="36" width="84" height="28" rx="14" fill="#e8b48a" ${SK()} transform="rotate(-30 50 50)"/><rect x="36" y="38" width="28" height="24" rx="4" fill="#f6dcc4" ${SK(2)} transform="rotate(-30 50 50)"/>${[[42, 46], [52, 44], [48, 54], [58, 52]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.6" fill="#c9926a"/>`).join("")}`,
+  bandage:`<circle cx="36" cy="50" r="26" fill="#fff" ${SK()}/><circle cx="36" cy="50" r="10" fill="#eef3fb" ${SK(2)}/><path d="M60 40 H92 V60 H60" fill="#fff" ${SK(3)}/>`,
+  gloves:`<path d="M30 92 V60 L20 40 Q18 34 24 34 L32 46 V18 Q32 12 37 12 Q42 12 42 18 V40 V14 Q42 8 47 8 Q52 8 52 14 V40 V18 Q52 12 57 12 Q62 12 62 18 V48 Q66 40 72 42 Q76 46 70 58 L62 92Z" fill="#7fd2ef" ${SK(3)}/>`,
+  cottonwool:`${[[36, 56, 18], [56, 50, 20], [68, 64, 14], [46, 68, 14]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#fff" ${SK(3)}/>`).join("")}<ellipse cx="52" cy="60" rx="24" ry="12" fill="#fff"/>`,
+  desktop:`<rect x="8" y="10" width="62" height="44" rx="4" fill="#3a3a44" ${SK()}/><rect x="13" y="15" width="52" height="34" fill="#7fd2ef"/><path d="M34 54 V64 H46 V54" fill="#b9c0cf" ${SK(2.5)}/><rect x="6" y="70" width="58" height="14" rx="3" fill="#dfe6ef" ${SK(3)}/><path d="M12 77 H58" stroke="#8b93a8" stroke-width="2" stroke-dasharray="3 3"/><rect x="76" y="18" width="18" height="66" rx="3" fill="#dfe6ef" ${SK(3)}/><ellipse cx="80" cy="88" rx="7" ry="9" fill="#dfe6ef" ${SK(2.5)} transform="translate(-6 0)"/>`,
+  monitor:`<rect x="8" y="12" width="84" height="56" rx="5" fill="#3a3a44" ${SK()}/><rect x="14" y="18" width="72" height="44" fill="#7fd2ef"/><path d="M42 68 L38 84 H62 L58 68" fill="#b9c0cf" ${SK(3)}/>`,
+  keyboard:`<rect x="4" y="30" width="92" height="40" rx="6" fill="#dfe6ef" ${SK()}/>${[0, 1, 2].map(r => Array.from({ length: 9 - (r === 2 ? 4 : 0) }, (_, c) => `<rect x="${10 + c * 9.2 + (r === 2 ? 23 : 0)}" y="${36 + r * 10}" width="7" height="7" rx="1.5" fill="#fff" ${SK(1.2)}/>`).join("")).join("")}`,
+  mouse:`<path d="M50 14 Q78 14 78 46 V64 Q78 90 50 90 Q22 90 22 64 V46 Q22 14 50 14Z" fill="#dfe6ef" ${SK()}/><path d="M50 14 V44 M22 44 H78" ${SK(3)}/><path d="M50 14 Q50 4 60 2" fill="none" ${SK(3)}/>`,
+  sysunit:`<rect x="26" y="6" width="48" height="88" rx="5" fill="#3a3a44" ${SK()}/><rect x="34" y="16" width="32" height="6" rx="2" fill="#8b93a8"/><rect x="34" y="28" width="32" height="6" rx="2" fill="#8b93a8"/><circle cx="50" cy="74" r="6" fill="#2bb673" ${SK(2)}/>`,
+  printer:`<rect x="26" y="8" width="48" height="26" fill="#fff" ${SK(3)}/><rect x="8" y="30" width="84" height="38" rx="6" fill="#b9c0cf" ${SK()}/><rect x="24" y="58" width="52" height="32" fill="#fff" ${SK(3)}/><path d="M32 70 H68 M32 78 H60" ${SK(2)}/><circle cx="80" cy="42" r="4" fill="#2bb673"/>`,
+  headphones:`<path d="M18 62 V48 Q18 14 50 14 Q82 14 82 48 V62" fill="none" ${SK(7)}/><rect x="10" y="54" width="18" height="32" rx="7" fill="#e53950" ${SK(3)}/><rect x="72" y="54" width="18" height="32" rx="7" fill="#e53950" ${SK(3)}/>`,
+  mic:`<rect x="36" y="8" width="28" height="48" rx="14" fill="#8b93a8" ${SK()}/><path d="M24 44 Q24 70 50 70 Q76 70 76 44 M50 70 V86 M34 90 H66" fill="none" ${SK(4)}/>`,
+  sunglasses:`<path d="M6 36 H94" ${SK(4)}/><path d="M10 36 H44 Q44 64 26 64 Q10 64 10 36Z M56 36 H90 Q90 64 72 64 Q56 64 56 36Z" fill="#3a3a44" ${SK(3)}/><path d="M18 42 L26 50" stroke="#fff" stroke-width="3" opacity=".6"/>`,
+  lemon:`<ellipse cx="50" cy="52" rx="34" ry="26" fill="#ffd43b" ${SK()}/><path d="M16 52 l-8 -4 M84 52 l8 -4" ${SK(3)}/><ellipse cx="40" cy="44" rx="8" ry="4" fill="#fff" opacity=".6"/>`,
+  chilli:`<path d="M26 20 Q40 30 46 50 Q54 76 84 88 Q50 92 36 70 Q24 50 26 20Z" fill="#e53950" ${SK()}/><path d="M26 22 Q20 10 30 6" fill="none" stroke="#2bb673" stroke-width="5" stroke-linecap="round"/>`,
+  kolanut:`<path d="M20 54 Q20 24 50 24 Q80 24 80 54 Q80 80 50 82 Q20 80 20 54Z" fill="#c9566b" ${SK()}/><path d="M50 26 Q42 54 50 80" fill="none" ${SK(2.5)}/>`
+});
+
+/* ======================= SCHOOL P2: First term ======================= */
+/* ---- 1. My five senses ---- */
+const S2SENSE = [["Sight", "Eyes", "eye", "see"], ["Hearing", "Ears", "ear", "hear"], ["Smell", "Nose", "nose", "smell"], ["Taste", "Tongue", "tongue", "taste"], ["Touch", "Skin", "hand", "feel"]];
+const S2ACT = [["Watching television", "Eyes"], ["Listening to the radio", "Ears"], ["Smelling jollof rice cooking", "Nose"], ["Tasting pepper soup", "Tongue"], ["Feeling that a cup is hot", "Skin"], ["Reading a book", "Eyes"],
+  ["Hearing the school bell", "Ears"], ["Knowing a mango is sweet", "Tongue"], ["Feeling rain on your arm", "Skin"], ["Seeing a rainbow", "Eyes"], ["Hearing a dog bark", "Ears"], ["Smelling a flower", "Nose"], ["Smelling smoke from a fire", "Nose"],
+  ["Tasting salt", "Tongue"], ["Feeling that a stone is rough", "Skin"], ["Seeing a red traffic light", "Eyes"], ["Hearing a car horn", "Ears"], ["Smelling food that has gone bad", "Nose"], ["Tasting a sour lemon", "Tongue"], ["Feeling soft cotton wool", "Skin"],
+  ["Watching birds fly", "Eyes"], ["Hearing thunder", "Ears"], ["Smelling perfume", "Nose"], ["Feeling a cold drink", "Skin"]];
+const S2TASTE = [["sugar", "Sugar", "Sweet"], ["salt", "Salt", "Salty"], ["lemon", "A lemon", "Sour"], ["kolanut", "Kola nut", "Bitter"], ["honey", "Honey", "Sweet"], ["mangofruit", "A ripe mango", "Sweet"]];
+const S2FEEL = [["rock", "A stone", "Hard", ["Soft", "Hot"]], ["cottonwool", "Cotton wool", "Soft", ["Hard", "Rough"]], ["ice", "Ice", "Cold", ["Hot", "Rough"]], ["feather", "A feather", "Soft", ["Hard", "Rough"]], ["kettle", "A kettle of boiling water", "Hot", ["Cold", "Soft"]], ["mirror", "A mirror", "Smooth", ["Rough", "Soft"]], ["palm", "The bark of a palm tree", "Rough", ["Smooth", "Soft"]]];
+const S2SENSETF = [["We have five senses.", true, "Sight, hearing, smell, taste and touch."], ["We see with our ears.", false, "We see with our eyes."], ["The skin is the sense organ for touch.", true, "It covers the whole body!"],
+  ["You should look straight at the Sun.", false, "Never! It can badly hurt your eyes."], ["Very loud noise can hurt your ears.", true, "Cover your ears and move away."], ["You should push sticks into your ears.", false, "Never put anything inside your ears."],
+  ["The tongue helps us taste sweet, salty, sour and bitter.", true, "Taste buds on the tongue do this."], ["Our nose can warn us about smoke.", true, "Smell keeps us safe."], ["Blind people can read with their fingers.", true, "Using Braille, a code of raised dots."],
+  ["We should eat carrots and green vegetables for healthy eyes.", true, "They have vitamin A."], ["Reading in good light helps our eyes.", true, "Dim light makes eyes tired."], ["Never taste something if you do not know what it is.", true, "It might be poison."],
+  ["Some people use hearing aids to help them hear.", true, "Hearing aids make sounds louder."], ["Our senses send messages to our brain.", true, "The brain tells us what we see, hear and feel."]];
+const SENSES2 = { nm:"My five senses", icon:"eye", c:"#ffe1d6", ds:"We see, hear, smell, taste and touch! Meet our five sense organs, and learn how to take care of them.",
+  facts:["We have [five] senses.", "We see with our [eyes].", "We hear with our [ears].", "We smell with our [nose].", "We taste with our [tongue].", "We feel with our [skin]."],
+  slides:[
+    { v:() => ringRow(S2SENSE.map(([s, o, k]) => [k, s]), "Our five senses", "#ffe1d6"), t:"We have five senses: sight, hearing, smell, taste and touch. They help us learn about the world around us." },
+    { v:() => ringRow([["eye", "Eyes: see"], ["ear", "Ears: hear"], ["nose", "Nose: smell"]], "Sense organs", "#fff6d1"), t:"Each sense has a sense organ. We see with our eyes, hear with our ears, and smell with our nose." },
+    { v:() => ringRow([["tongue", "Tongue: taste"], ["hand", "Skin: touch"]], "More sense organs", "#eaf6fd"), t:"We taste with our tongue, and we feel with our skin. Skin covers our whole body, so we can feel all over!" },
+    { v:() => ringRow(S2TASTE.slice(0, 4).map(([k, n, t]) => [k, t]), "Four tastes", "#f1fbf5"), t:"Our tongue can taste sweet, like sugar; salty, like salt; sour, like a lemon; and bitter, like kola nut." },
+    { v:() => SV("0 0 400 260", `${SKY("#ffe1d6")}${[["sun", "Don't stare at the Sun"], ["ear", "Nothing in your ears"], ["speaker", "Avoid very loud noise"], ["pills", "Don't taste unknown things"]].map(([k, l], j) => RING(60 + j * 94, 100, 34, k) + TAG(60 + j * 94, 162, l.split(" ").slice(0, 2).join(" "), 11) + TAG(60 + j * 94, 186, l.split(" ").slice(2).join(" "), 11)).join("")}${TAG(200, 236, "Take care of your senses", 13)}`),
+      t:"Take care of your senses. Never stare at the Sun. Never put anything inside your ears or nose. Keep away from very loud noise. Never taste something if you don't know what it is." },
+    { v:() => superPic("Eye doctors and ear doctors", ["eye", "glasses", "ear", "headphones"], { shirt:"#fff" }),
+      t:"Science superpower! Eye doctors test our eyes and give glasses to people who need them. Ear doctors help people hear better. They keep our senses working well." }],
+  home:{ nm:"Mystery bag", steps:["Ask a grown-up to put 5 safe things in a bag, like a spoon, a leaf, a sponge, an orange and a cup.", "Close your eyes, put your hand in, and guess each thing by touch.", "Next, with your eyes closed, smell an orange, an onion and some soap. Can you name them?", "Talk about which sense helped you each time."], q:"Which thing was hardest to guess?" },
+  gens:[
+    () => { const [s, o, k] = pick(S2SENSE); return Q3(`Which sense organ do we use for ${s.toLowerCase()}?`, o, S2SENSE.map(x => x[1]), { ex:"We " + S2SENSE.find(x => x[0] === s)[3] + " with our " + o.toLowerCase() + ".", key:"so|" + s }); },
+    () => { const [s, o, k, v] = pick(S2SENSE); return Q3(`What do we do with our ${o.toLowerCase()}?`, cap1(v), S2SENSE.map(x => cap1(x[3])), { ex:"We " + v + " with our " + o.toLowerCase() + ".", vis:bigIco(k, "#ffe1d6"), key:"sv|" + o }); },
+    () => { const [s, o, k] = pick(S2SENSE); return QP3(`Which is the sense organ for ${s.toLowerCase()}?`, [k, o], S2SENSE.map(x => [x[2], x[1]]), { ex:o + "." }); },
+    () => { const [a, o] = pick(S2ACT); return Q3(`${a}. Which sense organ helps?`, o, S2SENSE.map(x => x[1]), { ex:"Your " + o.toLowerCase() + "." }); },
+    () => { const [a, o] = pick(S2ACT); const r = S2SENSE.find(x => x[1] === o); return QP3(`${a}. Tap the sense organ you use.`, [r[2], o], S2SENSE.map(x => [x[2], x[1]]), { ex:"Your " + o.toLowerCase() + ".", key:"ap|" + a }); },
+    () => { const [k, n, t] = pick(S2TASTE); return Q3(`How does ${n.charAt(0).toLowerCase() + n.slice(1)} taste?`, t, ["Sweet", "Salty", "Sour", "Bitter"], { ex:n + " tastes " + t.toLowerCase() + ".", vis:bigIco(k, "#fff6d1") }); },
+    () => { const t = pick(["Sweet", "Salty", "Sour", "Bitter"]), r = pick(S2TASTE.filter(x => x[2] === t)); return QP3(`Which one tastes ${t.toLowerCase()}?`, [r[0], r[1]], S2TASTE.filter(x => x[2] !== t).map(x => [x[0], x[1]]), { ex:r[1] + " tastes " + t.toLowerCase() + ".", key:"tp|" + t + "|" + r[1] }); },
+    () => { const [k, n, f, w] = pick(S2FEEL); return Q3(`How does ${n.charAt(0).toLowerCase() + n.slice(1)} feel?`, f, w, { ex:n + " feels " + f.toLowerCase() + ".", vis:bigIco(k, "#eaf6fd") }); },
+    tf(S2SENSETF),
+    () => Q3("How many senses do we have?", "Five", ["Three", "Ten"], { ex:"Sight, hearing, smell, taste and touch." }),
+    () => Q3("Which sense organ covers the whole body?", "Skin", ["Eyes", "Tongue"], { ex:"We feel with our skin." }),
+    () => Q3("What should you do when a noise is very loud?", "Cover your ears and move away", ["Go closer", "Shout louder"], { ex:"Loud noise can hurt your ears." }),
+    () => Q3("Which sense warns us that food has gone bad?", "Smell", ["Hearing", "Sight only"], { ex:"Bad food smells bad!" }),
+    () => Q3("What helps blind people read?", "Braille, raised dots felt with the fingers", ["Very big pictures", "Loud music"], { ex:"Braille uses the sense of touch." }),
+    () => Q3("What do some people wear to see better?", "Glasses", ["Gloves", "A hat"], { ex:"Eye doctors test eyes for glasses." }),
+    () => Q3("Which food helps keep eyes healthy?", "Carrots and green vegetables", ["Sweets", "Soft drinks"], { ex:"They have vitamin A." }),
+    () => Q3("Where are your taste buds?", "On your tongue", ["On your ears", "On your elbow"], { ex:"Tiny bumps on the tongue." })
+  ] };
+
+/* ---- 2. Plants around us ---- */
+const S2PART = [["Root", "Takes in water from the soil and holds the plant firm"], ["Stem", "Holds the plant up and carries water"], ["Leaf", "Makes food for the plant using sunlight"], ["Flower", "Makes seeds"], ["Fruit", "Holds and protects the seeds"], ["Seed", "Grows into a new plant"]];
+const S2EAT = [["cassava", "Cassava", "Root"], ["ugu", "Ugu leaves", "Leaf"], ["maize", "Maize grains", "Seed"], ["mangofruit", "Mango", "Fruit"], ["orange", "Orange", "Fruit"], ["beans", "Beans", "Seed"], ["rice", "Rice", "Seed"], ["banana", "Banana", "Fruit"]];
+const S2PUSE = [["cotton", "Cotton", "Making clothes"], ["palm", "Oil palm", "Making palm oil"], ["tree", "Iroko tree", "Wood for furniture"], ["grass", "Grass", "Food for cows and goats"], ["yam", "Yam", "Food for people"], ["flower", "Flowers", "Making our compound beautiful"], ["tree", "Mango tree", "Shade and fruit"], ["leaf", "Sweet wormwood", "Making a malaria medicine"]];
+function plantPic(hl){
+  const H = p => p === hl ? `filter="url(#hlg)"` : "", glow = p => p === hl ? `stroke="#ffb02e" stroke-width="9" stroke-opacity=".8"` : "";
+  const HALO = { Root:[200, 220, 40, 34], Stem:[200, 130, 18, 70], Leaf:[200, 112, 86, 40], Flower:[200, 54, 38, 38], Fruit:[150, 150, 26, 26], Seed:[300, 214, 24, 20] }[hl];
+  return SV("0 0 400 260", `<defs><filter id="hlg"><feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#ffd43b"/></filter></defs>${SKY("#eaf6fd")}<rect x="-300" y="190" width="1000" height="100" fill="#a8774c" stroke="${INK}" stroke-width="4"/>
+    ${HALO ? `<ellipse cx="${HALO[0]}" cy="${HALO[1]}" rx="${HALO[2]}" ry="${HALO[3]}" fill="#ffd43b" fill-opacity=".55" stroke="#ff8a3d" stroke-width="3" stroke-dasharray="6 5" class="lp-glow"/>` : ""}
+    <g ${H("Root")}><path d="M200 190 L200 236 M200 206 L176 230 M200 214 L226 240 M200 222 L186 250" stroke="#f6ead2" stroke-width="5" stroke-linecap="round"/>${hl === "Root" ? `<path d="M200 190 L200 236 M200 206 L176 230 M200 214 L226 240 M200 222 L186 250" fill="none" stroke="#ffb02e" stroke-width="12" stroke-opacity=".5" stroke-linecap="round"/>` : ""}</g>
+    <g ${H("Stem")}><path d="M200 190 V60" stroke="#2bb673" stroke-width="9" stroke-linecap="round"/>${hl === "Stem" ? `<path d="M200 190 V60" stroke="#ffb02e" stroke-width="18" stroke-opacity=".5"/>` : ""}</g>
+    <g ${H("Leaf")}>${[[200, 150, -1], [200, 118, 1], [200, 90, -1]].map(([x, y, s]) => `<path d="M${x} ${y} Q${x + s * 40} ${y - 30} ${x + s * 70} ${y - 6} Q${x + s * 40} ${y + 14} ${x} ${y}Z" fill="#7ccf5f" stroke="${INK}" stroke-width="3" ${glow("Leaf")}/>`).join("")}</g>
+    <g ${H("Flower")}>${[0, 72, 144, 216, 288].map(a => `<ellipse cx="200" cy="38" rx="10" ry="18" fill="#ff8a8a" stroke="${INK}" stroke-width="2.5" transform="rotate(${a} 200 56)" ${glow("Flower")}/>`).join("")}<circle cx="200" cy="56" r="10" fill="#ffd43b" stroke="${INK}" stroke-width="3"/></g>
+    <g ${H("Fruit")}><circle cx="150" cy="150" r="14" fill="#ff8a5b" stroke="${INK}" stroke-width="3" ${glow("Fruit")}/><path d="M156 138 L190 128" stroke="#2bb673" stroke-width="3"/></g>
+    <g ${H("Seed")}><ellipse cx="300" cy="214" rx="12" ry="8" fill="#a0673e" stroke="${INK}" stroke-width="3" ${glow("Seed")}/></g>
+    ${hl ? "" : [["Flower", 280, 46], ["Leaf", 300, 110], ["Stem", 250, 172], ["Fruit", 92, 150], ["Root", 270, 236], ["Seed", 340, 196]].map(([n, x, y]) => TAG(x, y, n, 12)).join("")}`);
+}
+const S2PLANTTF = [["Plants are living things.", true, "They grow, need water and make seeds."], ["Roots take in water from the soil.", true, "And hold the plant firm."], ["Leaves make food for the plant.", true, "Using sunlight, air and water."],
+  ["Flowers make seeds.", true, "Seeds grow into new plants."], ["All plants are the same size.", false, "Some are tiny, like grass. Some are huge, like the iroko tree."], ["We eat the root of the cassava plant.", true, "We make garri and fufu from it."],
+  ["Cotton is used to make clothes.", true, "Cotton grows in northern Nigeria."], ["Plants need sunlight to grow well.", true, "Plants in the dark grow pale and weak."], ["A mango is a fruit.", true, "It holds the seed."],
+  ["A malaria medicine comes from a plant.", true, "Artemisinin comes from the sweet wormwood plant."], ["Trees give us shade.", true, "A cool place on a hot day."], ["Plants can walk to find water.", false, "Plants stay in one place. Their roots reach for water."]];
+const PLANTS2 = { nm:"Plants around us", icon:"flower", c:"#c7f0d0", ds:"Roots, stems, leaves, flowers, fruits and seeds! What does each part do, and how do plants help us?",
+  facts:["Roots take in [water] and hold the plant firm.", "The [stem] holds the plant up.", "[Leaves] make food using sunlight.", "Flowers make [seeds].", "A [fruit] protects the seeds.", "Plants give us food, clothes, wood and [medicine]."],
+  slides:[
+    { v:() => plantPic(), t:"A plant has roots, a stem, leaves, flowers, fruits and seeds. Each part has a job." },
+    { v:() => plantPic("Root"), t:"The roots grow under the ground. They take in water from the soil and hold the plant firm, so the wind cannot blow it over." },
+    { v:() => plantPic("Leaf"), t:"The stem holds the plant up and carries water to the leaves. The leaves use sunlight to make food for the plant." },
+    { v:() => plantPic("Flower"), t:"Flowers make seeds. A fruit grows around the seeds to protect them. Seeds can grow into new plants!" },
+    { v:() => ringRow([["maize", "Food"], ["cotton", "Clothes"], ["tree", "Wood"], ["palm", "Palm oil"], ["leaf", "Medicine"]], "Plants help us", "#e6f7e1"), t:"Plants help us in many ways: food like cassava and maize, cotton for clothes, wood for furniture, palm oil for cooking, and even medicines." },
+    { v:() => superPic("Farmers and plant scientists", ["maize", "yam", "beans", "seedling"], { shirt:"#2bb673", ground:"#a8774c" }),
+      t:"Science superpower! Plant scientists at IITA in Ibadan breed better cassava, yam and maize that grow well in Nigeria. Farmers use their seeds to grow more food." }],
+  home:{ nm:"Plant parts hunt", steps:["Go outside with a grown-up and find a small plant or weed.", "Gently pull it up and shake off the soil.", "Point to the roots, stem and leaves. Can you find a flower or seed?", "Draw it and label the parts. Wash your hands afterwards."], q:"Which part of your plant was the longest?" },
+  gens:[
+    () => { const [p, j] = pick(S2PART); return Q3(`Which part of a plant ${j.charAt(0).toLowerCase() + j.slice(1)}?`, p, S2PART.map(x => x[0]), { ex:"The " + p.toLowerCase() + "." }); },
+    () => { const [p, j] = pick(S2PART); return Q3(`What does the ${p.toLowerCase()} do?`, j, S2PART.map(x => x[1]), { ex:j + "." }); },
+    () => { const p = pick(["Root", "Stem", "Leaf", "Flower", "Fruit", "Seed"]); return Q3("Which part of the plant is glowing?", p, ["Root", "Stem", "Leaf", "Flower", "Fruit", "Seed"], { ex:"The " + p.toLowerCase() + ".", vis:plantPic(p), key:"glow|" + p }); },
+    () => { const [k, n, p] = pick(S2EAT); return Q3(`Which part of the plant is ${n.charAt(0).toLowerCase() + n.slice(1)}?`, p, ["Root", "Leaf", "Seed", "Fruit", "Stem"], { ex:n + ": the " + p.toLowerCase() + ".", vis:bigIco(k, "#e6f7e1") }); },
+    () => { const [k, n, u] = pick(S2PUSE); return Q3(`How do we use ${n.charAt(0).toLowerCase() + n.slice(1)}?`, u, S2PUSE.map(x => x[2]), { ex:u + "." }); },
+    () => { const [k, n, u] = pick(S2PUSE.filter(x => x[1] !== "Sweet wormwood" && x[1] !== "Mango tree")); return QP3(`Which plant do we use for ${u.charAt(0).toLowerCase() + u.slice(1)}?`, [k, n], S2PUSE.filter(x => x[0] !== k).map(x => [x[0], x[1]]), { ex:n + "." }); },
+    tf(S2PLANTTF),
+    () => QO("Put these in order: how does a plant grow?", [["seed", "Seed"], ["seedling", "Seedling"], ["flower", "Flowering plant"]].map(([k, l]) => ({ h:ico(k), v:l, lab:l })), { ex:"Seed, then seedling, then a grown plant with flowers." }),
+    () => Q3("Which part of a plant grows under the ground?", "Root", ["Leaf", "Flower"], { ex:"Roots grow in the soil." }),
+    () => Q3("What do leaves need to make food?", "Sunlight, air and water", ["Darkness", "Sand only"], { ex:"Leaves are food factories." }),
+    () => Q3("What do we make garri from?", "Cassava", ["Maize", "Mango"], { ex:"Cassava roots." }),
+    () => Q3("Which plant gives us cloth?", "Cotton", ["Yam", "Grass"], { ex:"Cotton is spun into thread." }),
+    () => Q3("Where do plant scientists in Ibadan breed better crops?", "IITA", ["NEPA", "FRSC"], { ex:"The International Institute of Tropical Agriculture." }),
+    () => Q3("Which plant gives us a malaria medicine?", "Sweet wormwood", ["Grass", "Cotton"], { ex:"The medicine is called artemisinin." })
+  ] };
+
+/* ---- 3. Animals around us ---- */
+const S2AN = [["goat", "A goat", "Domestic", "Hair", 4], ["cow", "A cow", "Domestic", "Hair", 4], ["sheep", "A sheep", "Domestic", "Wool", 4], ["hen", "A hen", "Domestic", "Feathers", 2], ["dog", "A dog", "Domestic", "Fur", 4], ["cat", "A cat", "Domestic", "Fur", 4],
+  ["duck", "A duck", "Domestic", "Feathers", 2], ["lion", "A lion", "Wild", "Fur", 4], ["elephant", "An elephant", "Wild", "Thick skin", 4], ["croc", "A crocodile", "Wild", "Scales", 4], ["snake", "A snake", "Wild", "Scales", 0], ["fish", "A fish", "Wild", "Scales", 0],
+  ["tortoise", "A tortoise", "Wild", "A hard shell", 4], ["hawk", "A hawk", "Wild", "Feathers", 2], ["butterfly", "A butterfly", "Wild", "Wings and scales", 6], ["ant", "An ant", "Wild", "A hard skin", 6], ["spider", "A spider", "Wild", "A hard skin", 8], ["gorilla", "A gorilla", "Wild", "Hair", null]];
+const S2AUSE = [["hen", "A hen", "Gives us eggs"], ["cow", "A cow", "Gives us milk"], ["bee", "A bee", "Makes honey"], ["sheep", "A sheep", "Gives us wool"], ["dog", "A dog", "Guards the house"], ["camel", "A camel", "Carries loads in the desert"], ["cat", "A cat", "Catches rats"]];
+const S2BEHAV = [["A hen", "Sits on her eggs to keep them warm"], ["A bee", "Makes honey in a hive"], ["A spider", "Spins a web to catch insects"], ["A dog", "Wags its tail when it is happy"], ["A frog", "Croaks, especially in the rainy season"], ["A cow", "Chews its food again and again"]];
+const S2ANTF = [["Animals are living things.", true, "They eat, breathe, move, grow and have young."], ["Wild animals are best kept as pets.", false, "Wild animals belong in the wild."], ["Birds have feathers.", true, "Feathers help them fly and keep warm."],
+  ["An insect has 6 legs.", true, "Like ants and butterflies."], ["A spider is an insect.", false, "A spider has 8 legs. It is not an insect."], ["Pets need food, water and a clean home.", true, "And kindness!"],
+  ["Fish breathe with gills.", true, "Gills take oxygen from water."], ["We should tease animals.", false, "Be gentle and kind."], ["A vet is a doctor for animals.", true, "Vets help sick animals."],
+  ["Wash your hands after touching animals.", true, "Animals can carry germs."], ["Cross River gorillas live in Nigeria.", true, "They are very rare and protected."], ["A snake has legs.", false, "Snakes slide along with no legs."]];
+const ANIMALS2 = { nm:"Animals around us", icon:"dog", c:"#fff1b8", ds:"Domestic or wild? Fur, feathers or scales? How many legs? Let's group animals, and learn how they help us!",
+  facts:["[Domestic] animals live with people.", "[Wild] animals live on their own in nature.", "Birds have [feathers]; fish have scales.", "Insects have [6] legs; spiders have 8.", "Hens give eggs, cows give [milk].", "Animals need food, water and [shelter]."],
+  slides:[
+    { v:() => SV("0 0 400 260", `${SKY("#f1fbf5")}<path d="M200 20 V230" stroke="${INK}" stroke-width="3" stroke-dasharray="6 6"/>${TAG(100, 28, "Domestic", 14)}${TAG(300, 28, "Wild", 14)}${[["goat", 60, 90], ["hen", 140, 90], ["dog", 60, 170], ["cat", 140, 170]].map(([k, x, y]) => put(k, x, y, 64)).join("")}${[["lion", 260, 90], ["elephant", 340, 90], ["croc", 260, 170], ["gorilla", 340, 170]].map(([k, x, y]) => put(k, x, y, 64)).join("")}`),
+      t:"Domestic animals live with people, like goats, hens, dogs and cats. Wild animals live on their own in nature, like lions, elephants, crocodiles and gorillas." },
+    { v:() => ringRow([["hen", "Feathers"], ["fish", "Scales"], ["dog", "Fur"], ["tortoise", "Shell"]], "Body coverings", "#fff6d1"), t:"Animals have different body coverings. Birds have feathers. Fish and snakes have scales. Dogs and cats have fur. A tortoise has a hard shell." },
+    { v:() => ringRow([["snake", "0 legs"], ["hen", "2 legs"], ["goat", "4 legs"], ["ant", "6 legs"], ["spider", "8 legs"]], "Counting legs", "#eaf6fd"), t:"We can group animals by their legs. Snakes have none. Hens have 2. Goats have 4. Insects like ants have 6. Spiders have 8, so a spider is not an insect!" },
+    { v:() => ringRow(S2AUSE.slice(0, 5).map(([k, n, u]) => [k, u.replace("Gives us ", "").replace("Makes ", "").replace("Guards the house", "Guarding")]), "Animals help us", "#ffe1d6"), t:"Animals help us. Hens give eggs. Cows give milk. Bees make honey. Sheep give wool. Dogs guard the house." },
+    { v:() => ringRow([["grass", "Food"], ["drop", "Water"], ["house", "Shelter"], ["soap", "Clean"]], "Caring for animals", "#e6f7e1"), t:"Animals need food, clean water, shelter and a clean home. Be kind and gentle. Wash your hands after touching animals." },
+    { v:() => superPic("Vets and farmers", ["cow", "hen", "dog", "goat"], { shirt:"#3ea8e0" }),
+      t:"Science superpower! Vets are doctors for animals. They give vaccines to cows, goats and dogs to stop diseases. Farmers care for their animals every day." }],
+  home:{ nm:"Animal spotter", steps:["Walk around your area with a grown-up.", "Count the animals you see: birds, goats, insects, lizards.", "For each one, decide: domestic or wild? How many legs? What covering?", "Draw your favourite one. Don't touch animals you don't know!"], q:"How many different animals did you see?" },
+  gens:[
+    () => { const [k, n, g] = pick(S2AN); return Q3(`Is ${n.charAt(0).toLowerCase() + n.slice(1)} domestic or wild?`, g, ["Domestic", "Wild"], { n:2, ex:n + " is " + g.toLowerCase() + ".", vis:bigIco(k, "#f1fbf5") }); },
+    () => { const [k, n, , c] = pick(S2AN.filter(x => !["butterfly", "ant", "spider"].includes(x[0]))); return Q3(`What covers the body of ${n.charAt(0).toLowerCase() + n.slice(1)}?`, c, ["Hair", "Wool", "Feathers", "Fur", "Scales", "A hard shell", "Thick skin"].filter(x => !(["Hair", "Fur", "Wool"].includes(c) && ["Hair", "Fur", "Wool"].includes(x) && x !== c)), { ex:n + " has " + c.toLowerCase() + ".", vis:bigIco(k, "#fff6d1") }); },
+    () => { const [k, n, , , l] = pick(S2AN.filter(x => x[4] !== null)); return Q3(`How many legs does ${n.charAt(0).toLowerCase() + n.slice(1)} have?`, String(l), ["0", "2", "4", "6", "8"], { ex:n + " has " + l + " legs.", vis:bigIco(k, "#eaf6fd") }); },
+    () => { const c = pick(["Feathers", "Scales", "Fur"]), r = pick(S2AN.filter(x => x[3] === c)); return QP3(`Which animal has ${c.toLowerCase()}?`, [r[0], r[1]], S2AN.filter(x => x[3] !== c && !(c === "Fur" && x[3] === "Hair")).map(x => [x[0], x[1]]), { ex:r[1] + " has " + c.toLowerCase() + ".", key:"cov|" + c + "|" + r[1] }); },
+    () => { const g = pick(["Domestic", "Wild"]), r = pick(S2AN.filter(x => x[2] === g)); return QP3(`Which one is a ${g.toLowerCase()} animal?`, [r[0], r[1]], S2AN.filter(x => x[2] !== g).map(x => [x[0], x[1]]), { ex:r[1] + " is " + g.toLowerCase() + ".", key:"dw|" + g + "|" + r[1] }); },
+    () => { const [k, n, u] = pick(S2AUSE); return Q3(`How does ${n.charAt(0).toLowerCase() + n.slice(1)} help us?`, u, S2AUSE.map(x => x[2]), { ex:n + " " + u.charAt(0).toLowerCase() + u.slice(1) + "." }); },
+    () => { const [n, b] = pick(S2BEHAV); return Q3(`What does ${n.charAt(0).toLowerCase() + n.slice(1)} do?`, b, S2BEHAV.map(x => x[1]), { ex:n + " " + b.charAt(0).toLowerCase() + b.slice(1) + "." }); },
+    tf(S2ANTF),
+    () => Q3("Why is a spider not an insect?", "It has 8 legs, not 6", ["It is too small", "It can fly"], { ex:"Insects have 6 legs." }),
+    () => Q3("What do all animals need?", "Food, water and shelter", ["Shoes and hats", "Phones"], { ex:"Like all living things." }),
+    () => Q3("What should you do after touching a goat or a dog?", "Wash your hands with soap", ["Eat at once", "Rub your eyes"], { ex:"Animals can carry germs." }),
+    () => Q3("Who is a doctor for animals?", "A vet", ["A pilot", "A tailor"], { ex:"Vets care for sick animals." }),
+    () => Q3("Which rare apes live in Cross River State?", "Cross River gorillas", ["Polar bears", "Kangaroos"], { ex:"Only a few hundred are left." }),
+    () => Q3("What do fish use to breathe?", "Gills", ["Lungs", "Leaves"], { ex:"Gills take oxygen from the water." })
+  ] };
+
+/* ---- 4. Water ---- */
+const S2WSRC = [["cloud", "Rain"], ["pond", "A river"], ["well", "A well"], ["pump", "A borehole"], ["tap", "A tap"], ["ship", "The sea"]];
+const S2NOTSRC = [["sand", "Sand"], ["rock", "A rock"], ["chair", "A chair"], ["book", "A book"], ["fire", "A fire"]];
+const S2WUSE = [["Drinking", "drop"], ["Cooking", "pot"], ["Bathing", "soap"], ["Washing clothes", "bucket"], ["Watering crops", "seedling"], ["Putting out fires", "fire"], ["Travelling by boat", "boat"], ["Fishing", "fish"]];
+const S2WTF = [["We need water every day.", true, "Our bodies are mostly water."], ["Dirty water can make us ill.", true, "It can carry germs that cause cholera and typhoid."], ["Boiling water kills germs.", true, "Let it cool, then keep it covered."],
+  ["Sea water is good to drink.", false, "Sea water is too salty to drink."], ["Rain is a source of water.", true, "We can collect and store rainwater."], ["We should leave taps running.", false, "Turn taps off to save water."],
+  ["Plants and animals need water too.", true, "All living things need water."], ["A borehole brings up water from under the ground.", true, "With a pump."], ["Water containers should be covered.", true, "To keep out dirt, germs and mosquitoes."],
+  ["Water is used to put out fires.", true, "Firefighters use lots of water."], ["We should wash fruit with clean water before eating.", true, "To wash off germs and dirt."], ["Dirty water always looks dirty.", false, "Clear water can still have germs. Boil or treat it."]];
+const WATER2 = { nm:"Water", icon:"drop", c:"#dff4ff", ds:"Where does water come from, how do we use it, and how do we make it safe to drink?",
+  facts:["We need [water] every day.", "Water comes from rain, rivers, wells, boreholes and [taps].", "We use water for drinking, cooking and [washing].", "Dirty water can carry [germs].", "[Boil] or filter water to make it safe.", "Turn off taps to [save] water."],
+  slides:[
+    { v:() => ringRow(S2WSRC.map(([k, n]) => [k, n.replace(/^A |^The /, "")]), "Sources of water", "#eaf6fd"), t:"Water comes from many sources: rain, rivers, wells, boreholes, taps, and the sea." },
+    { v:() => ringRow(S2WUSE.slice(0, 5).map(([u, k]) => [k, u.split(" ")[0]]), "We use water every day", "#fff6d1"), t:"We use water every day: for drinking, cooking, bathing, washing clothes, and watering crops. All living things need water." },
+    { v:() => SV("0 0 400 260", `${SKY("#ffe1d6")}${put("bucket", 110, 110, 110)}${[0, 1, 2].map(j => put("germ", 90 + j * 22, 90 + (j % 2) * 20, 28, "lp-shake")).join("")}${put("drop", 290, 110, 100)}${BADGE(110, 40, 0, 16)}${BADGE(290, 40, 1, 16)}${TAG(110, 190, "Dirty water: germs", 12)}${TAG(290, 190, "Clean, safe water", 12)}`),
+      t:"Dirty water can carry tiny germs that cause illnesses like cholera and typhoid. Even clear water can have germs." },
+    { v:() => SV("0 0 400 260", `${SKY("#e6f7e1")}${[["sieve", "Filter it"], ["kettle", "Boil it"], ["bucket", "Cover it"]].map(([k, l], j) => RING(80 + j * 120, 110, 40, k) + TAG(80 + j * 120, 176, l, 13)).join("")}${TAG(200, 232, "Make water safe to drink", 13)}`),
+      t:"To make water safe, filter it through a clean cloth, boil it, let it cool, and keep it covered. Wash your hands and your fruit with clean water." },
+    { v:() => ringRow([["tap", "Turn off taps"], ["bucket", "Use a bucket"], ["cloud", "Collect rain"]], "Save water", "#eaf6fd"), t:"Water is precious. Turn off taps when you are not using them. Use a bucket instead of a running hose. Collect rainwater for washing and watering plants." },
+    { v:() => superPic("Water engineers and plumbers", ["tap", "pump", "well", "drop"], { shirt:"#3ea8e0" }),
+      t:"Science superpower! Water engineers build boreholes and water works that clean water for whole towns. Plumbers fix pipes and taps, so no water is wasted." }],
+  home:{ nm:"Water detective", steps:["With a grown-up, find out where your family's water comes from: tap, well, borehole, rain, or water seller.", "Count how many buckets your family uses in one day.", "Check that your drinking water is covered.", "Find one way your family can save water."], q:"Where does your family's water come from?" },
+  gens:[
+    () => { const s = pick(S2WSRC); return QP3("Which one is a source of water?", s, S2NOTSRC, { ex:s[1] + " gives us water." }); },
+    () => { const s = pick(S2NOTSRC); return QP3("Which one is NOT a source of water?", s, S2WSRC, { ex:s[1] + " does not give us water." }); },
+    () => { const [u, k] = pick(S2WUSE); return Q3(`Do we use water for ${u.toLowerCase()}?`, "Yes", ["Yes", "No"], { n:2, ex:"Yes! We use water for " + u.toLowerCase() + ".", vis:bigIco(k, "#eaf6fd"), key:"wu|" + u }); },
+    () => { const [u, k] = pick(S2WUSE); return Q3("Which of these needs water?", u, ["Reading a book", "Sleeping", "Clapping", "Counting stars", "Singing"], { ex:u + " needs water.", key:"wn|" + u }); },
+    tf(S2WTF),
+    () => QO("Put the steps in order to make river water safe.", [["Filter it through a cloth", "sieve"], ["Boil it", "kettle"], ["Let it cool and cover it", "bucket"]].map(([l, k]) => ({ h:ico(k), v:l, lab:l })), { ex:"Filter, boil, then cool and cover." }),
+    () => Q3("Why should we not drink sea water?", "It is too salty", ["It is too cold", "It is too blue"], { ex:"Salty water makes you more thirsty." }),
+    () => Q3("Which illnesses can dirty water cause?", "Cholera and typhoid", ["Broken bones", "Sunburn"], { ex:"Germs in dirty water." }),
+    () => Q3("What kills germs in water?", "Boiling it", ["Shaking it", "Adding sand"], { ex:"Then let it cool." }),
+    () => Q3("Why do we cover water containers?", "To keep out dirt, germs and mosquitoes", ["To make the water sweet", "To make it hot"], { ex:"Covered water stays cleaner." }),
+    () => Q3("What brings water up from deep under the ground?", "A borehole with a pump", ["A kite", "A fan"], { ex:"Groundwater." }),
+    () => Q3("How can you save water when brushing your teeth?", "Turn off the tap", ["Leave the tap running", "Use two taps"], { ex:"Every drop counts!" }),
+    () => Q3("Who builds boreholes and water works?", "Water engineers", ["Bakers", "Barbers"], { ex:"They bring clean water to towns." }),
+    () => Q3("Why must we wash fruit before eating?", "To wash off germs and dirt", ["To make it bigger", "To change its colour"], { ex:"Use clean water." })
+  ] };
+
+/* ---- 5. Floating and sinking ---- */
+const S2FS = [["leaf", "A leaf", "Floats"], ["feather", "A feather", "Floats"], ["cork", "A cork", "Floats"], ["bottle", "An empty, closed plastic bottle", "Floats"], ["wood", "A piece of wood", "Floats"], ["ball", "A ball", "Floats"],
+  ["slipper", "A rubber slipper", "Floats"], ["duck", "A duck", "Floats"], ["boat", "A boat", "Floats"], ["orange", "An orange with its peel", "Floats"], ["balloon", "A balloon", "Floats"],
+  ["coin", "A coin", "Sinks"], ["key", "A key", "Sinks"], ["rock", "A stone", "Sinks"], ["nail", "A nail", "Sinks"], ["marble", "A marble", "Sinks"], ["spoon", "A metal spoon", "Sinks"], ["egg", "A fresh egg", "Sinks"]];
+function fsPic(k, f){ return SV("0 0 400 260", `${SKY("#eaf6fd")}<rect x="90" y="60" width="220" height="180" rx="10" fill="#bfe8ff" fill-opacity=".5" stroke="${INK}" stroke-width="4"/><rect x="93" y="${f === undefined ? 110 : 110}" width="214" height="127" fill="#3ea8e0" fill-opacity=".55"/>
+  ${f === undefined ? put(k, 200, 40, 60) : f === "Floats" ? put(k, 200, 104, 60) : put(k, 200, 206, 50)}`); }
+const S2FSTF = [["A stone sinks in water.", true, "It is heavy for its size."], ["A cork floats.", true, "It is light and full of air."], ["Big things always sink.", false, "Huge ships float!"],
+  ["A life jacket helps people float.", true, "Always wear one in a boat."], ["A metal key floats.", false, "A key sinks."], ["Ships are made of steel, but they float.", true, "Their shape holds lots of air."],
+  ["Wood floats.", true, "That is why canoes are made of wood."], ["A coin floats.", false, "A coin sinks."], ["We should guess first, then test.", true, "That is how scientists work."],
+  ["An empty plastic bottle floats.", true, "It is full of air."], ["Children should play near deep water alone.", false, "Always have a grown-up near water."], ["A fresh egg sinks in tap water.", true, "Try it with a grown-up!"]];
+const FLOAT2 = { nm:"Floating and sinking", icon:"boat", c:"#dff4ff", ds:"Will it float or sink? Guess, then test! Find out why big ships float but a little coin sinks.",
+  facts:["Things that stay on top of water [float].", "Things that go to the bottom [sink].", "Wood, corks and leaves [float].", "Stones, coins and nails [sink].", "Ships float because their shape holds [air].", "Wear a [life jacket] in a boat."],
+  slides:[
+    { v:() => SV("0 0 400 260", `${SKY("#eaf6fd")}<rect x="40" y="70" width="320" height="170" rx="10" fill="#bfe8ff" fill-opacity=".5" stroke="${INK}" stroke-width="4"/><rect x="43" y="110" width="314" height="127" fill="#3ea8e0" fill-opacity=".55"/>${put("leaf", 100, 104, 50)}${put("cork", 170, 104, 50)}${put("wood", 240, 104, 60)}${put("coin", 120, 214, 36)}${put("rock", 200, 210, 44)}${put("key", 290, 212, 44)}${TAG(330, 90, "Float", 12)}${TAG(330, 190, "Sink", 12)}`),
+      t:"Some things float. They stay on top of the water, like a leaf, a cork and wood. Some things sink to the bottom, like a coin, a stone and a key." },
+    { v:() => fsPic("ball"), t:"Before we test, we guess. Will this ball float or sink? Scientists call a guess a prediction. Then we test it to find out!" },
+    { v:() => fsPic("ball", "Floats"), t:"It floats! Light things full of air, like balls, empty bottles and corks, usually float." },
+    { v:() => SV("0 0 400 260", `${SKY("#eaf6fd")}${put("ship", 200, 120, 220)}${TAG(200, 236, "A steel ship floats", 13)}`), t:"A huge ship is made of steel, but it floats! Its wide, hollow shape holds lots of air. A small steel nail sinks, because it is solid." },
+    { v:() => SV("0 0 400 260", `${SKY("#eaf6fd")}<path d="M-300 150 Q200 140 700 150 V700 H-300Z" fill="#3ea8e0" stroke="${INK}" stroke-width="4"/>${put("boat", 200, 130, 140)}${put("lifejacket", 330, 70, 80)}${TAG(200, 236, "Wear a life jacket on a boat", 13)}`), t:"A life jacket helps people float. Always wear one on a boat. Never play near deep water without a grown-up." },
+    { v:() => superPic("Boat builders and sailors", ["boat", "ship", "lifejacket", "wood"], { shirt:"#ff8a5b" }),
+      t:"Science superpower! Boat builders in the Niger Delta and along our rivers choose the right wood and shape so canoes float well. Sailors and fishermen know how to keep boats safe." }],
+  home:{ nm:"Float or sink test", steps:["With a grown-up, fill a big bowl with water.", "Collect 8 small things: a spoon, a leaf, a bottle top, a stone, a coin, a sponge, a key, a slipper.", "Guess first: float or sink? Write your guesses.", "Test each one. How many guesses were right? Dry everything afterwards."], q:"Which result surprised you?" },
+  gens:[
+    () => { const [k, n, f] = pick(S2FS); return Q3(`Will ${n.charAt(0).toLowerCase() + n.slice(1)} float or sink?`, f === "Floats" ? "Float" : "Sink", ["Float", "Sink"], { n:2, ex:n + " " + f.toLowerCase() + ".", vis:fsPic(k) }); },
+    () => { const r = pick(S2FS.filter(x => x[2] === "Floats")); return QP3("Which one floats?", [r[0], r[1]], S2FS.filter(x => x[2] === "Sinks").map(x => [x[0], x[1]]), { ex:r[1] + " floats." }); },
+    () => { const r = pick(S2FS.filter(x => x[2] === "Sinks")); return QP3("Which one sinks?", [r[0], r[1]], S2FS.filter(x => x[2] === "Floats").map(x => [x[0], x[1]]), { ex:r[1] + " sinks." }); },
+    () => { const [k, n, f] = pick(S2FS); return Q3(`Look! Did ${n.charAt(0).toLowerCase() + n.slice(1)} float or sink?`, f === "Floats" ? "It floated" : "It sank", ["It floated", "It sank"], { n:2, ex:n + " " + f.toLowerCase() + ".", vis:fsPic(k, f), key:"look|" + n }); },
+    tf(S2FSTF),
+    () => Q3("Why does a big ship float?", "Its hollow shape holds lots of air", ["It is made of paper", "Fish hold it up"], { ex:"Shape matters!" }),
+    () => Q3("What do scientists do before testing?", "Make a guess, called a prediction", ["Go to sleep", "Throw everything away"], { ex:"Guess, then test." }),
+    () => Q3("What helps people float in water?", "A life jacket", ["A raincoat", "A school bag"], { ex:"Always wear one on a boat." }),
+    () => Q3("What are many canoes made of?", "Wood", ["Stone", "Glass"], { ex:"Wood floats." }),
+    () => Q3("Who should be with you near deep water?", "A grown-up", ["Nobody", "A goat"], { ex:"Water can be dangerous." }),
+    () => Q3("A solid steel nail sinks. Why does a steel ship float?", "The ship is hollow and full of air", ["The ship is lighter than a nail", "Ships are magic"], { ex:"Its shape pushes aside lots of water." })
+  ] };
+const P2T1 = [SENSES2, PLANTS2, ANIMALS2, WATER2, FLOAT2];
+
+/* ======================= SCHOOL P2: Second term ======================= */
+/* ---- 6. Clay and moulding ---- */
+const S2CSTEP = ["Dig the clay", "Pick out stones", "Soak it in water", "Knead it well", "Mould a shape", "Dry it, then fire it"];
+const S2CUSE = [["claypot", "A clay pot", "Storing cool drinking water"], ["bricks", "Clay bricks", "Building houses"], ["claybowl", "A clay bowl", "Holding food"], ["beads", "Clay beads", "Making necklaces"], ["udu", "An udu", "Making music"], ["hut", "A mud house", "A home to live in"]];
+const S2CLAYTF = [["Clay is sticky when wet.", true, "That is why we can mould it."], ["Clay gets hard when it dries.", true, "Firing in a kiln makes it even harder."], ["We should leave stones in the clay.", false, "Pick out stones so the pot does not crack."],
+  ["Kneading squeezes out air bubbles.", true, "Air bubbles can make a pot crack in the fire."], ["A kiln is a very hot oven for clay.", true, "It makes clay hard and strong."], ["Clay pots keep water cool.", true, "Water slowly seeps out and evaporates, cooling the pot."],
+  ["The Nok people made clay figures over 2,000 years ago.", true, "In what is now central Nigeria."], ["Sandy soil is best for moulding.", false, "Clay is best. Sand falls apart."], ["An udu is a drum made of clay.", true, "It is played by the Igbo people."],
+  ["Wash your hands after working with clay.", true, "Clay is a kind of soil."], ["Ladi Kwali was a famous potter.", true, "Her picture is on the 20 naira note."], ["Children should fire clay in a kiln by themselves.", false, "Kilns are very hot. Only trained grown-ups use them."]];
+const CLAY2 = { nm:"Clay and moulding", icon:"claypot", c:"#ffe1c2", ds:"Dig it, soak it, knead it, mould it! Learn how potters turn sticky clay into pots, bricks and beads.",
+  facts:["Clay is [sticky] when it is wet.", "Pick out [stones] before moulding.", "[Kneading] squeezes out air bubbles.", "Clay gets [hard] when it dries.", "A [kiln] fires clay to make it strong.", "We make pots, bricks and [beads] from clay."],
+  slides:[
+    { v:() => SV("0 0 400 260", `${SKY()}<rect x="-300" y="120" width="1000" height="200" fill="#b5652f" stroke="${INK}" stroke-width="4"/>${put("claypile", 200, 160, 140)}${put("drop", 320, 80, 50)}${TAG(200, 236, "Clay: sticky soil", 13)}`), t:"Clay is a kind of soil with tiny, fine grains. When it is wet, it is sticky and smooth, so we can mould it into shapes." },
+    { v:() => SV("0 0 400 260", `${SKY("#fff6d1")}${S2CSTEP.map((s, j) => TAG(110 + (j % 2) * 180, 50 + Math.floor(j / 2) * 70, (j + 1) + ". " + s, 13)).join("")}`), t:"How potters prepare clay: dig the clay, pick out stones, soak it in water, then knead it well to squeeze out air bubbles." },
+    { v:() => ringRow([["claypile", "Knead"], ["claypot", "Mould"], ["sun", "Dry"], ["kiln", "Fire"]], "From clay to pot", "#ffe1c2"), t:"Then they mould a shape, like a pot. They dry it slowly in the shade, then fire it in a very hot oven called a kiln. Now it is hard and strong!" },
+    { v:() => ringRow(S2CUSE.slice(0, 5).map(([k, n, u]) => [k, n.replace(/^A |^An |^Clay /, "")]), "Things made from clay", "#fff6d1"), t:"We make many things from clay: pots that keep water cool, bricks for building, bowls, beads for necklaces, and even the udu, a clay drum." },
+    { v:() => SV("0 0 400 260", `${SKY("#ffe8c2")}${put("terracotta", 120, 120, 150)}${put("claypot", 290, 130, 120)}${TAG(120, 222, "Ancient Nok clay head", 12)}${TAG(290, 222, "Ladi Kwali's pottery", 12)}`), t:"Nigeria has a long history of clay art. The Nok people made clay figures more than 2,000 years ago. Ladi Kwali made famous pots, and she is on the 20 naira note." },
+    { v:() => superPic("Potters and brick makers", ["claypot", "bricks", "kiln", "beads"], { shirt:"#b5652f", ground:"#a8774c" }),
+      t:"Science superpower! Potters know how to prepare clay, mould it and fire it so it does not crack. Brick makers make the bricks that build our homes and schools." }],
+  home:{ nm:"Mould a little pot", steps:["With a grown-up, get some clay soil, or make play dough from flour, salt and water.", "Pick out any stones, and knead it well.", "Roll a ball, push your thumb in the middle, and pinch the sides to make a little pot.", "Leave it to dry in the shade for two days. Wash your hands."], q:"Did your pot crack as it dried?" },
+  gens:[
+    () => { const i = Math.floor(Math.random() * (S2CSTEP.length - 1)); return Q3(`Making a clay pot: what comes after "${S2CSTEP[i].toLowerCase()}"?`, S2CSTEP[i + 1], S2CSTEP.filter((_, j) => j !== i + 1 && j !== i), { ex:"Next: " + S2CSTEP[i + 1].toLowerCase() + ".", key:"cs|" + i }); },
+    () => QO("Put the first steps of preparing clay in order.", S2CSTEP.slice(0, 4).map(s => ({ h:"", txt:true, v:s, lab:s })), { ex:"Dig, pick out stones, soak, knead." }),
+    () => QO("Put the last steps in order.", S2CSTEP.slice(3).map(s => ({ h:"", txt:true, v:s, lab:s })), { ex:"Knead, mould, then dry and fire." }),
+    () => { const [k, n, u] = pick(S2CUSE); return Q3(`What is ${n.charAt(0).toLowerCase() + n.slice(1)} used for?`, u, S2CUSE.map(x => x[2]), { ex:u + ".", vis:bigIco(k, "#ffe1c2") }); },
+    () => { const [k, n, u] = pick(S2CUSE); return QP3(`Which clay thing is used for ${u.charAt(0).toLowerCase() + u.slice(1)}?`, [k, n], S2CUSE.map(x => [x[0], x[1]]), { ex:n + "." }); },
+    () => { const r = pick(S2CUSE); return QP3("Which one is made from clay?", [r[0], r[1]], [["bottle", "A plastic bottle"], ["spoon", "A metal spoon"], ["tshirt", "A T-shirt"], ["window", "A glass window"]], { ex:r[1] + " is made from clay.", key:"mc|" + r[1] }); },
+    tf(S2CLAYTF),
+    () => Q3("What is a kiln?", "A very hot oven for firing clay", ["A kind of drum", "A water pot"], { ex:"Firing makes clay hard." }),
+    () => Q3("Why do potters knead clay?", "To squeeze out air bubbles", ["To make it wet", "To make it smell nice"], { ex:"Air bubbles can crack a pot." }),
+    () => Q3("Why do we pick out stones from clay?", "So the pot does not crack", ["So it is heavier", "So it is darker"], { ex:"Smooth clay makes strong pots." }),
+    () => Q3("What happens to clay when it dries?", "It gets hard", ["It turns to water", "It grows"], { ex:"Dry clay is hard." }),
+    () => Q3("Which ancient Nigerian people made clay figures?", "The Nok people", ["The Romans", "The Vikings"], { ex:"More than 2,000 years ago." }),
+    () => Q3("What is an udu?", "A clay drum", ["A clay brick", "A metal spoon"], { ex:"Played by the Igbo people." }),
+    () => Q3("Which soil is best for moulding pots?", "Clay", ["Sand", "Gravel"], { ex:"Clay is sticky and smooth." }),
+    () => Q3("Why does a clay pot keep water cool?", "Water seeps out and evaporates, cooling it", ["It has ice inside", "It is painted blue"], { ex:"A natural fridge!" })
+  ] };
+
+/* ---- 7. Colours ---- */
+const S2COL = { Red:"#e53950", Yellow:"#ffd43b", Blue:"#3ea8e0", Green:"#2bb673", Orange:"#ff8a3d", Purple:"#9b5de5", White:"#ffffff", Black:"#2a2540", Brown:"#8a5a3c", Pink:"#ff9ec7" };
+const S2MIX = [["Red", "Yellow", "Orange"], ["Yellow", "Blue", "Green"], ["Red", "Blue", "Purple"], ["Red", "White", "Pink"]];
+const S2THINGCOL = [["banana", "A ripe banana", "Yellow"], ["grass", "Grass", "Green"], ["sun", "The Sun in a drawing", "Yellow"], ["orange", "An orange", "Orange"], ["cloud", "A rain-free cloud", "White"], ["tomato", "A ripe tomato", "Red"], ["chilli", "Ripe pepper", "Red"], ["leaf", "A leaf", "Green"], ["coal", "Coal", "Black"], ["claypot", "A clay pot", "Brown"]];
+const S2SIGNAL = [["Red", "Danger, or stop"], ["Green", "Go, or safe"], ["Amber", "Get ready to stop"]];
+const colIco = c => SV("0 0 100 100", `<circle cx="50" cy="50" r="38" fill="${S2COL[c]}" stroke="${INK}" stroke-width="4"/>`);
+function mixPic(a, b, c){ return SV("0 0 400 260", `${SKY("#fff6d1")}<circle cx="80" cy="120" r="44" fill="${S2COL[a]}" stroke="${INK}" stroke-width="4"/>${TX(160, 132, "+", 40, INK)}<circle cx="240" cy="120" r="44" fill="${S2COL[b]}" stroke="${INK}" stroke-width="4"/>${TX(310, 132, "=", 40, INK)}
+  ${c ? `<circle cx="360" cy="120" r="34" fill="${S2COL[c]}" stroke="${INK}" stroke-width="4"/>` : `<circle cx="360" cy="120" r="34" fill="#fff" stroke="${INK}" stroke-width="4" stroke-dasharray="6 5"/>${TX(360, 134, "?", 34, INK)}`}${TAG(80, 190, a, 13)}${TAG(240, 190, b, 13)}`); }
+const S2COLTF = [["Red, yellow and blue are the primary colours in painting.", true, "We mix them to make other colours."], ["Yellow and blue make green.", true, "Try it with paint!"], ["Red and yellow make purple.", false, "Red and yellow make orange."],
+  ["The Nigerian flag is green, white and green.", true, "Green for farming and nature, white for peace."], ["A rainbow has seven colours.", true, "Red, orange, yellow, green, blue, indigo and violet."], ["Red on a traffic light means go.", false, "Red means stop."],
+  ["A ripe banana is usually yellow.", true, "Unripe bananas are green."], ["Some animals use colour to hide.", true, "Like a chameleon changing colour."], ["Bright colours help people see you on the road.", true, "Especially at night."],
+  ["Red and blue make purple.", true, "Mix them and see!"], ["White and black make grey.", true, "Mix a little black into white."], ["All flowers are the same colour.", false, "Flowers come in many colours."]];
+const COLOUR2 = { nm:"Colours", icon:"palette", c:"#ffe1f0", ds:"Red, yellow, blue and more! Mix colours to make new ones, and find out how colours warn us and keep us safe.",
+  facts:["Red, yellow and blue are [primary] colours.", "Red and yellow make [orange].", "Yellow and blue make [green].", "Red and blue make [purple].", "[Red] often means danger or stop.", "Our flag is green, [white] and green."],
+  slides:[
+    { v:() => SV("0 0 400 260", `${SKY("#fff6d1")}${["Red", "Yellow", "Blue"].map((c, j) => `<circle cx="${90 + j * 110}" cy="110" r="44" fill="${S2COL[c]}" stroke="${INK}" stroke-width="4"/>` + TAG(90 + j * 110, 180, c, 13)).join("")}${TAG(200, 232, "Primary colours", 13)}`), t:"In painting, red, yellow and blue are the primary colours. We can mix them to make many other colours." },
+    { v:() => mixPic("Red", "Yellow", "Orange"), t:"Red and yellow make orange." },
+    { v:() => mixPic("Yellow", "Blue", "Green"), t:"Yellow and blue make green. And red and blue make purple!" },
+    { v:() => SV("0 0 400 260", `${SKY("#eaf6fd")}${put("flagng", 110, 110, 150)}${put("trafficlight", 290, 110, 150)}${TAG(110, 220, "Green, white, green", 12)}${TAG(290, 220, "Red means stop", 12)}`), t:"Colours tell us things. Our flag is green, white and green: green for farming and nature, white for peace. On a traffic light, red means stop and green means go." },
+    { v:() => SV("0 0 400 260", `${SKY()}${HILL(200)}<path d="M40 200 A160 160 0 0 1 360 200" fill="none" stroke="#e53950" stroke-width="10"/>${["#ff8a3d", "#ffd43b", "#2bb673", "#3ea8e0", "#4b3ccf", "#9b5de5"].map((c, j) => `<path d="M${50 + j * 10} 200 A${150 - j * 10} ${150 - j * 10} 0 0 1 ${350 - j * 10} 200" fill="none" stroke="${c}" stroke-width="10"/>`).join("")}${put("chameleon", 200, 190, 70)}${TAG(200, 246, "A rainbow has seven colours", 12)}`), t:"A rainbow has seven colours: red, orange, yellow, green, blue, indigo and violet. Some animals, like the chameleon, change colour to hide." },
+    { v:() => superPic("Painters, designers and dyers", ["palette", "tshirt", "flower", "house"], { shirt:"#9b5de5" }),
+      t:"Science superpower! Painters and fashion designers mix colours to make beautiful work. Adire dyers in Abeokuta use indigo dye to make deep blue cloth." }],
+  home:{ nm:"Colour mixing", steps:["With a grown-up, get red, yellow and blue paint, or crayons.", "Mix a little red and yellow. What colour do you get?", "Now mix yellow and blue, then red and blue.", "Paint a picture using only the colours you mixed."], q:"Which new colour did you like best?" },
+  gens:[
+    () => { const [a, b, c] = pick(S2MIX), sw = Math.random() < .5, A = sw ? b : a, B = sw ? a : b; return Q3(`What colour do ${A.toLowerCase()} and ${B.toLowerCase()} make?`, c, ["Orange", "Green", "Purple", "Pink", "Brown"], { ex:A + " and " + B.toLowerCase() + " make " + c.toLowerCase() + ".", vis:mixPic(A, B), key:"mix|" + [a, b].join() + "|" + sw }); },
+    () => { const [a, b, c] = pick(S2MIX); return QP(`${a} and ${b.toLowerCase()} make which colour?`, [c, ...sample(["Orange", "Green", "Purple", "Pink"].filter(x => x !== c), 2)].map(x => ({ h:colIco(x), v:x, lab:x })), c, { ex:c + "." }); },
+    () => { const [a, b, c] = pick(S2MIX.slice(0, 3)); return Q3(`Which two colours make ${c.toLowerCase()}?`, a + " and " + b.toLowerCase(), S2MIX.slice(0, 3).map(x => x[0] + " and " + x[1].toLowerCase()).concat(["Black and white"]), { ex:a + " and " + b.toLowerCase() + "." }); },
+    () => { const c = pick(Object.keys(S2COL).filter(x => x !== "White")); return QP(`Tap the colour ${c.toLowerCase()}.`, [c, ...sample(Object.keys(S2COL).filter(x => x !== c && x !== "White"), 2)].map(x => ({ h:colIco(x), v:x })), c, { ex:"That is " + c.toLowerCase() + "." }); },
+    () => { const [k, n, c] = pick(S2THINGCOL.filter(x => ICO[x[0]])); return Q3(`What colour is ${n.charAt(0).toLowerCase() + n.slice(1)}?`, c, ["Red", "Yellow", "Green", "Orange", "White", "Black", "Brown", "Blue"], { ex:n + " is " + c.toLowerCase() + "." }); },
+    () => { const [c, m] = pick(S2SIGNAL); return Q3(`On a traffic light, what does ${c.toLowerCase()} mean?`, m, S2SIGNAL.map(x => x[1]), { ex:c + ": " + m.toLowerCase() + "." }); },
+    tf(S2COLTF),
+    () => QO("Put the first four colours of the rainbow in order.", ["Red", "Orange", "Yellow", "Green"].map(c => ({ h:colIco(c), v:c, lab:c })), { ex:"Red, orange, yellow, green, then blue, indigo and violet." }),
+    () => Q3("Which are the primary colours in painting?", "Red, yellow and blue", ["Green, orange and purple", "Black, white and grey"], { ex:"We mix them to make others." }),
+    () => Q3("What colours are on the Nigerian flag?", "Green and white", ["Red and blue", "Yellow and black"], { ex:"Green, white, green." }),
+    () => Q3("What does the green on our flag stand for?", "Farming and nature", ["The sea", "Fire"], { ex:"White stands for peace." }),
+    () => Q3("How many colours are in a rainbow?", "Seven", ["Three", "Ten"], { ex:"Red, orange, yellow, green, blue, indigo, violet." }),
+    () => Q3("Which animal can change colour?", "A chameleon", ["A cow", "A goat"], { ex:"It changes colour to hide or to show its mood." }),
+    () => Q3("Which colour does an unripe banana have?", "Green", ["Red", "Purple"], { ex:"It turns yellow when ripe." }),
+    () => Q3("What dye do adire makers use for deep blue cloth?", "Indigo", ["Tomato juice", "Milk"], { ex:"Adire is famous in Abeokuta." }),
+    () => Q3("What colour clothes help drivers see you at night?", "Bright or white clothes", ["Black clothes", "Dark brown clothes"], { ex:"Be bright, be seen!" })
+  ] };
+
+/* ---- 8. Forms of energy ---- */
+const S2EFORM = [["bulb", "A bulb", "Light"], ["torch", "A torch", "Light"], ["sun", "The Sun", "Light and heat"], ["fire", "A fire", "Light and heat"], ["iron", "A hot iron", "Heat"], ["stove", "A gas cooker", "Heat"], ["kettle", "A kettle", "Heat"],
+  ["drum", "A drum", "Sound"], ["radio", "A radio", "Sound"], ["bell", "A bell", "Sound"], ["whistle", "A whistle", "Sound"], ["fan", "A turning fan", "Movement"], ["car", "A moving car", "Movement"], ["bicycle", "A moving bicycle", "Movement"], ["windmill", "A turning windmill", "Movement"]];
+const S2ECH = [["A bulb", "Electricity", "Light"], ["A radio", "Electricity", "Sound"], ["A fan", "Electricity", "Movement"], ["An iron", "Electricity", "Heat"], ["A solar panel", "Light", "Electricity"], ["Your body after breakfast", "Food", "Movement"], ["A torch", "A battery", "Light"]];
+const S2EFTF = [["Light, heat, sound and movement are forms of energy.", true, "Energy comes in many forms."], ["A bulb changes electricity into light.", true, "And a little heat."], ["The Sun gives us light and heat.", true, "Our biggest energy source."],
+  ["A drum makes light energy.", false, "A drum makes sound energy."], ["A moving car has movement energy.", true, "Moving things have energy."], ["A solar panel changes sunlight into electricity.", true, "Clean energy!"],
+  ["Food gives our bodies energy.", true, "Energy to move, grow and keep warm."], ["Energy can change from one form to another.", true, "A fan changes electricity into movement."], ["A fire gives only sound.", false, "A fire gives heat and light."],
+  ["We should save energy.", true, "Switch off what you are not using."], ["Batteries store energy.", true, "Torches and toys use them."], ["A radio changes electricity into sound.", true, "We hear music and news."]];
+const EFORM2 = { nm:"Forms of energy", icon:"bulb", c:"#fff1b8", ds:"Light, heat, sound and movement! Energy comes in many forms, and it can change from one form to another.",
+  facts:["Energy comes in different [forms].", "A bulb gives [light].", "An iron gives [heat].", "A drum makes [sound].", "Moving things have [movement] energy.", "Energy can [change] from one form to another."],
+  slides:[
+    { v:() => ringRow([["bulb", "Light"], ["iron", "Heat"], ["drum", "Sound"], ["bicycle", "Movement"]], "Forms of energy", "#fff6d1"), t:"Energy comes in different forms: light, heat, sound and movement." },
+    { v:() => SV("0 0 400 260", `${SKY()}${SUNC(110, 110, 50)}${put("fire", 300, 120, 110)}${TAG(110, 200, "Sun: light and heat", 12)}${TAG(300, 200, "Fire: light and heat", 12)}`), t:"Light helps us see. Heat keeps us warm and cooks our food. The Sun and fire give both light and heat." },
+    { v:() => ringRow([["drum", "Drum"], ["radio", "Radio"], ["bell", "Bell"], ["whistle", "Whistle"]], "Sound energy", "#eaf6fd"), t:"Sound is a form of energy too. Drums, radios, bells and whistles all make sound." },
+    { v:() => SV("0 0 400 260", `${SKY("#fff6d1")}${RING(70, 110, 40, "plug")}${ARW(118, 110, 168, 110, INK, 5, true)}${RING(210, 110, 40, "fan")}${TAG(70, 170, "Electricity", 12)}${TAG(210, 170, "Movement", 12)}${RING(330, 70, 28, "bulb")}${RING(330, 150, 28, "radio")}${TAG(330, 200, "Light, sound", 12)}${TAG(200, 236, "Energy changes form", 13)}`),
+      t:"Energy can change from one form to another. A fan changes electricity into movement. A bulb changes electricity into light. A radio changes electricity into sound." },
+    { v:() => SV("0 0 400 260", `${SKY()}${SUNC(70, 60, 30)}${HILL(200)}${put("solar", 190, 140, 110)}${ARW(250, 140, 300, 140, INK, 5, true)}${put("bulb", 340, 130, 70)}${TAG(200, 246, "Sunlight to electricity to light", 12)}`), t:"A solar panel changes sunlight into electricity. Then the electricity lights a bulb at night!" },
+    { v:() => superPic("Electrical engineers", ["solar", "plug", "bulb", "windmill"], { shirt:"#ffb02e" }),
+      t:"Science superpower! Electrical engineers design power stations, solar farms and wind turbines that change energy into electricity for our homes, schools and hospitals." }],
+  home:{ nm:"Energy hunt", steps:["With a grown-up, walk around your home.", "Find 2 things that give light, 2 that give heat, and 2 that make sound.", "Find 2 things that move.", "Draw them in four groups: light, heat, sound, movement. Don't touch hot things!"], q:"Which group was the biggest?" },
+  gens:[
+    () => { const [k, n, f] = pick(S2EFORM); return Q3(`What form of energy does ${n.charAt(0).toLowerCase() + n.slice(1)} give?`, f, ["Light", "Heat", "Sound", "Movement", "Light and heat"], { ex:n + " gives " + f.toLowerCase() + ".", vis:bigIco(k, "#fff6d1") }); },
+    () => { const f = pick(["Light", "Heat", "Sound", "Movement"]), r = pick(S2EFORM.filter(x => x[2] === f)); return QP3(`Which one gives ${f.toLowerCase()} energy?`, [r[0], r[1]], S2EFORM.filter(x => !x[2].includes(f)).map(x => [x[0], x[1]]), { ex:r[1] + " gives " + f.toLowerCase() + ".", key:"ef|" + f + "|" + r[1] }); },
+    () => { const [t, a, b] = pick(S2ECH); return Q3(`${t} changes ${a.toLowerCase()} into what?`, b, ["Light", "Sound", "Movement", "Heat", "Electricity"].filter(x => x !== a), { ex:t + " changes " + a.toLowerCase() + " into " + b.toLowerCase() + "." }); },
+    () => { const [t, a, b] = pick(S2ECH); return Q3(`${t} makes ${b.toLowerCase()}. What energy does it use?`, a, ["Electricity", "Food", "Light", "A battery", "Wind"].filter(x => x !== b), { ex:a + ".", key:"eu|" + t }); },
+    tf(S2EFTF),
+    () => Q3("Which form of energy helps us see?", "Light", ["Sound", "Movement"], { ex:"We see with light." }),
+    () => Q3("Which form of energy cooks our food?", "Heat", ["Sound", "Light only"], { ex:"Heat from a cooker or fire." }),
+    () => Q3("Which form of energy do we hear?", "Sound", ["Heat", "Light"], { ex:"We hear sound with our ears." }),
+    () => Q3("What gives our bodies energy?", "Food", ["Sand", "Plastic"], { ex:"Eat a good breakfast!" }),
+    () => Q3("What does a solar panel use?", "Sunlight", ["Rain", "Sound"], { ex:"It makes electricity." }),
+    () => Q3("Which gives both light and heat?", "The Sun", ["A drum", "A whistle"], { ex:"And fire too." }),
+    () => Q3("What do torches use to store energy?", "Batteries", ["Water", "Sand"], { ex:"Batteries store energy." })
+  ] };
+
+/* ---- 9. Sound ---- */
+const S2LOUD = [["Thunder", "Loud"], ["A whisper", "Soft"], ["A car horn", "Loud"], ["A cat purring", "Soft"], ["A generator", "Loud"], ["Leaves rustling", "Soft"], ["A jet plane", "Loud"], ["A clock ticking", "Soft"], ["A church bell or a mosque loudspeaker", "Loud"], ["A mouse squeaking", "Soft"]];
+const S2PITCH = [["A bird singing", "High"], ["A lion roaring", "Low"], ["A whistle", "High"], ["A big drum", "Low"], ["A baby crying", "High"], ["A cow mooing", "Low"]];
+const S2INST = [["drum", "The talking drum", "Beating"], ["shekere", "The shekere", "Shaking"], ["gong", "The ogene", "Striking"], ["udu", "The udu", "Tapping its hole"], ["guitar", "A guitar", "Plucking strings"], ["whistle", "A whistle", "Blowing"], ["bell", "A bell", "Ringing"]];
+const S2SNDTF = [["Sounds are made when things vibrate.", true, "Vibrate means shake very fast."], ["We hear sounds with our ears.", true, "Our ears catch the vibrations."], ["Sound can travel through water.", true, "Fish and whales hear under water."],
+  ["Sound can travel through empty space.", false, "Space has no air. It is silent!"], ["Very loud sounds can damage our ears.", true, "Cover your ears and move away."], ["A whisper is a loud sound.", false, "A whisper is soft."],
+  ["The talking drum can copy the tones of speech.", true, "Drummers send messages with it."], ["A shekere is shaken to make sound.", true, "Its beads rattle against the gourd."], ["An echo is a sound bouncing back.", true, "Shout in a big empty hall to hear one."],
+  ["A bird's song is a low sound.", false, "Birds usually sing high sounds."], ["Musicians make sound energy.", true, "Music is sound!"], ["Loud music near your ears is good for you.", false, "Keep music at a safe volume."]];
+const SOUND2 = { nm:"Sound", icon:"shekere", c:"#e6e0ff", ds:"Bang, shake, pluck and blow! Sounds come from vibrations. Some are loud, some soft, some high, some low.",
+  facts:["Sounds are made when things [vibrate].", "We hear with our [ears].", "Some sounds are [loud], some are soft.", "Some sounds are [high], some are low.", "The [talking drum] can copy speech.", "Very loud sounds can hurt our [ears]."],
+  slides:[
+    { v:() => SV("0 0 400 260", `${SKY("#eaf6fd")}<g class="lp-shake">${put("drum", 140, 120, 140)}</g>${[0, 1, 2].map(j => `<path d="M${230 + j * 26} ${80 - j * 6} Q${250 + j * 26} 120 ${230 + j * 26} ${160 + j * 6}" fill="none" stroke="${INK}" stroke-width="4" stroke-linecap="round" opacity="${1 - j * .25}"/>`).join("")}${put("ear", 340, 120, 70)}${TAG(200, 236, "Vibrations travel to our ears", 12)}`),
+      t:"Sounds are made when things vibrate, which means shaking very fast. When you beat a drum, its skin vibrates. The vibrations travel through the air to your ears." },
+    { v:() => SV("0 0 400 260", `${SKY("#fff6d1")}${RING(110, 110, 50, "lightning")}${RING(290, 110, 50, "cat")}${TAG(110, 186, "Thunder: loud", 13)}${TAG(290, 186, "Purring: soft", 13)}`), t:"Some sounds are loud, like thunder or a car horn. Some are soft, like a whisper or a cat purring." },
+    { v:() => SV("0 0 400 260", `${SKY("#eaf6fd")}${RING(110, 110, 50, "bird")}${RING(290, 110, 50, "lion")}${TAG(110, 186, "Bird: high", 13)}${TAG(290, 186, "Lion: low", 13)}`), t:"Some sounds are high, like a bird singing or a whistle. Some are low, like a lion's roar or a big drum." },
+    { v:() => ringRow(S2INST.slice(0, 4).map(([k, n]) => [k, n.replace("The ", "")]), "Nigerian instruments", "#ffe1d6"), t:"Nigeria has wonderful instruments. The talking drum is beaten, and it can copy the tones of speech. The shekere is shaken. The ogene is struck. The udu, a clay pot, is tapped." },
+    { v:() => SV("0 0 400 260", `${SKY("#ffe1d6")}${RING(110, 110, 50, "speaker")}${RING(290, 110, 50, "headphones")}${BADGE(110, 44, 0, 16)}${TAG(110, 186, "Too loud!", 13)}${TAG(290, 186, "Keep volume low", 13)}${TAG(200, 236, "Protect your ears", 13)}`), t:"Very loud sounds can damage our ears. Keep away from big loudspeakers, cover your ears near loud noise, and keep headphones at a low volume." },
+    { v:() => superPic("Musicians and sound engineers", ["drum", "shekere", "guitar", "mic"], { shirt:"#9b5de5" }),
+      t:"Science superpower! Musicians understand how vibrations make music. Sound engineers in studios and at concerts control how loud and clear the sound is." }],
+  home:{ nm:"Make a shaker", steps:["With a grown-up, find an empty plastic bottle with a lid.", "Put in a handful of dry beans, rice or small stones, and close the lid tightly.", "Shake it fast, then slowly. Shake it hard, then gently.", "Try different fillings. Which makes the loudest sound?"], q:"Which filling made the loudest sound?" },
+  gens:[
+    () => { const [s, l] = pick(S2LOUD); return Q3(`${s}: is it a loud sound or a soft sound?`, l, ["Loud", "Soft"], { n:2, ex:s + " is " + l.toLowerCase() + "." }); },
+    () => { const [s, p] = pick(S2PITCH); return Q3(`${s}: is it a high sound or a low sound?`, p, ["High", "Low"], { n:2, ex:s + " is " + p.toLowerCase() + "." }); },
+    () => { const [k, n, h] = pick(S2INST); return Q3(`How do you play ${n.charAt(0).toLowerCase() + n.slice(1)}?`, h, S2INST.map(x => x[2]), { ex:h + ".", vis:bigIco(k, "#ffe1d6") }); },
+    () => { const [k, n, h] = pick(S2INST); return QP3(`Which one is ${n.charAt(0).toLowerCase() + n.slice(1)}?`, [k, cap1(n.replace(/^The |^A /, ""))], S2INST.map(x => [x[0], cap1(x[1].replace(/^The |^A /, ""))]), { ex:"That is " + n.charAt(0).toLowerCase() + n.slice(1) + "." }); },
+    () => { const r = pick(S2LOUD.filter(x => x[1] === "Loud")), w = sample(S2LOUD.filter(x => x[1] === "Soft"), 2); return Q3("Which is the loudest?", r[0], w.map(x => x[0]), { ex:r[0] + " is loud.", key:"ld|" + r[0] }); },
+    () => { const r = pick(S2LOUD.filter(x => x[1] === "Soft")), w = sample(S2LOUD.filter(x => x[1] === "Loud"), 2); return Q3("Which is the softest?", r[0], w.map(x => x[0]), { ex:r[0] + " is soft.", key:"sf|" + r[0] }); },
+    tf(S2SNDTF),
+    () => Q3("What makes a sound?", "Something vibrating", ["Something standing still", "Something cold"], { ex:"Vibrate means shake very fast." }),
+    () => Q3("What do we hear sounds with?", "Our ears", ["Our eyes", "Our feet"], { ex:"Ears catch vibrations." }),
+    () => Q3("What is an echo?", "A sound bouncing back", ["A kind of drum", "A very soft whisper"], { ex:"Shout in a big empty hall!" }),
+    () => Q3("Why is there no sound in space?", "There is no air to carry it", ["It is too dark", "It is too cold"], { ex:"Sound needs something to travel through." }),
+    () => Q3("Which instrument can copy the tones of speech?", "The talking drum", ["A whistle", "A bell"], { ex:"Drummers send messages with it." }),
+    () => Q3("What should you do near very loud noise?", "Cover your ears and move away", ["Go closer", "Put your ear next to it"], { ex:"Protect your hearing." }),
+    () => Q3("What makes the sound in a shekere?", "Beads rattling on the gourd", ["Water inside", "A string"], { ex:"Shake it!" })
+  ] };
+
+/* ---- 10. Air ---- */
+const S2AIRF = [["balloon", "A balloon", 1], ["feather", "A feather", 1], ["kite", "A kite", 1], ["bubbles", "Soap bubbles", 1], ["plane", "A paper plane", 1], ["parachute", "A parachute", 1], ["bird", "A bird", 1],
+  ["rock", "A stone", 0], ["coin", "A coin", 0], ["key", "A key", 0], ["marble", "A marble", 0], ["nail", "A nail", 0]];
+const S2AIRUSE = [["Breathing", "lungs"], ["Drying clothes", "tshirt"], ["Flying kites", "kite"], ["Turning windmills", "windmill"], ["Filling tyres and balls", "tyre"], ["Keeping fires burning", "fire"]];
+const S2AIRTF = [["Air is all around us.", true, "Even though we cannot see it."], ["We can see air.", false, "Air is invisible, but we can feel it as wind."], ["Wind is moving air.", true, "Strong wind can bend trees."],
+  ["We need air to breathe.", true, "We breathe in oxygen from the air."], ["A balloon is full of air.", true, "Air takes up space."], ["Fire can burn without air.", false, "Fire needs air. Covering a fire puts it out."],
+  ["Wet clothes dry faster on a windy day.", true, "Moving air carries the water away."], ["Air has no weight at all.", false, "Air has a tiny weight."], ["Fish breathe air from the water.", true, "They take oxygen from water with their gills."],
+  ["Smoke makes air dirty.", true, "Dirty air is bad for our lungs."], ["Plants give out oxygen.", true, "Trees help keep air fresh."], ["A kite needs wind to fly.", true, "Moving air lifts it."]];
+const AIR2 = { nm:"Air", icon:"kite", c:"#dff4ff", ds:"You can't see it, but air is everywhere! Air fills balloons, makes wind, dries clothes, and helps kites fly.",
+  facts:["Air is all [around] us.", "We cannot [see] air.", "Moving air is called [wind].", "We need air to [breathe].", "Air takes up [space].", "Fire needs [air] to burn."],
+  slides:[
+    { v:() => SV("0 0 400 260", `${SKY()}${HILL(210)}${put("tree", 90, 140, 130)}<g class="lp-blow">${[0, 1, 2].map(i => `<path d="M170 ${70 + i * 30} H290 Q310 ${70 + i * 30} 306 ${58 + i * 30}" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round"/>`).join("")}</g>${put("kite", 330, 60, 70)}${TAG(200, 246, "Air is all around us", 13)}`),
+      t:"Air is all around us. We cannot see it, but we can feel it when the wind blows. Wind is moving air." },
+    { v:() => SV("0 0 400 260", `${SKY("#fff6d1")}${put("balloon", 120, 110, 140)}${put("tyre", 300, 120, 120)}${TAG(200, 236, "Air takes up space", 13)}`), t:"Air takes up space. When you blow up a balloon, you fill it with air. We pump air into bicycle tyres and footballs." },
+    { v:() => ringRow(S2AIRUSE.slice(0, 5).map(([u, k]) => [k, u.split(" ")[0]]), "We use air", "#eaf6fd"), t:"We use air every day: for breathing, drying clothes, flying kites, turning windmills, and filling tyres. Fire needs air to burn, too." },
+    { v:() => SV("0 0 400 260", `${SKY()}${put("balloon", 70, 100, 70, "lp-hop")}${put("feather", 160, 120, 60, "lp-hop")}${put("kite", 250, 80, 70)}${put("bubbles", 330, 120, 70, "lp-hop")}${TAG(200, 220, "Things that float in air", 13)}`), t:"Some things float in the air: balloons, feathers, kites, soap bubbles and paper planes. Heavy things like stones fall to the ground." },
+    { v:() => SV("0 0 400 260", `${SKY("#e9e2cf")}${HILL(200, "#b9a77a")}${put("smokestack", 100, 130, 120)}${put("generator", 260, 170, 80)}${put("tree", 340, 130, 100)}${TAG(200, 246, "Keep our air clean", 13)}`), t:"Smoke from bush burning, generators and cars makes air dirty, and dirty air hurts our lungs. Trees give out oxygen and help keep air fresh." },
+    { v:() => superPic("Pilots and weather forecasters", ["plane", "kite", "windmill", "cloud"], { shirt:"#3ea8e0" }),
+      t:"Science superpower! Pilots understand how air holds planes up. Weather forecasters at NiMet measure the wind and air to tell us if a storm is coming." }],
+  home:{ nm:"Air experiments", steps:["Blow up a balloon. What is inside it? Air!", "Push an upside-down empty cup straight into a bowl of water. Does the water fill it? The air inside stops it.", "Make a paper fan and feel the moving air.", "Make a paper plane with a grown-up and fly it outside."], q:"Why didn't the water fill the cup?" },
+  gens:[
+    () => { const [k, n, f] = pick(S2AIRF); return Q3(`Can ${n.charAt(0).toLowerCase() + n.slice(1)} float in the air?`, f ? "Yes" : "No", ["Yes", "No"], { n:2, ex:f ? n + " can float in air." : n + " is too heavy. It falls.", vis:bigIco(k, "#eaf6fd") }); },
+    () => { const r = pick(S2AIRF.filter(x => x[2])); return QP3("Which one can float in the air?", [r[0], r[1]], S2AIRF.filter(x => !x[2]).map(x => [x[0], x[1]]), { ex:r[1] + " floats in air." }); },
+    () => { const [u, k] = pick(S2AIRUSE); return Q3("Which of these uses air?", u, ["Reading a book", "Counting coins", "Sitting on a chair", "Drawing a picture"], { ex:u + " uses air.", vis:bigIco(k, "#eaf6fd"), key:"au|" + u }); },
+    () => { const [u, k] = pick(S2AIRUSE); return QP3(`Which one shows air being used for ${u.toLowerCase()}?`, [k, u], S2AIRUSE.map(x => [x[1], x[0]]), { ex:u + "." }); },
+    tf(S2AIRTF),
+    () => Q3("What is wind?", "Moving air", ["Falling water", "Sunlight"], { ex:"Air on the move." }),
+    () => Q3("What is inside a blown-up balloon?", "Air", ["Water", "Sand"], { ex:"Air takes up space." }),
+    () => Q3("What gas in air do we need to breathe?", "Oxygen", ["Smoke", "Steam"], { ex:"We breathe in oxygen." }),
+    () => Q3("What happens to a fire when you cover it?", "It goes out", ["It gets bigger", "It turns blue"], { ex:"Fire needs air." }),
+    () => Q3("Why do wet clothes dry faster on a windy day?", "Moving air carries the water away", ["The wind is wet", "The clothes get heavier"], { ex:"Wind helps drying." }),
+    () => Q3("What makes air dirty?", "Smoke from fires, cars and generators", ["Trees", "Rain"], { ex:"Dirty air hurts our lungs." }),
+    () => Q3("Who measures the wind to forecast weather in Nigeria?", "NiMet", ["NEPA", "NAFDAC"], { ex:"The Nigerian Meteorological Agency." }),
+    () => Q3("Can we see air?", "No, but we can feel it", ["Yes, it is blue", "Yes, it is green"], { ex:"Air is invisible." })
+  ] };
+const P2T2 = [CLAY2, COLOUR2, EFORM2, SOUND2, AIR2];
+
+/* ======================= SCHOOL P2: Third term ======================= */
+/* ---- 11. Seeds and germination ---- */
+const S2SEEDS = [["maize", "Maize"], ["beans", "Beans"], ["rice", "Rice"], ["mango", "Mango"], ["orange", "Orange"], ["seed", "Groundnut"]];
+const S2NEED = ["Water", "Air", "Warmth"];
+const S2NOTNEED = ["Salt", "Sugar", "Darkness", "Music", "Plastic", "Ice"];
+function germPic(stage, quiz){
+  const st = Math.min(4, stage);
+  return SV("0 0 400 260", `${SKY("#eaf6fd")}<rect x="-300" y="150" width="1000" height="150" fill="#a8774c" stroke="${INK}" stroke-width="4"/>
+    <ellipse cx="200" cy="168" rx="20" ry="13" fill="#d9b44a" stroke="${INK}" stroke-width="3"/>
+    ${st >= 1 ? `<path d="M200 178 Q196 200 202 226 M200 196 L186 214 M201 210 L214 226" stroke="#f6ead2" stroke-width="4" fill="none" stroke-linecap="round"/>` : ""}
+    ${st >= 2 ? `<path d="M200 156 Q194 130 200 ${st >= 3 ? 90 : 120}" stroke="#2bb673" stroke-width="6" fill="none" stroke-linecap="round"/>` : ""}
+    ${st >= 3 ? `<path d="M200 96 Q170 76 160 92 Q178 104 200 96Z M200 96 Q230 76 240 92 Q222 104 200 96Z" fill="#7ccf5f" stroke="${INK}" stroke-width="3"/>` : ""}
+    ${st >= 4 ? `<path d="M200 90 V40" stroke="#2bb673" stroke-width="6"/><path d="M200 60 Q160 40 150 60 Q176 74 200 60Z M200 50 Q240 30 250 50 Q224 64 200 50Z" fill="#7ccf5f" stroke="${INK}" stroke-width="3"/>` : ""}
+    ${quiz ? "" : TAG(320, 40, ["A seed", "The root grows", "The shoot grows up", "First leaves", "A young plant"][st], 13)}`);
+}
+const S2GERMTF = [["A seed needs water to germinate.", true, "Water wakes the seed up."], ["A seed needs warmth to germinate.", true, "Very cold seeds stay asleep."], ["A seed needs air to germinate.", true, "Seeds in water-logged soil may rot."],
+  ["The root comes out of a seed first.", true, "It grows down; then the shoot grows up."], ["A seed has food stored inside it.", true, "It feeds the baby plant until it has leaves."], ["Seeds need salt to grow.", false, "Salt harms seeds."],
+  ["Germination means a seed starting to grow.", true, "A root and a shoot come out."], ["A young plant needs light once its leaves appear.", true, "Leaves make food using sunlight."], ["All seeds are the same size.", false, "A mango seed is much bigger than a rice grain."],
+  ["Farmers plant seeds at the start of the rainy season.", true, "The rain gives the seeds water."], ["A seed coat protects the seed.", true, "Like a jacket."], ["Seeds grow better if you keep them very dry.", false, "Seeds need water to germinate."]];
+const SEEDS2 = { nm:"Seeds and germination", icon:"seedling", c:"#c7f0d0", ds:"A tiny seed can grow into a big plant! Find out what a seed needs to start growing, and grow your own beans.",
+  facts:["[Germination] means a seed starts to grow.", "Seeds need [water], air and warmth.", "The [root] grows out first, going down.", "Then the [shoot] grows up.", "A seed has stored [food] inside.", "Young plants need [light] once leaves appear."],
+  slides:[
+    { v:() => ringRow(S2SEEDS.slice(0, 5).map(([k, n]) => [k, n]), "Seeds come in many sizes", "#fff6d1"), t:"Seeds come from plants: maize, beans, rice, mango and orange seeds. Inside each seed is a tiny baby plant and some stored food." },
+    { v:() => ringRow([["drop", "Water"], ["air", "Air"], ["sun", "Warmth"]], "What seeds need", "#e6f7e1"), t:"To start growing, a seed needs water, air and warmth. When a seed starts to grow, we call it germination." },
+    { v:() => germPic(1), t:"First, the seed takes in water and swells. A little root pushes out and grows down into the soil." },
+    { v:() => germPic(3), t:"Then a shoot grows up towards the light. Soon the first leaves open." },
+    { v:() => germPic(4), t:"Now the young plant needs light, so its leaves can make food. With water and sunshine, it keeps growing!" },
+    { v:() => superPic("Farmers and seed scientists", ["seedling", "maize", "beans", "drop"], { shirt:"#2bb673", ground:"#a8774c" }),
+      t:"Science superpower! Farmers plant seeds when the rains begin. Seed scientists test which seeds grow best in Nigeria's soils, so families have more food." }],
+  home:{ nm:"Grow a bean", steps:["With a grown-up, put wet cotton wool or tissue in a clear cup.", "Push 3 dry beans between the cotton and the side of the cup, so you can see them.", "Keep the cotton wet, but not flooded. Put the cup in a warm place.", "Look every day. Draw what you see. When does the root come out?"], q:"How many days until you saw a root?" },
+  gens:[
+    () => { const n = pick(S2NEED); return Q3("Which of these does a seed need to germinate?", n, S2NOTNEED, { ex:"Seeds need water, air and warmth.", key:"need|" + n }); },
+    () => { const n = pick(S2NOTNEED); return Q3("Which of these does a seed NOT need to germinate?", n, S2NEED, { ex:"Seeds need water, air and warmth, not " + n.toLowerCase() + ".", key:"nn|" + n }); },
+    () => { const s = Math.floor(Math.random() * 5); return Q3("What stage is this?", ["A seed", "The root grows", "The shoot grows up", "First leaves", "A young plant"][s], ["A seed", "The root grows", "The shoot grows up", "First leaves", "A young plant"], { ex:"Seed, root, shoot, leaves, young plant.", vis:germPic(s, true), key:"gs|" + s }); },
+    () => QO("Put the stages of germination in order.", [0, 1, 3, 4].map(s => ({ h:germPic(s, true).replace('viewBox="0 0 400 260"', 'viewBox="120 20 160 230"'), v:["Seed", "Root", "Shoot", "First leaves", "Young plant"][s], lab:["Seed", "Root", "Shoot", "First leaves", "Young plant"][s] })), { ex:"Seed, root, first leaves, young plant." }),
+    () => { const [k, n] = pick(S2SEEDS); return QP3("Which one is a seed we can plant?", [k, n + " seed"], [["rock", "A pebble"], ["coin", "A coin"], ["marble", "A marble"], ["button", "A button"]].filter(x => ICO[x[0]]), { ex:n + " seeds grow into new plants.", key:"sp|" + n }); },
+    tf(S2GERMTF),
+    () => Q3("What does germination mean?", "A seed starting to grow", ["A plant dying", "A fruit ripening"], { ex:"A root and a shoot come out." }),
+    () => Q3("What comes out of a seed first?", "The root", ["The flower", "The fruit"], { ex:"The root grows down." }),
+    () => Q3("Which way does the shoot grow?", "Up, towards the light", ["Down into the soil", "Sideways only"], { ex:"Shoots grow up." }),
+    () => Q3("What feeds a baby plant before it has leaves?", "Food stored in the seed", ["Sweets", "Milk"], { ex:"The seed is a packed lunch!" }),
+    () => Q3("When do Nigerian farmers usually plant seeds?", "At the start of the rainy season", ["In the harmattan", "At midnight only"], { ex:"Rain gives the seeds water." }),
+    () => Q3("What protects a seed, like a jacket?", "The seed coat", ["The root", "The leaf"], { ex:"It keeps the seed safe." }),
+    () => Q3("Why might seeds rot in flooded soil?", "They cannot get air", ["They get too warm", "They get too much light"], { ex:"Seeds need air too." }),
+    () => Q3("What does a young plant need once its leaves open?", "Light", ["Darkness", "Salt"], { ex:"Leaves make food using sunlight." })
+  ] };
+
+/* ---- 12. Pollution ---- */
+const S2POL = [["Smoke from bush burning", "Air pollution"], ["Generator fumes", "Air pollution"], ["Smoke from old cars", "Air pollution"], ["Oil spilled into a river", "Water pollution"], ["Rubbish thrown into a stream", "Water pollution"], ["Sewage flowing into a river", "Water pollution"],
+  ["Plastic bags scattered on the ground", "Land pollution"], ["Rubbish dumped by the roadside", "Land pollution"], ["Broken bottles in a field", "Land pollution"], ["Very loud music at night", "Noise pollution"], ["A noisy generator", "Noise pollution"], ["Car horns blaring", "Noise pollution"]];
+const S2STOP = [["Put rubbish in a bin", "Helps"], ["Burn plastic in the compound", "Harms"], ["Reuse bags and bottles", "Helps"], ["Throw wrappers in the drain", "Harms"], ["Plant trees", "Helps"], ["Play music very loud at night", "Harms"],
+  ["Keep generators away from windows", "Helps"], ["Pour used oil on the ground", "Harms"], ["Pick up litter with a grown-up", "Helps"], ["Clear blocked drains", "Helps"], ["Dump rubbish in the river", "Harms"], ["Walk instead of driving short trips", "Helps"]];
+const S2POLTF = [["Pollution makes our air, water or land dirty and harmful.", true, "It harms people, animals and plants."], ["Bush burning causes air pollution.", true, "It fills the air with smoke."], ["Oil spills can kill fish.", true, "Oil spills in the Niger Delta have harmed rivers and farms."],
+  ["Throwing rubbish in drains causes floods.", true, "Blocked drains cannot carry rainwater away."], ["Loud noise is a kind of pollution.", true, "It is called noise pollution."], ["Plastic rots away in a few days.", false, "Plastic can last hundreds of years."],
+  ["Recycling turns old things into new things.", true, "Like turning old bottles into new ones."], ["Dirty air can make people cough.", true, "Smoke hurts our lungs."], ["We should burn plastic to get rid of it.", false, "Burning plastic makes poisonous smoke."],
+  ["Trees help clean the air.", true, "They take in carbon dioxide and give out oxygen."], ["Pollution only happens in big cities.", false, "It can happen anywhere."], ["Animals can choke on plastic bags.", true, "Goats and cows sometimes eat them."]];
+const POLL2 = { nm:"Pollution", icon:"smokestack", c:"#e9e2cf", ds:"Smoke, oil, rubbish and noise can harm our world. Learn the four kinds of pollution, and how to stop them!",
+  facts:["Pollution makes our world [dirty] and harmful.", "Smoke causes [air] pollution.", "Oil and rubbish cause [water] pollution.", "Litter causes [land] pollution.", "Loud sounds cause [noise] pollution.", "We can stop pollution: use a [bin]!"],
+  slides:[
+    { v:() => ringRow([["smokestack", "Air"], ["oilspill", "Water"], ["bottle", "Land"], ["speaker", "Noise"]], "Four kinds of pollution", "#e9e2cf"), t:"Pollution is when something makes our air, water or land dirty and harmful. There are four kinds: air, water, land and noise pollution." },
+    { v:() => SV("0 0 400 260", `${SKY("#cfc6b0")}${HILL(200, "#b9a77a")}${put("smokestack", 90, 130, 120)}${put("car", 230, 180, 80)}${put("fire", 330, 170, 80)}${TAG(200, 246, "Air pollution", 13)}`), t:"Air pollution comes from smoke: bush burning, generators, old cars and factories. Dirty air makes people cough and hurts their lungs." },
+    { v:() => SV("0 0 400 260", `${SKY("#eaf6fd")}${put("oilspill", 200, 140, 260)}${TAG(200, 246, "Water pollution", 13)}`), t:"Water pollution happens when oil, rubbish or sewage gets into rivers and seas. Oil spills in the Niger Delta have harmed fish, rivers and farms." },
+    { v:() => SV("0 0 400 260", `${SKY("#e9e2cf")}${HILL(190, "#b9a77a")}${put("bottle", 100, 200, 40)}${put("bag", 170, 206, 40)}${put("bottle", 250, 208, 36)}${put("speaker", 330, 110, 90)}${TAG(140, 120, "Land pollution", 12)}${TAG(330, 180, "Noise pollution", 12)}`), t:"Land pollution is litter and rubbish dumped on the ground. Noise pollution is very loud sound, like loud music at night or noisy generators." },
+    { v:() => ringRow([["bin", "Use a bin"], ["bottle", "Reuse"], ["seedling", "Plant trees"], ["drop", "Clear drains"]], "We can stop pollution", "#e6f7e1"), t:"We can stop pollution! Put rubbish in a bin. Reuse bags and bottles. Plant trees. Never burn plastic. Keep music at a kind volume." },
+    { v:() => superPic("Environmental scientists and recyclers", ["bin", "bottle", "seedling", "oilspill"], { shirt:"#1f9d6b" }),
+      t:"Science superpower! Environmental scientists test air and water to find pollution. Recyclers collect plastic bottles and turn them into new things. Some Nigerian companies even pay people for their plastic waste!" }],
+  home:{ nm:"Pollution patrol", steps:["Walk around your compound with a grown-up.", "Look for pollution: litter, smoke, dirty water or loud noise.", "With gloves or a grown-up's help, pick up litter and put it in a bin.", "Make a family rule to stop one kind of pollution. Wash your hands afterwards."], q:"What kind of pollution did you find most?" },
+  gens:[
+    () => { const [s, t] = pick(S2POL); return Q3(`${s}. What kind of pollution is this?`, t, ["Air pollution", "Water pollution", "Land pollution", "Noise pollution"], { ex:t + "." }); },
+    () => { const [a, h] = pick(S2STOP); return Q3(`${a}. Does it help stop pollution, or harm?`, h, ["Helps", "Harms"], { n:2, ex:h === "Helps" ? "That helps keep our world clean." : "That causes pollution." }); },
+    () => { const g = pick(S2STOP.filter(x => x[1] === "Helps")), b = sample(S2STOP.filter(x => x[1] === "Harms"), 2); return Q3("Which one helps stop pollution?", g[0], b.map(x => x[0]), { ex:g[0] + ".", key:"hp|" + g[0] }); },
+    () => { const b = pick(S2STOP.filter(x => x[1] === "Harms")), g = sample(S2STOP.filter(x => x[1] === "Helps"), 2); return Q3("Which one causes pollution?", b[0], g.map(x => x[0]), { ex:b[0] + " causes pollution.", key:"hm|" + b[0] }); },
+    () => { const t = pick([["smokestack", "Air pollution"], ["oilspill", "Water pollution"], ["bag", "Land pollution"], ["speaker", "Noise pollution"]]); return QP3(`Which picture shows ${t[1].toLowerCase()}?`, t, [["smokestack", "Air pollution"], ["oilspill", "Water pollution"], ["bag", "Land pollution"], ["speaker", "Noise pollution"]], { ex:t[1] + "." }); },
+    tf(S2POLTF),
+    () => Q3("What is pollution?", "Making air, water or land dirty and harmful", ["Planting trees", "Cleaning the house"], { ex:"Pollution harms living things." }),
+    () => Q3("Why should we never burn plastic?", "It makes poisonous smoke", ["It smells sweet", "It makes it rain"], { ex:"Put plastic in a bin or recycle it." }),
+    () => Q3("What happens when rubbish blocks the drains?", "Floods", ["More sunshine", "Cleaner water"], { ex:"Water cannot flow away." }),
+    () => Q3("How long can plastic last?", "Hundreds of years", ["One day", "One week"], { ex:"That's why we reuse and recycle." }),
+    () => Q3("What does recycling mean?", "Turning old things into new things", ["Throwing things in the river", "Burning rubbish"], { ex:"Old bottles can become new ones." }),
+    () => Q3("Which kind of pollution harms our ears?", "Noise pollution", ["Land pollution", "Water pollution"], { ex:"Very loud sounds." }),
+    () => Q3("What harms fish in rivers in the Niger Delta?", "Oil spills", ["Rain", "Sunshine"], { ex:"Oil coats the water." })
+  ] };
+
+/* ---- 13. First aid ---- */
+const S2KIT = [["plaster", "Plasters", "Covering small cuts"], ["bandage", "A bandage", "Wrapping a hurt arm or leg"], ["cottonwool", "Cotton wool", "Cleaning around a wound"], ["gloves", "Gloves", "Keeping hands clean when helping"], ["thermo", "A thermometer", "Checking for a fever"], ["scissors", "Safety scissors", "Cutting bandages (grown-ups)"]];
+const S2NOTKIT = [["ball", "A ball"], ["toycar", "A toy car"], ["sweets", "Sweets"], ["phone", "A phone"], ["book", "A story book"]];
+const S2FA = [["You have a small cut on your finger.", "Wash it with clean water, then cover it with a plaster"], ["You burn your hand a little on a hot pot.", "Cool it under cool running water for a long time"], ["Your nose is bleeding.", "Sit, lean forward and pinch the soft part of your nose"],
+  ["You bump your knee and it swells.", "Hold something cold on it, wrapped in a cloth"], ["Your friend falls and cannot get up.", "Stay calm and call a grown-up at once"], ["You find tablets on the floor.", "Give them to a grown-up. Never eat them"]];
+const S2FATF = [["First aid is the first help given to someone who is hurt.", true, "Before a nurse or doctor arrives."], ["You should put butter or oil on a burn.", false, "Cool a burn with cool running water instead."], ["Wash your hands before helping with a cut.", true, "To keep germs out."],
+  ["With a nosebleed, tilt your head far back.", false, "Lean forward and pinch the soft part of your nose."], ["Always tell a grown-up when someone is hurt.", true, "They can help or call for help."], ["A first aid box should be kept clean and easy to find.", true, "Everyone should know where it is."],
+  ["The emergency number in Nigeria is 112.", true, "Grown-ups can call it for help."], ["You should play with things in the first aid box.", false, "It is for helping hurt people."], ["Plasters help keep dirt out of small cuts.", true, "Change them when they get dirty."],
+  ["Toothpaste is good for burns.", false, "Use cool running water."], ["Staying calm helps when someone is hurt.", true, "Then you can think and get help."], ["A cold cloth can help a bump.", true, "It can stop swelling."]];
+const FIRSTAID2 = { nm:"First aid", icon:"firstaid", c:"#ffe1d6", ds:"What's in a first aid box, and what should you do for a small cut, a burn or a nosebleed? Learn to help safely!",
+  facts:["First aid is the [first] help for someone who is hurt.", "Always tell a [grown-up].", "Wash a small cut, then cover it with a [plaster].", "Cool a burn with cool running [water].", "For a nosebleed, lean [forward] and pinch.", "In Nigeria, grown-ups can call [112]."],
+  slides:[
+    { v:() => SV("0 0 400 260", `${SKY("#ffe1d6")}${put("firstaid", 200, 110, 170)}${TAG(200, 220, "A first aid box", 13)}`), t:"First aid is the first help we give to someone who is hurt, before a nurse or doctor arrives. Homes and schools should have a first aid box." },
+    { v:() => ringRow(S2KIT.slice(0, 5).map(([k, n]) => [k, n.replace(/^A /, "")]), "In a first aid box", "#fff6d1"), t:"A first aid box has plasters, bandages, cotton wool, gloves, a thermometer and scissors. Keep it clean and easy to find." },
+    { v:() => ringRow([["hand", "Wash hands"], ["drop", "Rinse the cut"], ["plaster", "Cover it"]], "A small cut", "#eaf6fd"), t:"For a small cut: wash your hands, rinse the cut with clean water, press with a clean cloth if it bleeds, then cover it with a plaster. Tell a grown-up." },
+    { v:() => ringRow([["tap", "Cool water"], ["clock", "20 minutes"], ["cottonwool", "Cover loosely"]], "A small burn", "#dff4ff"), t:"For a small burn: cool it under cool running water for a long time, about 20 minutes. Never put butter, oil or toothpaste on a burn. Tell a grown-up." },
+    { v:() => SV("0 0 400 260", `${SKY("#fff6d1")}${kidArt("stand", { hy:190, s:.8, cx:140 })}${put("nose", 300, 90, 80)}${put("hand", 300, 170, 60)}${TAG(300, 236, "Lean forward, pinch", 13)}`), t:"For a nosebleed: sit down, lean forward, and pinch the soft part of your nose for about 10 minutes. Don't tilt your head back." },
+    { v:() => superPic("Nurses, doctors and first aiders", ["firstaid", "plaster", "thermo", "phone"], { shirt:"#fff" }),
+      t:"Science superpower! Nurses, doctors and Red Cross first aiders learn exactly how to help hurt people. In an emergency in Nigeria, grown-ups can call 112 for help." }],
+  home:{ nm:"First aid box check", steps:["Ask a grown-up to show you your family's first aid box.", "Name each thing inside and say what it is for.", "Practise putting a plaster on a toy or a grown-up's finger.", "Learn your home address, and where the first aid box is kept."], q:"What was missing from your first aid box?" },
+  gens:[
+    () => { const [s, a] = pick(S2FA); return Q3(`${s} What should you do?`, a, S2FA.map(x => x[1]), { ex:a + ". And tell a grown-up." }); },
+    () => { const [k, n, u] = pick(S2KIT.filter(x => ICO[x[0]])); return Q3(`What ${/^(A |An )/.test(n) || !/s$/.test(n) ? "is" : "are"} ${n.charAt(0).toLowerCase() + n.slice(1)} used for in first aid?`, u, S2KIT.map(x => x[2]), { ex:u + ".", vis:bigIco(k, "#ffe1d6") }); },
+    () => { const r = pick(S2KIT.filter(x => ICO[x[0]])); return QP3("Which one belongs in a first aid box?", [r[0], r[1]], S2NOTKIT, { ex:r[1] + " belongs in a first aid box.", key:"kit|" + r[1] }); },
+    () => { const r = pick(S2NOTKIT); return QP3("Which one does NOT belong in a first aid box?", r, S2KIT.filter(x => ICO[x[0]]).map(x => [x[0], x[1]]), { ex:r[1] + " is not for first aid." }); },
+    tf(S2FATF),
+    () => QO("Put the steps for a small cut in order.", [["hand", "Wash your hands"], ["drop", "Rinse the cut"], ["plaster", "Cover with a plaster"]].map(([k, l]) => ({ h:ico(k), v:l, lab:l })), { ex:"Wash hands, rinse the cut, then cover it." }),
+    () => Q3("What should you put on a small burn?", "Cool running water", ["Butter", "Toothpaste"], { ex:"For a long time, about 20 minutes." }),
+    () => Q3("What should you do first when someone is badly hurt?", "Call a grown-up at once", ["Run away and hide", "Give them sweets"], { ex:"Stay calm and get help." }),
+    () => Q3("What is the emergency number in Nigeria?", "112", ["123", "999"], { ex:"Grown-ups can call 112." }),
+    () => Q3("With a nosebleed, which way should you lean?", "Forward", ["Backward", "Upside down"], { ex:"And pinch the soft part of your nose." }),
+    () => Q3("What can help a swollen bump?", "Something cold wrapped in a cloth", ["Something hot", "Sand"], { ex:"Cold helps stop swelling." }),
+    () => Q3("What is first aid?", "The first help for someone who is hurt", ["A kind of food", "A game"], { ex:"Before a doctor arrives." }),
+    () => Q3("Why do we wear gloves when helping someone who is bleeding?", "To keep germs away", ["To look smart", "To stay warm"], { ex:"Gloves protect both people." }),
+    () => Q3("Who learns first aid to help hurt people?", "Nurses and Red Cross first aiders", ["Footballers only", "Nobody"], { ex:"You can learn too!" })
+  ] };
+
+/* ---- 14. Phones and computers ---- */
+const S2CPART = [["monitor", "The monitor", "Shows words and pictures"], ["keyboard", "The keyboard", "Types letters and numbers"], ["mouse", "The mouse", "Points and clicks"], ["sysunit", "The system unit", "Does the computer's work, like a brain"], ["printer", "The printer", "Prints on paper"], ["speaker", "The speakers", "Play sound"], ["mic", "The microphone", "Picks up your voice"], ["headphones", "Headphones", "Let you listen quietly"]];
+const S2PHUSE = [["Calling Grandma in the village", "A phone"], ["Typing a story", "A keyboard"], ["Printing a picture", "A printer"], ["Taking a photo", "A camera"], ["Hearing music quietly", "Headphones"], ["Seeing a video", "A screen"], ["Recording your voice", "A microphone"]];
+const S2SAFE = [["Tell a grown-up if something online upsets you", "Safe"], ["Share your home address with a stranger online", "Not safe"], ["Take breaks and play outside", "Safe"], ["Use a phone while crossing the road", "Not safe"], ["Keep drinks away from the computer", "Safe"],
+  ["Charge a phone near water", "Not safe"], ["Ask a grown-up before downloading anything", "Safe"], ["Use a phone in bed all night", "Not safe"], ["Keep your password secret", "Safe"], ["Meet someone you only know online", "Not safe"], ["Hold the phone with dry hands", "Safe"], ["Open messages from people you don't know", "Not safe"]];
+const S2CTF = [["A computer is a machine that helps us work, learn and play.", true, "It follows instructions very fast."], ["The mouse helps us point and click.", true, "Move it, and the arrow on the screen moves."], ["The keyboard shows pictures.", false, "The keyboard types; the monitor shows pictures."],
+  ["A phone can make calls and send messages.", true, "Even to people far away."], ["You should tell strangers online where you live.", false, "Keep personal information private."], ["Too much screen time is bad for our eyes and bodies.", true, "Take breaks and play outside."],
+  ["A printer puts words and pictures on paper.", true, "Like printing a certificate!"], ["Phones need to be charged.", true, "Their batteries store energy."], ["Computers can think for themselves like people.", false, "They follow instructions people give them."],
+  ["Keep phones and computers away from water.", true, "Water can damage them and is dangerous with electricity."], ["Ask a grown-up before using the internet.", true, "They can keep you safe."], ["A microphone picks up sound.", true, "Like your voice."]];
+const PHONE2 = { nm:"Phones and computers", icon:"desktop", c:"#dbe4ff", ds:"Monitor, keyboard, mouse and more! Learn the parts of a computer and a phone, what they do, and how to stay safe.",
+  facts:["The [monitor] shows words and pictures.", "The [keyboard] types letters.", "The [mouse] points and clicks.", "The [system unit] does the computer's work.", "Phones make [calls] and send messages.", "Tell a [grown-up] if something online upsets you."],
+  slides:[
+    { v:() => SV("0 0 400 260", `${SKY("#eaf6fd")}${put("monitor", 150, 90, 130)}${put("keyboard", 150, 196, 140)}${put("mouse", 260, 200, 50)}${put("sysunit", 320, 120, 120)}${TAG(60, 40, "Monitor", 12)}${TAG(60, 220, "Keyboard", 12)}${TAG(264, 246, "Mouse", 12)}${TAG(330, 40, "System unit", 12)}`),
+      t:"A computer has parts. The monitor shows words and pictures. The keyboard types letters and numbers. The mouse points and clicks. The system unit does the computer's work, like a brain." },
+    { v:() => ringRow([["printer", "Printer"], ["speaker", "Speakers"], ["mic", "Microphone"], ["headphones", "Headphones"]], "More computer parts", "#fff6d1"), t:"A printer prints on paper. Speakers play sound. A microphone picks up your voice. Headphones let you listen quietly." },
+    { v:() => SV("0 0 400 260", `${SKY("#ffe1d6")}${put("phone", 110, 120, 170)}${[["Screen", 40], ["Camera", 90], ["Microphone", 140], ["Battery", 190]].map(([l, y]) => TAG(300, y, l, 13)).join("")}`), t:"A mobile phone is a small computer. It has a screen, a camera, a microphone, a speaker and a battery. We use it to call, send messages, take photos and learn." },
+    { v:() => ringRow([["phone", "Call family"], ["book", "Learn"], ["camera", "Take photos"], ["laptop", "Write"]], "We use them every day", "#f1fbf5"), t:"Phones and computers help us call family far away, learn new things, take photos, write stories and even see the weather." },
+    { v:() => ringRow([["eye", "Take breaks"], ["house", "Stay private"], ["drop", "Keep dry"], ["person", "Tell a grown-up"]], "Stay safe", "#ffe1d6"), t:"Stay safe! Take breaks and play outside. Never share your address or password with strangers online. Keep gadgets dry. Tell a grown-up if anything online upsets you." },
+    { v:() => superPic("Computer programmers and engineers", ["laptop", "phone", "desktop", "robot"], { shirt:"#3ea8e0" }),
+      t:"Science superpower! Computer programmers write the instructions that make apps and games work. Many young Nigerians build apps for banking, farming and learning, just like this game!" }],
+  home:{ nm:"Gadget detective", steps:["With a grown-up, look at a phone or computer at home. Don't open or plug in anything.", "Point to the screen, camera, microphone and speaker.", "If there is a computer, find the monitor, keyboard and mouse.", "Agree a family screen-time rule together."], q:"What is your family's screen-time rule?" },
+  gens:[
+    () => { const [k, n, j] = pick(S2CPART); return Q3(`What does ${n.charAt(0).toLowerCase() + n.slice(1)} do?`, j, S2CPART.map(x => x[2]), { ex:n + " " + j.charAt(0).toLowerCase() + j.slice(1) + ".", vis:bigIco(k, "#eaf6fd") }); },
+    () => { const [k, n, j] = pick(S2CPART); return QP3(`Which part ${j.charAt(0).toLowerCase() + j.slice(1)}?`, [k, cap1(n.replace(/^The /, ""))], S2CPART.map(x => [x[0], cap1(x[1].replace(/^The /, ""))]), { ex:n + "." }); },
+    () => { const [k, n] = pick(S2CPART); return Q3("What is this computer part called?", cap1(n.replace(/^The /, "")), S2CPART.map(x => cap1(x[1].replace(/^The /, ""))), { ex:"It is the " + n.replace(/^The /, "").toLowerCase() + ".", vis:bigIco(k, "#fff6d1"), key:"cn|" + n }); },
+    () => { const [a, t] = pick(S2PHUSE); return Q3(`${a}. What do you use?`, t, S2PHUSE.map(x => x[1]), { ex:t + "." }); },
+    () => { const [a, s] = pick(S2SAFE); return Q3(`${a}. Safe or not safe?`, s, ["Safe", "Not safe"], { n:2, ex:s === "Safe" ? "Yes, that keeps you safe." : "That is not safe." }); },
+    tf(S2CTF),
+    () => Q3("Which part of a computer shows pictures?", "The monitor", ["The mouse", "The keyboard"], { ex:"The monitor is the screen." }),
+    () => Q3("What should you do if something online upsets you?", "Tell a grown-up", ["Keep it secret", "Reply angrily"], { ex:"Grown-ups can help." }),
+    () => Q3("What should you keep secret online?", "Your password and home address", ["Your favourite colour", "Your favourite fruit"], { ex:"Keep personal information private." }),
+    () => Q3("Why should we take breaks from screens?", "To rest our eyes and move our bodies", ["To make the screen brighter", "To use more electricity"], { ex:"Play outside!" }),
+    () => Q3("What stores energy in a phone?", "The battery", ["The screen", "The camera"], { ex:"Charge it when it is low." }),
+    () => Q3("Who writes the instructions that make apps work?", "Computer programmers", ["Farmers", "Tailors"], { ex:"You could be one!" })
+  ] };
+const P2T3 = [SEEDS2, POLL2, FIRSTAID2, PHONE2];
+const P2 = { nm:"Primary 2", subj:"Basic Science", terms:[
+  { nm:"First term", icon:"eye", c:"#ffe1d6", topics:P2T1 },
+  { nm:"Second term", icon:"palette", c:"#ffe1f0", topics:P2T2 },
+  { nm:"Third term", icon:"seedling", c:"#c7f0d0", topics:P2T3 }] };
+
+/* ======================= SCHOOL P2: extra question banks ======================= */
+S2EAT.push(["leaf", "Bitter leaf for soup", "Leaf"], ["plantain", "Plantain", "Fruit"], ["seed", "Groundnuts", "Seed"]);
+S2PLANTTF.push(["Some plants have thorns to protect them.", true, "Thorns stop animals eating them."], ["The iroko is a tall Nigerian tree.", true, "Its wood is used for furniture."], ["Plants give out oxygen in sunlight.", true, "We need oxygen to breathe."]);
+PLANTS2.gens.push(
+  () => Q3("Which part of a plant holds it up?", "The stem", ["The flower", "The seed"], { ex:"Like a backbone." }),
+  () => Q3("Which part of a plant is usually green and flat?", "The leaf", ["The root", "The seed"], { ex:"Leaves catch sunlight." }),
+  () => Q3("What grows into a new plant?", "A seed", ["A leaf", "A stone"], { ex:"Plant it and watch!" }),
+  () => Q3("Which tall Nigerian tree gives wood for furniture?", "Iroko", ["Grass", "Cassava"], { ex:"Iroko wood is strong." }),
+  () => Q3("What do plants need to grow well?", "Water, sunlight, air and good soil", ["Darkness and salt", "Only sweets"], { ex:"Look after your plants!" }));
+
+S2WTF.push(["Rain is collected in tanks for use later.", true, "Keep the tank covered."], ["Fish need clean water to live.", true, "Pollution kills fish."], ["We can live many days without water.", false, "We need water every day."], ["Water helps farmers grow crops.", true, "Crops need water."]);
+WATER2.gens.push(
+  () => Q3("Which source of water falls from clouds?", "Rain", ["A borehole", "A tap"], { ex:"Rain falls from clouds." }),
+  () => Q3("What is a well?", "A deep hole dug to reach water", ["A kind of river", "A water tap"], { ex:"We draw water up with a bucket." }),
+  () => Q3("What should you do with drinking water after boiling it?", "Let it cool and keep it covered", ["Leave it open in the sun", "Add sand"], { ex:"Covered water stays clean." }),
+  () => Q3("Which of these needs water to grow?", "A maize plant", ["A stone", "A chair"], { ex:"All living things need water." }),
+  () => Q3("Where does tap water usually come from?", "Water works that clean river or borehole water", ["The sky only", "A shop"], { ex:"Pipes carry it to our homes." }),
+  () => Q3("Why should we wash hands with clean water and soap?", "To wash away germs", ["To make hands colder", "To make hands smell of mud"], { ex:"Clean hands, fewer germs." }),
+  () => Q3("Which body of water is salty?", "The sea", ["A borehole", "Rain"], { ex:"Sea water is salty." }),
+  () => Q3("What can firefighters use to put out fires?", "Water", ["Kerosene", "Paper"], { ex:"Water cools the fire." }),
+  () => QP3("Which one brings water up from under the ground?", ["pump", "A borehole pump"], [["tap", "A tap"], ["rain", "Rain"], ["ship", "The sea"]], { ex:"A borehole reaches groundwater." }),
+  () => QP3("Which one can make river water safer to drink?", ["kettle", "Boiling it"], [["bottle", "Shaking it"], ["sand", "Adding sand"], ["sun", "Leaving it in the sun open"]], { ex:"Boil, cool, and cover." }),
+  () => Q3("How can a family collect rainwater?", "In a covered tank or drum under the roof", ["In an open hole in the road", "In a paper bag"], { ex:"Keep it covered!" }),
+  () => Q3("Which illness spreads through dirty water?", "Cholera", ["A broken arm", "A sunburn"], { ex:"Drink safe water." }));
+
+S2CLAYTF.push(["Clay pots are fired to make them hard.", true, "In a hot kiln or an open fire."], ["Clay bricks are used to build houses.", true, "Mud houses are made from clay soil."], ["Wet clay is easy to shape.", true, "Dry clay cracks."], ["Clay is a kind of metal.", false, "Clay is a kind of soil."]);
+CLAY2.gens.push(
+  () => Q3("Where do we find clay?", "In the ground, often near rivers", ["In the sky", "In trees"], { ex:"Clay soil is often found near water." }),
+  () => Q3("What do we add to dry clay to make it soft?", "Water", ["Sand", "Oil"], { ex:"Soak it in water." }),
+  () => Q3("What happens if a pot has air bubbles when it is fired?", "It can crack", ["It turns blue", "It floats"], { ex:"Knead well first!" }),
+  () => Q3("Where should a new clay pot dry first?", "Slowly, in the shade", ["In the fire straight away", "In the rain"], { ex:"Drying too fast can crack it." }),
+  () => Q3("Which clay object can make music?", "The udu", ["A brick", "A bowl"], { ex:"Tap its hole to hear a deep sound." }),
+  () => Q3("Who was Ladi Kwali?", "A famous Nigerian potter", ["A footballer", "A pilot"], { ex:"Her picture is on the 20 naira note." }),
+  () => Q3("Which do we mould with clay?", "Pots, bowls and beads", ["Glass windows", "Metal spoons"], { ex:"Clay can be shaped." }),
+  () => QP3("Which one is used to fire clay pots?", ["kiln", "A kiln"], [["fridge", "A fridge"], ["fan", "A fan"], ["bucket", "A bucket"]], { ex:"A kiln is a very hot oven." }),
+  () => QP3("Which one is a clay pot?", ["claypot", "Clay pot"], [["bucket", "Plastic bucket"], ["pot", "Metal pot"], ["cup", "Plastic cup"]], { ex:"It is made from clay." }),
+  () => Q3("What is clay soil like when wet?", "Sticky and smooth", ["Dry and gritty", "Hard as a rock"], { ex:"Great for moulding." }),
+  () => Q3("What can you make at home instead of clay?", "Play dough from flour, salt and water", ["Glass", "Cement"], { ex:"Ask a grown-up to help." }),
+  () => Q3("How old are the Nok clay figures?", "More than 2,000 years old", ["About 10 years old", "Made last week"], { ex:"Found in central Nigeria." }));
+
+S2COLTF.push(["Mixing all paint colours together makes a dark brown or grey.", true, "Try it!"], ["Leaves are usually green.", true, "Green helps them use sunlight."], ["Unripe tomatoes are green.", true, "They turn red as they ripen."], ["Colour helps us sort things.", true, "Like sorting beads by colour."]);
+COLOUR2.gens.push(
+  () => Q3("Which colour often warns of danger?", "Red", ["Pale blue", "Light green"], { ex:"Red signs mean danger or stop." }),
+  () => Q3("What colour do red and white make?", "Pink", ["Green", "Black"], { ex:"Add white to make lighter colours." }),
+  () => Q3("What colour do black and white make?", "Grey", ["Orange", "Purple"], { ex:"Mix a little black into white." }),
+  () => Q3("What is the first colour of the rainbow?", "Red", ["Green", "Violet"], { ex:"Red, orange, yellow, green, blue, indigo, violet." }),
+  () => Q3("What is the last colour of the rainbow?", "Violet", ["Red", "Yellow"], { ex:"Violet is at the inside edge." }),
+  () => Q3("Why do many fruits change colour?", "To show they are ripe", ["Because they are cold", "Because of music"], { ex:"Green bananas turn yellow." }));
+
+S2EFTF.push(["Heat from the Sun dries our clothes.", true, "Heat energy at work!"], ["A whistle makes sound energy.", true, "Blow and hear it!"], ["A stone lying still has movement energy.", false, "It is not moving."]);
+EFORM2.gens.push(
+  () => Q3("What form of energy does a bell make?", "Sound", ["Light", "Heat"], { ex:"Ring a bell and hear!" }),
+  () => Q3("What form of energy does a candle flame give?", "Light and heat", ["Sound only", "Movement only"], { ex:"Keep away from flames." }),
+  () => Q3("Which energy dries maize in the sun?", "Heat from the Sun", ["Sound", "Electricity"], { ex:"Farmers dry crops in the sun." }),
+  () => Q3("A fan changes electricity into what?", "Movement", ["Light", "Sound only"], { ex:"The blades turn." }),
+  () => Q3("Which of these has movement energy?", "A rolling ball", ["A book on a shelf", "A sleeping cat"], { ex:"Moving things have energy." }),
+  () => Q3("Which of these gives no light?", "A drum", ["A bulb", "A torch"], { ex:"A drum makes sound." }));
+
+S2SNDTF.push(["The ogene is a metal gong.", true, "It is played by the Igbo people."], ["Bigger drums often make lower sounds.", true, "Small drums make higher sounds."]);
+SOUND2.gens.push(
+  () => Q3("Which part of the body catches sound?", "The ears", ["The eyes", "The knees"], { ex:"Ears catch vibrations." }),
+  () => Q3("What does vibrate mean?", "Shake back and forth very fast", ["Stay very still", "Get very cold"], { ex:"Vibrations make sound." }),
+  () => Q3("Which drum makes a lower sound?", "A big drum", ["A small drum", "They are the same"], { ex:"Bigger drums, lower sounds." }),
+  () => Q3("Which sound is high?", "A whistle", ["A big drum", "A lion's roar"], { ex:"Whistles are high." }),
+  () => Q3("Which sound is low?", "A lion's roar", ["A bird singing", "A whistle"], { ex:"Roars are low." }),
+  () => QP3("Which instrument is shaken?", ["shekere", "Shekere"], [["drum", "Talking drum"], ["guitar", "Guitar"], ["whistle", "Whistle"]], { ex:"Shake the shekere!" }),
+  () => QP3("Which instrument is made of clay?", ["udu", "Udu"], [["gong", "Ogene"], ["guitar", "Guitar"], ["shekere", "Shekere"]], { ex:"The udu is a clay pot drum." }),
+  () => Q3("Through which can sound travel?", "Air, water and solids", ["Only air", "Nothing at all"], { ex:"Put your ear on a table and tap it!" }));
+
+S2AIRTF.push(["Air pushes things when it moves.", true, "Wind pushes boats with sails."], ["A plastic bag can float in the wind.", true, "And then it pollutes the land."], ["Birds use air to fly.", true, "Their wings push on the air."], ["Air inside a ball makes it bounce.", true, "Flat balls don't bounce."]);
+AIR2.gens.push(
+  () => Q3("What happens to a balloon when you let the air out?", "It goes small and flat", ["It gets bigger", "It turns to water"], { ex:"The air rushes out." }),
+  () => Q3("What pushes a sailing boat?", "Wind", ["Rain", "Sand"], { ex:"Wind is moving air." }),
+  () => Q3("Why does a football bounce?", "It is full of air", ["It is full of water", "It is made of stone"], { ex:"Air takes up space." }),
+  () => Q3("What do birds push on to fly?", "The air", ["The ground only", "Water"], { ex:"Wings push air down." }),
+  () => Q3("What happens to a kite when the wind stops?", "It falls down", ["It flies higher", "It turns into a bird"], { ex:"No wind, no kite!" }),
+  () => Q3("Why does an upside-down cup stay dry when pushed into water?", "Air inside stops the water", ["The cup is magic", "The water is too cold"], { ex:"Air takes up space." }),
+  () => Q3("What is the harmattan?", "A dry, dusty wind", ["A kind of rain", "A big river"], { ex:"It blows from the Sahara." }),
+  () => QP3("Which one needs wind to work?", ["windmill", "Windmill"], [["tv", "Television"], ["fridge", "Fridge"], ["clock", "Clock"]], { ex:"Wind turns the blades." }),
+  () => QP3("Which one is full of air?", ["balloon", "Balloon"], [["rock", "Stone"], ["book", "Book"], ["key", "Key"]], { ex:"Air takes up space." }),
+  () => Q3("Which do plants give out that we breathe in?", "Oxygen", ["Smoke", "Dust"], { ex:"Trees keep air fresh." }),
+  () => Q3("How does a fan help on a hot day?", "It moves air to cool us", ["It makes heat", "It makes rain"], { ex:"Moving air feels cool." }),
+  () => Q3("What happens to dust in a strong wind?", "It blows about in the air", ["It sinks into water", "It turns to stone"], { ex:"Cover your nose on dusty days." }));
+
+S2GERMTF.push(["Bean seeds can grow on wet cotton wool.", true, "Try it at home!"], ["A seedling is a very young plant.", true, "It grows from a seed."], ["Mango seeds can grow into mango trees.", true, "It takes years for the tree to give fruit."], ["Seeds can wait a long time before they grow.", true, "Dry seeds can stay asleep for months."]);
+S2SEEDS.push(["beans", "Melon (egusi)"], ["maize", "Millet"]);
+SEEDS2.gens.push(
+  () => Q3("What is a seedling?", "A very young plant", ["An old tree", "A dry seed"], { ex:"It has just grown from a seed." }),
+  () => Q3("What does a seed do when it takes in water?", "It swells up", ["It shrinks away", "It turns blue"], { ex:"Then the root comes out." }),
+  () => Q3("Where should a bean cup be kept to germinate?", "In a warm place", ["In the freezer", "In a dark, dry box"], { ex:"Seeds need warmth." }),
+  () => Q3("What would happen to seeds kept completely dry?", "They would not germinate", ["They would grow faster", "They would turn into fruit"], { ex:"Seeds need water." }),
+  () => Q3("Which grows first: the root or the leaves?", "The root", ["The leaves", "They come together"], { ex:"Root first, then shoot." }),
+  () => Q3("Which seeds do we cook in egusi soup?", "Melon seeds", ["Mango seeds", "Orange seeds"], { ex:"Egusi is ground melon seed." }),
+  () => Q3("What is the shoot?", "The part that grows up towards the light", ["The part that grows down", "The seed coat"], { ex:"It becomes the stem and leaves." }),
+  () => Q3("What do farmers do after planting seeds?", "Water them and remove weeds", ["Pour salt on them", "Burn them"], { ex:"Care helps crops grow." }),
+  () => QP3("Which one shows a seedling?", ["seedling", "Seedling"], [["tree", "Big tree"], ["seed", "Dry seed"], ["flower", "Flower"]], { ex:"A seedling is a young plant." }),
+  () => QP3("Which one does a seed need to germinate?", ["drop", "Water"], [["salt", "Salt"], ["sugar", "Sugar"], ["ice", "Ice"]], { ex:"Water, air and warmth." }),
+  () => Q3("How can you tell a seed has germinated?", "A root or shoot comes out", ["It changes colour to blue", "It makes a sound"], { ex:"Look closely every day." }),
+  () => Q3("Why do we keep the cotton wool wet, but not flooded?", "Seeds need water and air", ["To drown the seeds", "To make the cup heavy"], { ex:"Too much water stops air reaching them." }),
+  () => Q3("Which season is best for planting in Nigeria?", "The rainy season", ["The harmattan", "The dry season"], { ex:"Rain waters the seeds." }));
+
+S2POLTF.push(["Old car tyres should not be burned.", true, "Burning tyres makes thick, poisonous smoke."], ["Clean water helps fish and people stay healthy.", true, "Keep rivers clean."]);
+POLL2.gens.push(
+  () => Q3("Which kind of pollution is smoke from a generator?", "Air pollution", ["Land pollution", "Water pollution"], { ex:"Fumes make the air dirty." }),
+  () => Q3("Which kind of pollution is rubbish in a river?", "Water pollution", ["Noise pollution", "Air pollution"], { ex:"It harms fish and people." }),
+  () => Q3("Which kind of pollution is litter on the ground?", "Land pollution", ["Noise pollution", "Air pollution"], { ex:"Put litter in a bin." }),
+  () => Q3("Which kind of pollution is very loud music at night?", "Noise pollution", ["Water pollution", "Land pollution"], { ex:"It disturbs people's sleep." }),
+  () => Q3("What should you do with an empty plastic bottle?", "Reuse it or put it in a recycling bin", ["Throw it in the drain", "Burn it"], { ex:"Plastic can be recycled." }),
+  () => Q3("How do trees help fight pollution?", "They clean the air", ["They make smoke", "They block rivers"], { ex:"Plant more trees!" }),
+  () => Q3("Why do goats sometimes get sick from plastic bags?", "They eat them and choke", ["Bags are too heavy", "Bags are too pretty"], { ex:"Keep plastic in the bin." }),
+  () => Q3("What causes thick black smoke?", "Burning tyres and plastic", ["Planting flowers", "Drinking water"], { ex:"Never burn tyres or plastic." }));
+
+S2FATF.push(["Old medicines should be kept away from children.", true, "Only take medicine from a grown-up."], ["Wash a cut with clean water.", true, "To wash away dirt and germs."], ["You should keep a burn under cool water.", true, "For a long time, about 20 minutes."], ["A big cut must be seen by a nurse or doctor.", true, "Tell a grown-up at once."]);
+FIRSTAID2.gens.push(
+  () => Q3("What is a plaster used for?", "Covering a small cut", ["Covering a book", "Fixing a broken toy"], { ex:"It keeps dirt out." }),
+  () => Q3("What is a bandage used for?", "Wrapping a hurt arm or leg", ["Tying shoes", "Painting"], { ex:"It holds dressings in place." }),
+  () => Q3("What does a thermometer check?", "If someone has a fever", ["How tall someone is", "The time"], { ex:"A high temperature is a fever." }),
+  () => Q3("What should you NOT put on a burn?", "Butter, oil or toothpaste", ["Cool running water", "Nothing at all"], { ex:"Use cool running water." }),
+  () => Q3("Where should a first aid box be kept?", "In a clean place everyone knows", ["Hidden in a locked cupboard nobody can open", "Outside in the rain"], { ex:"Easy to find in a hurry." }),
+  () => Q3("What should you do if you feel sick at school?", "Tell your teacher", ["Hide in the toilet", "Run home alone"], { ex:"Teachers can help." }),
+  () => Q3("Who gives first aid in the Red Cross?", "Trained first aiders", ["Footballers", "Bus drivers only"], { ex:"Volunteers learn first aid." }),
+  () => Q3("Why should we wash our hands before touching a cut?", "To keep germs out", ["To make it bleed more", "To warm it up"], { ex:"Clean hands, clean cut." }),
+  () => Q3("What should you do if a friend is stung by a bee?", "Tell a grown-up straight away", ["Laugh at them", "Catch the bee"], { ex:"Some people react badly to stings." }),
+  () => Q3("What should you do if you smell gas in the kitchen?", "Get out and tell a grown-up", ["Light a match", "Switch on a fan"], { ex:"Gas can catch fire." }),
+  () => QP3("Which one covers a small cut?", ["plaster", "Plaster"], [["ball", "Ball"], ["sweets", "Sweets"], ["toycar", "Toy car"]], { ex:"A plaster." }),
+  () => QP3("Which one checks for a fever?", ["thermo", "Thermometer"], [["plaster", "Plaster"], ["bandage", "Bandage"], ["cottonwool", "Cotton wool"]], { ex:"A thermometer." }),
+  () => QP3("Which one do helpers wear to keep hands clean?", ["gloves", "Gloves"], [["sweater", "Sweater"], ["sunhat", "Sun hat"], ["shoe", "Shoe"]], { ex:"Gloves protect both people." }),
+  () => Q3("How long should you pinch your nose for a nosebleed?", "About 10 minutes", ["One second", "One hour"], { ex:"And lean forward." }));
+
+S2CTF.push(["A laptop is a computer you can carry.", true, "It has a screen and keyboard together."], ["You can learn on a computer.", true, "Like playing this game!"]);
+PHONE2.gens.push(
+  () => QP3("Which one types letters?", ["keyboard", "Keyboard"], [["mouse", "Mouse"], ["printer", "Printer"], ["monitor", "Monitor"]], { ex:"The keyboard." }),
+  () => QP3("Which one prints on paper?", ["printer", "Printer"], [["keyboard", "Keyboard"], ["mouse", "Mouse"], ["headphones", "Headphones"]], { ex:"The printer." }),
+  () => Q3("What is a laptop?", "A computer you can carry", ["A kind of phone case", "A printer"], { ex:"Screen and keyboard together." }),
+  () => Q3("What should you do before using the internet?", "Ask a grown-up", ["Nothing", "Turn off the lights"], { ex:"They help keep you safe." }),
+  () => Q3("Which part of a phone takes photos?", "The camera", ["The battery", "The charger"], { ex:"Smile!" }),
+  () => Q3("What must you do when a phone battery is low?", "Charge it", ["Wash it", "Freeze it"], { ex:"Batteries store energy." }));
+SEEDS2.gens.push(
+  () => Q3("What is inside a seed?", "A tiny baby plant and stored food", ["Water only", "Sand"], { ex:"The seed coat protects them." }),
+  () => Q3("Which of these is a seed?", "A bean", ["A pebble", "A button"], { ex:"Beans are seeds." }),
+  () => Q3("Which part of the young plant takes in water?", "The root", ["The seed coat", "The shoot tip"], { ex:"Roots drink water." }),
+  () => Q3("Which seed grows into a maize plant?", "A maize grain", ["A bean", "A mango seed"], { ex:"Each seed grows into its own kind of plant." }),
+  () => Q3("What happens to a seed's stored food as the plant grows?", "The plant uses it up", ["It grows bigger", "It turns into a stone"], { ex:"Then the leaves make new food." }));
+FIRSTAID2.gens.push(
+  () => Q3("What should you do if someone faints?", "Call a grown-up at once", ["Pour water on them", "Leave them alone"], { ex:"Get help quickly." }),
+  () => Q3("Why must we never take someone else's medicine?", "It could make us very ill", ["It tastes nice", "It makes us taller"], { ex:"Only take medicine from a trusted grown-up." }),
+  () => Q3("What can help keep a small cut clean?", "A clean plaster", ["Mud", "Leaves"], { ex:"Change it when it gets dirty." }),
+  () => Q3("What do you need to know to get help in an emergency?", "Your home address", ["Your favourite song", "Your shoe size"], { ex:"So helpers can find you." }),
+  () => Q3("What should you do near a hot pot or iron?", "Keep away", ["Touch it to check", "Play near it"], { ex:"Prevent burns!" }));
+CLAY2.gens.push(
+  () => Q3("Which tool helps shape a pot?", "Your hands", ["A hammer", "A saw"], { ex:"Potters use their hands." }),
+  () => Q3("What do brick makers do with clay?", "Press it into moulds and dry or fire it", ["Melt it like glass", "Plant it"], { ex:"Bricks build houses." }),
+  () => Q3("What colour is most clay after firing?", "Red-brown", ["Bright blue", "White as snow"], { ex:"Iron in the clay makes it reddish." }),
+  () => Q3("Why are clay pots good for drinking water?", "They keep it cool", ["They make it salty", "They make it hot"], { ex:"Evaporation cools the pot." }),
+  () => Q3("Which is NOT made from clay?", "A glass bottle", ["A brick", "A pot"], { ex:"Glass is made from sand." }));
+WATER2.gens.push(
+  () => Q3("Which water source is under the ground?", "A borehole", ["Rain", "A river"], { ex:"It reaches groundwater." }),
+  () => Q3("Why should we never swim in a river alone?", "It can be deep and dangerous", ["The water is too clean", "Fish are shy"], { ex:"Always have a grown-up near water." }),
+  () => Q3("How much water should children drink?", "Several cups every day", ["One cup a week", "None at all"], { ex:"More on hot days." }));
+
 /* ======================= SCHOOL SCIENCE: engine ======================= */
 const I_BULB = `<svg viewBox="0 0 24 24" fill="none" stroke="#2a2540" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17h6M10 20.5h4M12 3a6 6 0 0 0-3.6 10.8c.7.6 1.1 1.3 1.1 2.2h5c0-.9.4-1.6 1.1-2.2A6 6 0 0 0 12 3z" fill="#ffd43b"/></svg>`;
 const I_HOME = `<svg viewBox="0 0 24 24" fill="none" stroke="#2a2540" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"><path d="M3 11.5 12 4l9 7.5" /><path d="M5.5 10v10h13V10" fill="#fff"/><rect x="10" y="14" width="4" height="6" fill="#ffd43b"/></svg>`;
@@ -8797,7 +9565,7 @@ const I_PRINT = `<svg viewBox="0 0 24 24" fill="none" stroke="#2a2540" stroke-wi
 const I_TROPHY = `<svg viewBox="0 0 64 64"><path d="M18 8h28v14a14 14 0 0 1-28 0z" fill="#ffd43b" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/><path d="M18 14H8q0 14 12 16M46 14h10q0 14-12 16" fill="none" stroke="${INK}" stroke-width="4"/><path d="M28 36h8v10h-8z" fill="#ffd43b" stroke="${INK}" stroke-width="4"/><rect x="18" y="46" width="28" height="9" rx="3" fill="#8a5a3c" stroke="${INK}" stroke-width="4"/></svg>`;
 const termBadge = (n, on, col) => `<svg viewBox="0 0 64 64"><path d="M20 4h10l4 16h-8zM44 4H34l-4 16h8z" fill="${on ? "#e5484d" : "#8b93a8"}" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/><circle cx="32" cy="38" r="20" fill="${on ? col : "#c9d1e0"}" stroke="${INK}" stroke-width="4"/><circle cx="32" cy="38" r="13" fill="none" stroke="${INK}" stroke-width="2" stroke-dasharray="3 3" opacity=".5"/><text x="32" y="45" text-anchor="middle" font-family="Grandstander,sans-serif" font-weight="900" font-size="20" fill="${INK}">${n}</text></svg>`;
 const TERM_COL = ["#d98c4a", "#c9d1e0", "#ffd43b"];
-const SCHOOL = { 1:P1 };
+const SCHOOL = { 1:P1, 2:P2 };
 let schProg = store.get("school", {}), SC = { c:1, t:0 };
 const SCHW = {};
 function schW(c, t){
