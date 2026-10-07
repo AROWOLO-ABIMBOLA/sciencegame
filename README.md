@@ -4,7 +4,7 @@ Fun science for Nigerian children aged 2 to 12:
 
 - **Little Explorers** (ages 2 to 4): picture-and-sound science games with no reading needed.
 - **Science Arcade** (ages 5 to 12): nine worlds (Space, Living Planet, My Amazing Body, Tiny World, Matter Lab, Forces and Machines, Energy and Power, Light and Sound, Earth and Weather). Each world has 6 levels with read-aloud lessons, hands-on "Try it" activities, tests, and 54 science legends to meet, from Nigeria, Africa and the world.
-- **School Science**: Basic Science (Primary 1 to 3) and Basic Science and Technology (Primary 4 to 6), class by class and term by term. Every topic has Learn, Try, Practice and a safe "Try it at home" activity. Children win term badges, then take a 30-question final challenge for a printable certificate. **Primary 1 and Primary 2 are open now**, and more classes are coming.
+- **School Science**: Basic Science (Primary 1 to 3) and Basic Science and Technology (Primary 4 to 6), class by class and term by term. Every topic has Learn, Try, Practice and a safe "Try it at home" activity. Children win term badges, then take a 30-question final challenge for a printable certificate. **Primary 1, 2 and 3 are open now**, and more classes are coming.
 
 Made by **Dr. Arowolo Ayoola**.
 

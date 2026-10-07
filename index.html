@@ -682,7 +682,8 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px;box-shadow:0 0 0 
 .abtn:active:not(:disabled){transform:translateY(4px);box-shadow:0 1px 0 var(--ink)}
 .abtn.pic{display:grid;grid-template-rows:minmax(0,1fr) auto;place-items:center;padding:6px;min-height:0;background:#fff}
 .abtn.pic svg{width:100%;height:100%;max-height:100%;overflow:hidden;border-radius:10px}
-.abtn.pic span{font-size:clamp(12px,2.2cqh,17px)}
+.abtn.pic span{font-size:clamp(12px,2.2cqh,17px);max-width:100%;overflow-wrap:anywhere;hyphens:auto;line-height:1.1}
+.abtn.pic{min-width:0}
 .abtn.right{background:#9ff0c9!important} .abtn.wrong{background:#ffb3a1!important}
 .abtn:disabled{cursor:default}
 .abtn.dim{opacity:.5}
@@ -1107,7 +1108,7 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px;box-shadow:0 0 0 
     <h2>School Science</h2><button class="hear" aria-label="Hear it again"><svg viewBox="0 0 24 24" fill="none" stroke="#2a2540" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z" fill="#ffd43b"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg></button></header>
   <p class="lead">Your class lessons, term by term. Primary 1 to 3 is Basic Science. Primary 4 to 6 is Basic Science and Technology.</p>
   <div class="grid classes" id="classes"></div>
-  <div class="soon"><svg viewBox="0 0 24 24"><path d="M12 3 L21 20 H3 Z" fill="#ff8a5b" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M8 15 h8" stroke="#fff" stroke-width="2"/></svg>Primary 1 and 2 are open! More classes coming soon.</div>
+  <div class="soon"><svg viewBox="0 0 24 24"><path d="M12 3 L21 20 H3 Z" fill="#ff8a5b" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M8 15 h8" stroke="#fff" stroke-width="2"/></svg>Primary 1, 2 and 3 are open! More classes coming soon.</div>
 </div></div>
 
 <div class="sheet" id="sh-bud" hidden><div class="card">
@@ -1480,7 +1481,7 @@ $("#todFace").src = FACES.chick;
 /* ---------- rooms ---------- */
 let openSheet = null;
 const sheetLines = {
-  "sh-sch": "School Science! Your class lessons, term by term. Primary 1 to 3 is Basic Science. Primary 4 to 6 is Basic Science and Technology. Primary 1 and Primary 2 are open. Tap one to start!",
+  "sh-sch": "School Science! Your class lessons, term by term. Primary 1 to 3 is Basic Science. Primary 4 to 6 is Basic Science and Technology. Primary 1, 2 and 3 are open. Tap one to start!",
   "sh-bud": "Pick your buddy! Who will explore with you today?",
   "sh-adult": ""
 };
@@ -1502,7 +1503,7 @@ document.addEventListener("keydown", e => { if(e.key === "Escape") close(); });
 document.querySelectorAll(".door").forEach(d => d.addEventListener("click", () => { pop(); if(d.dataset.go === "tod") enterTod(); else if(d.dataset.go === "arc") enterArc(); else open("sh-" + d.dataset.go); }));
 $("#chip").addEventListener("click", () => { pop(); open("sh-bud"); });
 
-const SCHOOL_OPEN = 2;   /* highest class built so far */
+const SCHOOL_OPEN = 3;   /* highest class built so far */
 const clsEl = $("#classes");
 CLASSES.forEach(c => {
   const b = document.createElement("button"); b.className = "cls"; b.style.setProperty("--t", c.t);
@@ -9557,6 +9558,699 @@ WATER2.gens.push(
   () => Q3("Why should we never swim in a river alone?", "It can be deep and dangerous", ["The water is too clean", "Fish are shy"], { ex:"Always have a grown-up near water." }),
   () => Q3("How much water should children drink?", "Several cups every day", ["One cup a week", "None at all"], { ex:"More on hot days." }));
 
+/* ======================= SCHOOL P3: icons (100 x 100) ======================= */
+Object.assign(ICO, {
+  kscale:`<rect x="16" y="48" width="68" height="40" rx="8" fill="#e53950" ${SK()}/><circle cx="50" cy="68" r="14" fill="#fff" ${SK(3)}/><path d="M50 68 L58 60" ${SK(3)}/><path d="M10 40 Q50 28 90 40 L86 48 H14Z" fill="#dfe6ef" ${SK(3)}/>`,
+  sack:`<path d="M28 22 Q50 14 72 22 L80 86 Q50 96 20 86Z" fill="#e0bf94" ${SK()}/><path d="M30 22 Q50 30 70 22" fill="none" ${SK(3)}/><path d="M38 14 L50 22 L62 14" fill="none" ${SK(3)}/><text x="50" y="66" text-anchor="middle" font-family="Grandstander,sans-serif" font-weight="900" font-size="16" fill="${INK}">50kg</text>`,
+  kgweight:`<path d="M26 40 H74 L84 88 H16Z" fill="#8b93a8" ${SK()}/><path d="M38 40 Q38 18 50 18 Q62 18 62 40" fill="none" ${SK(6)}/><text x="50" y="74" text-anchor="middle" font-family="Grandstander,sans-serif" font-weight="900" font-size="20" fill="#fff">1kg</text>`,
+  calendar:`<rect x="12" y="18" width="76" height="70" rx="6" fill="#fff" ${SK()}/><rect x="12" y="18" width="76" height="18" rx="6" fill="#e53950" ${SK(3)}/><path d="M30 10 V26 M70 10 V26" ${SK(5)}/>${[0, 1, 2].map(r => [0, 1, 2, 3, 4].map(c => `<rect x="${20 + c * 13}" y="${44 + r * 13}" width="9" height="8" rx="1.5" fill="${r === 1 && c === 2 ? "#ffd43b" : "#dfe6ef"}"/>`).join("")).join("")}`,
+  sundial:`<ellipse cx="50" cy="70" rx="42" ry="16" fill="#dfe6ef" ${SK()}/><path d="M50 70 L50 26 L72 70Z" fill="#8b93a8" ${SK(3)}/><path d="M50 70 L14 64" stroke="#3a3a44" stroke-width="6" opacity=".45" stroke-linecap="round"/>${[[20, 70], [30, 80], [50, 84], [70, 80], [80, 70]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2" fill="${INK}"/>`).join("")}`,
+  hourglass:`<path d="M26 10 H74 M26 90 H74" ${SK(6)}/><path d="M30 12 Q30 40 50 50 Q70 40 70 12Z M30 88 Q30 60 50 50 Q70 60 70 88Z" fill="#fff6d1" ${SK(3)}/><path d="M38 24 H62 Q58 40 50 46 Q42 40 38 24Z" fill="#e8c25a"/><path d="M36 86 Q50 70 64 86Z" fill="#e8c25a"/>`,
+  stopwatch:`<circle cx="50" cy="56" r="34" fill="#fff" ${SK()}/><rect x="42" y="10" width="16" height="10" rx="3" fill="#e53950" ${SK(3)}/><path d="M50 56 V32" ${SK(4)}/><path d="M76 28 L82 22" ${SK(4)}/>${[0, 90, 180, 270].map(a => `<path d="M50 26 V30" ${SK(2.5)} transform="rotate(${a} 50 56)"/>`).join("")}`,
+  paper:`<path d="M24 10 H64 L80 26 V90 H24Z" fill="#f4f6ff" fill-opacity=".75" ${SK()}/><path d="M64 10 V26 H80" fill="none" ${SK(3)}/><path d="M34 44 H70 M34 56 H70 M34 68 H60" stroke="#8b93a8" stroke-width="3" opacity=".6"/>`,
+  periscope:`<path d="M30 10 H62 V30 H46 V70 H70 V90 H30 V70 H30Z" fill="#3ea8e0" ${SK()}/><path d="M62 10 L46 30 M30 70 L46 90" stroke="#bfe8ff" stroke-width="5"/>`,
+  loom:`<path d="M14 90 V14 M86 90 V14 M10 18 H90 M10 82 H90" ${SK(6)}/>${[24, 32, 40, 48, 56, 64, 72].map(x => `<path d="M${x} 18 V82" stroke="#8b93a8" stroke-width="2"/>`).join("")}<rect x="20" y="40" width="60" height="30" fill="#2b6fd6" fill-opacity=".85"/>${[44, 52, 60, 66].map(y => `<path d="M20 ${y} H80" stroke="#ffd43b" stroke-width="2.5"/>`).join("")}`,
+  cloth:`<path d="M10 20 H90 V80 H10Z" fill="#2b4fae" ${SK()}/>${[30, 50, 70].map(x => `<path d="M${x} 20 V80" stroke="#ffd43b" stroke-width="5"/>`).join("")}${[36, 52, 68].map(y => `<path d="M10 ${y} H90" stroke="#fff" stroke-width="2" stroke-dasharray="4 4"/>`).join("")}`,
+  dyepit:`<ellipse cx="50" cy="60" rx="42" ry="20" fill="#c9a37a" ${SK()}/><ellipse cx="50" cy="58" rx="30" ry="12" fill="#243b8f" ${SK(3)}/><path d="M30 40 Q34 24 46 30" fill="none" stroke="#2b4fae" stroke-width="5" stroke-linecap="round"/><path d="M50 58 q6 -4 12 0" stroke="#7fa8ff" stroke-width="2" fill="none"/>`,
+  anvil:`<path d="M10 30 H70 Q86 30 90 22 Q92 40 70 44 H60 V60 H74 V74 H26 V60 H40 V44 H22 Q10 44 10 30Z" fill="#3a3a44" ${SK(3)}/><path d="M60 22 L84 6" stroke="#8a5a3c" stroke-width="5"/><rect x="74" y="0" width="12" height="16" fill="#8b93a8" ${SK(2)} transform="rotate(30 80 8)"/><path d="M28 24 l-4 -8 M36 22 l2 -8" stroke="#ff8a3d" stroke-width="3" stroke-linecap="round"/>`,
+  bronzehead:`<path d="M30 32 Q30 10 50 10 Q70 10 70 32 V60 Q70 78 50 80 Q30 78 30 60Z" fill="#b5803a" ${SK()}/>${[0, 1, 2, 3].map(i => `<rect x="30" y="${66 + i * 6}" width="40" height="6" rx="3" fill="#d9a35a" ${SK(1.5)}/>`).join("")}<ellipse cx="42" cy="40" rx="4" ry="2.5" fill="${INK}"/><ellipse cx="58" cy="40" rx="4" ry="2.5" fill="${INK}"/><path d="M50 44 V54 M44 60 Q50 63 56 60" fill="none" ${SK(2.5)}/><path d="M36 92 H64 L60 90" ${SK(3)}/>`,
+  windsock:`<path d="M16 96 V8" ${SK(5)}/><path d="M18 12 L86 24 L86 40 L18 46Z" fill="#ff8a3d" ${SK(3)}/><path d="M40 16 V44 M62 20 V42" stroke="#fff" stroke-width="7"/>`,
+  windvane:`<path d="M50 96 V40" ${SK(5)}/><path d="M50 40 H14 L20 32 L14 24 H28 L50 40 H82" fill="#ffd43b" ${SK(3)}/><path d="M80 36 L92 40 L80 44Z" fill="#3a3a44"/><text x="50" y="22" text-anchor="middle" font-family="Grandstander,sans-serif" font-weight="900" font-size="14" fill="${INK}">N</text>`,
+  roofoff:`<rect x="20" y="52" width="60" height="38" fill="#ffe8c2" ${SK()}/><path d="M30 34 L70 26 L80 40 L40 48Z" fill="#8b93a8" ${SK(3)} class="lp-shake"/><path d="M84 20 l8 -6 M86 32 l10 0" ${SK(3)}/><rect x="42" y="64" width="16" height="26" fill="#8a5a3c" ${SK(2.5)}/>`,
+  sachet:`<path d="M18 22 H82 Q86 50 82 78 H18 Q14 50 18 22Z" fill="#e6f6ff" fill-opacity=".85" ${SK()}/><path d="M18 22 H82 M18 78 H82" stroke="${INK}" stroke-width="3" stroke-dasharray="3 3"/><rect x="32" y="38" width="36" height="22" rx="3" fill="#3ea8e0" ${SK(2)}/><text x="50" y="54" text-anchor="middle" font-family="Grandstander,sans-serif" font-weight="900" font-size="11" fill="#fff">PURE</text>`,
+  mound:`<path d="M14 92 Q22 60 34 50 Q40 20 52 12 Q62 24 64 46 Q78 58 86 92Z" fill="#b5652f" ${SK()}/><circle cx="46" cy="50" r="3" fill="#5a3a24"/><circle cx="58" cy="66" r="3" fill="#5a3a24"/><circle cx="40" cy="76" r="3" fill="#5a3a24"/>`,
+  cocoa:`<path d="M50 8 Q80 20 80 50 Q80 82 50 92 Q20 82 20 50 Q20 20 50 8Z" fill="#d98c2a" ${SK()}/>${[34, 50, 66].map(x => `<path d="M${x} 14 Q${x + (x - 50) * .25} 50 ${x} 86" fill="none" stroke="#a8641a" stroke-width="2.5"/>`).join("")}<path d="M50 8 V2" stroke="#6b4428" stroke-width="5"/>`,
+  groundnut:`<path d="M30 22 Q50 10 66 26 Q76 36 66 48 Q58 56 64 68 Q70 84 54 90 Q36 94 30 78 Q26 66 34 58 Q42 50 32 40 Q24 30 30 22Z" fill="#e0bf94" ${SK()}/>${[[44, 30], [54, 40], [46, 70], [52, 80]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2" fill="#a8774c"/>`).join("")}`,
+  fern:`<path d="M50 94 Q46 50 62 10" fill="none" stroke="#2bb673" stroke-width="4"/>${Array.from({ length: 8 }, (_, i) => { const y = 84 - i * 9, x = 48 + i * 1.6, l = 26 - i * 2; return `<path d="M${x} ${y} Q${x - l} ${y - 8} ${x - l - 4} ${y + 2}" fill="none" stroke="#2bb673" stroke-width="3"/><path d="M${x} ${y} Q${x + l} ${y - 12} ${x + l + 4} ${y - 2}" fill="none" stroke="#2bb673" stroke-width="3"/>`; }).join("")}`,
+  shrub:`${[[30, 60, 22], [52, 46, 26], [72, 60, 20], [50, 66, 24]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#4caf50" ${SK(3)}/>`).join("")}<path d="M40 86 L46 92 M60 86 L54 92" ${SK(3)}/>`,
+  climber:`<path d="M80 96 V6" stroke="#8a5a3c" stroke-width="6"/><path d="M80 90 Q50 80 76 66 Q100 56 74 44 Q50 34 76 22 Q90 14 80 6" fill="none" stroke="#2bb673" stroke-width="4"/>${[[60, 76], [86, 58], [60, 40], [86, 20]].map(([x, y]) => `<path d="M${x} ${y} q-14 -10 -18 2 q10 8 18 -2z" fill="#7ccf5f" ${SK(2)}/>`).join("")}`,
+  nest:`<path d="M10 54 Q50 96 90 54Z" fill="#a8774c" ${SK()}/>${[0, 1, 2, 3].map(i => `<path d="M${14 + i * 4} ${58 + i * 6} Q50 ${66 + i * 8} ${86 - i * 4} ${58 + i * 6}" fill="none" stroke="#6b4428" stroke-width="2"/>`).join("")}<ellipse cx="38" cy="52" rx="10" ry="8" fill="#e6f6ff" ${SK(2.5)}/><ellipse cx="58" cy="50" rx="10" ry="8" fill="#e6f6ff" ${SK(2.5)}/>`,
+  hive:`${[0, 1, 2, 3].map(i => `<ellipse cx="50" cy="${24 + i * 16}" rx="${18 + i * 7}" ry="10" fill="#ffc93c" ${SK(3)}/>`).join("")}<ellipse cx="50" cy="80" rx="12" ry="7" fill="#3a3a44"/><path d="M50 8 V14" ${SK(4)}/>`,
+  web:`${[0, 30, 60, 90, 120, 150].map(a => `<path d="M10 50 H90" stroke="${INK}" stroke-width="2" transform="rotate(${a} 50 50)"/>`).join("")}${[14, 26, 38].map(r => `<polygon points="${Array.from({ length: 12 }, (_, i) => { const t = i * Math.PI / 6; return (50 + r * Math.cos(t)).toFixed(1) + "," + (50 + r * Math.sin(t)).toFixed(1); }).join(" ")}" fill="none" stroke="${INK}" stroke-width="1.8"/>`).join("")}`,
+  kennel:`<path d="M14 90 V46 L50 16 L86 46 V90Z" fill="#c98a4b" ${SK()}/><path d="M8 50 L50 12 L92 50" fill="none" stroke="#e53950" stroke-width="8" stroke-linecap="round"/><path d="M36 90 V64 Q50 50 64 64 V90Z" fill="#3a2016" ${SK(3)}/>`,
+  burrow:`<rect x="0" y="40" width="100" height="60" fill="#a8774c"/><path d="M0 40 H100" stroke="#2bb673" stroke-width="6"/><path d="M30 40 Q34 60 50 64 Q70 68 74 84" fill="none" stroke="#3a2016" stroke-width="16" stroke-linecap="round"/><ellipse cx="74" cy="84" rx="14" ry="9" fill="#3a2016"/>`,
+  pen:`<path d="M6 86 H94 M6 60 H94" ${SK(5)}/>${[10, 30, 50, 70, 90].map(x => `<path d="M${x} 50 V92" stroke="#8a5a3c" stroke-width="6"/>`).join("")}<path d="M6 60 H94 M6 76 H94" stroke="#c98a4b" stroke-width="4"/>`,
+  pig:`<ellipse cx="50" cy="56" rx="34" ry="22" fill="#ffb3c6" ${SK()}/><circle cx="82" cy="50" r="14" fill="#ffb3c6" ${SK(3)}/><ellipse cx="90" cy="52" rx="6" ry="5" fill="#ff8fab" ${SK(2)}/><path d="M30 74 V88 M44 76 V90 M58 76 V90 M70 74 V88" ${SK(5)}/><path d="M16 50 q-8 -4 -4 -10" fill="none" ${SK(3)}/><circle cx="80" cy="44" r="2" fill="${INK}"/>`
+});
+
+/* ======================= SCHOOL P3: First term ======================= */
+/* ---- 1. Measuring mass ---- */
+const S3PAIR = [["An elephant", "elephant", "A goat", "goat"], ["A 50 kg bag of rice", "sack", "A cup", "cup"], ["A yam tuber", "yam", "A groundnut", "groundnut"], ["A stone", "rock", "A feather", "feather"], ["A car", "car", "A bicycle", "bicycle"],
+  ["A school bag full of books", "bag", "A pencil", "pencil"], ["A cow", "cow", "A hen", "hen"], ["A bucket of water", "bucket", "A spoon", "spoon"], ["A television", "tv", "A phone", "phone"], ["A lorry", "lorry", "A toy car", "toycar"]];
+const S3UNIT = [["A bag of rice", "Kilograms"], ["A baby", "Kilograms"], ["A sweet", "Grams"], ["A letter", "Grams"], ["A big yam tuber", "Kilograms"], ["A spoon of salt", "Grams"], ["A cow", "Kilograms"], ["A pencil", "Grams"], ["A grown-up", "Kilograms"], ["A bag of cement", "Kilograms"], ["A feather", "Grams"], ["A coin", "Grams"]];
+function scalePic(L, R, leftHeavy, labels){
+  const t = leftHeavy === undefined ? 0 : leftHeavy ? -12 : 12;
+  return SV("0 0 400 260", `${SKY("#fff6d1")}<path d="M200 230 V70" stroke="${INK}" stroke-width="8"/><path d="M150 236 H250" stroke="${INK}" stroke-width="10" stroke-linecap="round"/>
+    <g transform="rotate(${t} 200 70)"><path d="M70 70 H330" stroke="${INK}" stroke-width="7" stroke-linecap="round"/>
+      <g transform="rotate(${-t} 90 70)"><path d="M90 70 L60 130 H120Z" fill="none" stroke="${INK}" stroke-width="2.5"/><path d="M50 130 H130 Q120 150 90 150 Q60 150 50 130Z" fill="#ffd43b" stroke="${INK}" stroke-width="3"/>${put(L, 90, 110, 64)}</g>
+      <g transform="rotate(${-t} 310 70)"><path d="M310 70 L280 130 H340Z" fill="none" stroke="${INK}" stroke-width="2.5"/><path d="M270 130 H350 Q340 150 310 150 Q280 150 270 130Z" fill="#ffd43b" stroke="${INK}" stroke-width="3"/>${put(R, 310, 110, 64)}</g></g>
+    <circle cx="200" cy="70" r="8" fill="#e53950" stroke="${INK}" stroke-width="3"/>${labels ? TAG(90, 200, labels[0], 12) + TAG(310, 200, labels[1], 12) : ""}`);
+}
+const S3MASSTF = [["Mass tells us how heavy something is.", true, "Heavy things have a big mass."], ["We measure mass in kilograms and grams.", true, "kg and g for short."], ["1 kilogram is the same as 1,000 grams.", true, "Kilo means a thousand."],
+  ["A bigger thing is always heavier.", false, "A big pillow can be lighter than a small stone."], ["A balance scale tips down on the heavier side.", true, "The heavy side goes down."], ["A feather is heavier than a stone.", false, "The stone is heavier."],
+  ["Traders in the market use scales to weigh food.", true, "So customers pay a fair price."], ["We use a ruler to measure mass.", false, "We use a scale. A ruler measures length."], ["A newborn baby is weighed in kilograms.", true, "Nurses weigh babies to check they are growing."],
+  ["A bag of cement is about 50 kilograms.", true, "That is why builders carry it carefully."], ["A sweet is measured in grams.", true, "Small, light things are measured in grams."], ["Two things the same size always weigh the same.", false, "A ball of cotton wool and a ball of clay can be the same size but not the same mass."]];
+const MASS3 = { nm:"Measuring mass", icon:"kscale", c:"#fff1b8", ds:"Heavy or light? Use a balance and a scale, and measure in kilograms and grams, just like traders in the market!",
+  facts:["[Mass] tells us how heavy something is.", "We measure mass in [kilograms] and grams.", "[1,000] grams make 1 kilogram.", "A balance tips down on the [heavier] side.", "We use a [scale] to measure mass.", "Bigger is not always [heavier]."],
+  slides:[
+    { v:() => scalePic("rock", "feather", true, ["Heavy", "Light"]), t:"Mass tells us how heavy something is. On a balance, the heavier side goes down. This stone is heavier than the feather." },
+    { v:() => scalePic("yam", "yam"), t:"When both sides have the same mass, the balance stays level." },
+    { v:() => ringRow([["kscale", "Kitchen scale"], ["scales", "Balance"], ["kgweight", "Weights"]], "Tools for measuring mass", "#eaf6fd"), t:"We measure mass with scales: a kitchen scale, a balance with weights, or the big scales traders use in the market." },
+    { v:() => SV("0 0 400 260", `${SKY("#fff6d1")}${RING(110, 100, 50, "sack")}${RING(290, 100, 50, "coin")}${TAG(110, 176, "Kilograms (kg)", 13)}${TAG(290, 176, "Grams (g)", 13)}${TAG(200, 232, "1,000 grams = 1 kilogram", 13)}`), t:"We measure heavy things in kilograms, like a bag of rice. We measure light things in grams, like a coin or a sweet. 1,000 grams make 1 kilogram." },
+    { v:() => SV("0 0 400 260", `${SKY("#eaf6fd")}${put("balloon", 110, 110, 120)}${put("marble", 290, 120, 70)}${TAG(110, 200, "Big but light", 13)}${TAG(290, 200, "Small but heavy", 13)}`), t:"Bigger is not always heavier! A big balloon is very light. A small marble is heavier." },
+    { v:() => superPic("Traders, nurses and pharmacists", ["kscale", "sack", "kgweight", "pills"], { shirt:"#ff8a5b" }),
+      t:"Science superpower! Market traders weigh rice and beans so the price is fair. Nurses weigh babies to check they are growing well. Pharmacists measure medicines very carefully." }],
+  home:{ nm:"Make a hanger balance", steps:["With a grown-up, hang a clothes hanger from a door handle.", "Tie a small bag or cup to each end with string.", "Put a spoon in one bag and a pencil in the other. Which side goes down?", "Try other small things. Line them up from lightest to heaviest."], q:"What was the heaviest thing you tested?" },
+  gens:[
+    () => { const [a, ka, b, kb] = pick(S3PAIR), sw = Math.random() < .5; return QP3("Which one is heavier?", [ka, a], [[kb, b]], { ex:a + " is heavier.", key:"hv|" + a }); },
+    () => { const [a, ka, b, kb] = pick(S3PAIR); return QP3("Which one is lighter?", [kb, b], [[ka, a]], { ex:b + " is lighter.", key:"lt|" + b }); },
+    () => { const [a, ka, b, kb] = pick(S3PAIR), sw = Math.random() < .5; return Q3("Which side of the balance is heavier?", sw ? "The left side" : "The right side", ["The left side", "The right side", "They are the same"], { ex:(sw ? a : a) + " is heavier, so that side goes down.", vis:sw ? scalePic(ka, kb, true) : scalePic(kb, ka, false), key:"bal|" + a + "|" + sw }); },
+    () => { const [t, u] = pick(S3UNIT); return Q3(`Would you measure ${t.charAt(0).toLowerCase() + t.slice(1)} in kilograms or grams?`, u, ["Kilograms", "Grams"], { n:2, ex:u + "." }); },
+    () => { const a = 2 + Math.floor(Math.random() * 8), b = a + 1 + Math.floor(Math.random() * 5), f = pick([["rice", "beans"], ["garri", "yam"], ["maize", "groundnuts"]]), sw = Math.random() < .5;
+      return Q3(`A bag of ${f[0]} is ${sw ? b : a} kg. A bag of ${f[1]} is ${sw ? a : b} kg. Which is heavier?`, "The " + (sw ? f[0] : f[1]), ["The " + f[0], "The " + f[1], "They are the same"], { ex:b + " kg is more than " + a + " kg.", key:"num|" + a + "|" + b + "|" + f[0] + "|" + sw }); },
+    tf(S3MASSTF),
+    () => QP3("Which tool measures mass?", ["kscale", "A scale"], [["ruler", "A ruler"], ["thermo", "A thermometer"], ["clock", "A clock"]], { ex:"A scale measures mass." }),
+    () => Q3("How many grams make 1 kilogram?", "1,000", ["10", "100"], { ex:"Kilo means a thousand." }),
+    () => Q3("What does kg stand for?", "Kilogram", ["Kilometre", "King"], { ex:"We measure heavy things in kilograms." }),
+    () => Q3("What does mass tell us?", "How heavy something is", ["How long something is", "How hot something is"], { ex:"We measure it with a scale." }),
+    () => Q3("On a balance, what happens to the heavier side?", "It goes down", ["It goes up", "It disappears"], { ex:"The heavy side drops." }),
+    () => Q3("What does a level balance show?", "Both sides have the same mass", ["One side is empty", "The balance is broken"], { ex:"Same mass, level balance." }),
+    () => Q3("Why do nurses weigh babies?", "To check they are growing well", ["To make them sleep", "To choose their names"], { ex:"Weight shows healthy growth." }),
+    () => Q3("Which is heavier: 1 kg of stones or 1 kg of feathers?", "They are the same", ["The stones", "The feathers"], { ex:"1 kg is 1 kg! The feathers just take up more space." }),
+    () => Q3("Who uses scales in the market?", "Traders", ["Pilots", "Footballers"], { ex:"So everyone pays a fair price." })
+  ] };
+
+/* ---- 2. Measuring time ---- */
+const S3DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const S3MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const S3UNITQ = [["How many seconds are in a minute?", "60", ["30", "100", "24"]], ["How many minutes are in an hour?", "60", ["24", "100", "12"]], ["How many hours are in a day?", "24", ["12", "60", "7"]], ["How many days are in a week?", "7", ["5", "10", "12"]],
+  ["How many months are in a year?", "12", ["10", "7", "24"]], ["How many days are in a year (not a leap year)?", "365", ["100", "300", "52"]], ["About how many weeks are in a year?", "52", ["12", "30", "100"]]];
+const S3TOOL = [["clock", "A clock", "Telling the time of day"], ["calendar", "A calendar", "Finding the day and date"], ["stopwatch", "A stopwatch", "Timing a race"], ["sundial", "A sundial", "Telling the time using a shadow"], ["hourglass", "An hourglass", "Timing a few minutes with sand"]];
+function clockPic(h, m){ const ha = (h % 12 + m / 60) * 30, ma = m * 6;
+  return SV("0 0 400 260", `${SKY("#eaf6fd")}<circle cx="200" cy="130" r="100" fill="#fff" stroke="${INK}" stroke-width="6"/>${Array.from({ length: 12 }, (_, i) => { const a = (i + 1) * 30 * Math.PI / 180; return TX(200 + 80 * Math.sin(a), 138 - 80 * Math.cos(a), String(i + 1), 20, INK); }).join("")}
+    <path d="M200 130 L${(200 + 50 * Math.sin(ha * Math.PI / 180)).toFixed(1)} ${(130 - 50 * Math.cos(ha * Math.PI / 180)).toFixed(1)}" stroke="${INK}" stroke-width="9" stroke-linecap="round"/><path d="M200 130 L${(200 + 76 * Math.sin(ma * Math.PI / 180)).toFixed(1)} ${(130 - 76 * Math.cos(ma * Math.PI / 180)).toFixed(1)}" stroke="#e53950" stroke-width="5" stroke-linecap="round"/><circle cx="200" cy="130" r="7" fill="${INK}"/>`); }
+const S3TIMETF = [["There are 60 minutes in an hour.", true, "And 60 seconds in a minute."], ["A week has 10 days.", false, "A week has 7 days."], ["The short hand on a clock shows the hour.", true, "The long hand shows the minutes."],
+  ["A sundial uses a shadow to tell the time.", true, "The shadow moves as the Sun moves across the sky."], ["There are 12 months in a year.", true, "January to December."], ["A day has 24 hours.", true, "Day and night together."],
+  ["A calendar shows days, weeks and months.", true, "Families use it to plan."], ["The Sun rises in the west.", false, "The Sun rises in the east and sets in the west."], ["A stopwatch is used to time races.", true, "It measures seconds."],
+  ["January is the first month of the year.", true, "December is the last."], ["Sunday comes after Monday.", false, "Monday comes after Sunday."], ["Being on time is a good habit.", true, "Like getting to school before the bell!"]];
+const TIME3 = { nm:"Measuring time", icon:"clock", c:"#dbe4ff", ds:"Seconds, minutes, hours, days, weeks, months and years! Read a clock, use a calendar, and tell the time with a shadow.",
+  facts:["[60] seconds make a minute.", "60 minutes make an [hour].", "24 hours make a [day].", "7 days make a [week].", "12 months make a [year].", "A [sundial] uses a shadow to tell the time."],
+  slides:[
+    { v:() => clockPic(3, 0), t:"A clock tells us the time. The short hand points to the hour. The long hand points to the minutes. This clock says 3 o'clock." },
+    { v:() => clockPic(7, 30), t:"When the long hand points to 6, it is half past the hour. This clock says half past 7." },
+    { v:() => SV("0 0 400 260", `${SKY("#fff6d1")}${[["60 seconds", "1 minute"], ["60 minutes", "1 hour"], ["24 hours", "1 day"], ["7 days", "1 week"], ["12 months", "1 year"]].map(([a, b], j) => TAG(130, 34 + j * 44, a, 13) + TX(205, 40 + j * 44, "=", 18, INK) + TAG(280, 34 + j * 44, b, 13)).join("")}`), t:"60 seconds make 1 minute. 60 minutes make 1 hour. 24 hours make 1 day. 7 days make 1 week. And 12 months make 1 year." },
+    { v:() => ringRow(S3TOOL.map(([k, n]) => [k, cap1(n.replace(/^An? /, ""))]), "Tools for measuring time", "#eaf6fd"), t:"We measure time with clocks and watches, calendars, stopwatches for races, and long ago with sundials and hourglasses." },
+    { v:() => SV("0 0 400 260", `${SKY()}${SUNC(330, 50, 26)}${HILL(200)}${put("sundial", 170, 170, 150)}${TAG(200, 246, "The shadow moves as the Sun moves", 12)}`), t:"Long ago, people used the Sun to tell the time. A sundial's shadow moves as the Sun moves across the sky, from east to west." },
+    { v:() => superPic("Pilots, doctors and timekeepers", ["clock", "stopwatch", "plane", "calendar"], { shirt:"#3ea8e0" }),
+      t:"Science superpower! Pilots and train drivers must keep perfect time. Doctors time a patient's heartbeat. Sports timekeepers measure races to a hundredth of a second!" }],
+  home:{ nm:"Shadow clock", steps:["On a sunny morning, push a stick into the ground outside, with a grown-up.", "Put a small stone at the end of its shadow. Write the time.", "Every hour, put a new stone at the end of the shadow.", "What happens to the shadow during the day?"], q:"When was the shadow shortest?" },
+  gens:[
+    () => { const [q, a, w] = pick(S3UNITQ); return Q3(q, a, w, { ex:a + "." }); },
+    () => { const i = Math.floor(Math.random() * 7); return Q3(`Which day comes after ${S3DAYS[i]}?`, S3DAYS[(i + 1) % 7], S3DAYS.filter((_, j) => j !== (i + 1) % 7 && j !== i), { ex:S3DAYS[(i + 1) % 7] + "." }); },
+    () => { const i = Math.floor(Math.random() * 7); return Q3(`Which day comes before ${S3DAYS[i]}?`, S3DAYS[(i + 6) % 7], S3DAYS.filter((_, j) => j !== (i + 6) % 7 && j !== i), { ex:S3DAYS[(i + 6) % 7] + "." }); },
+    () => { const i = Math.floor(Math.random() * 12); return Q3(`Which month comes after ${S3MONTHS[i]}?`, S3MONTHS[(i + 1) % 12], S3MONTHS.filter((_, j) => j !== (i + 1) % 12 && j !== i), { ex:S3MONTHS[(i + 1) % 12] + "." }); },
+    () => { const h = 1 + Math.floor(Math.random() * 12); return Q3("What time does the clock show?", h + " o'clock", [((h % 12) + 1) + " o'clock", (((h + 10) % 12) + 1) + " o'clock", "Half past " + h], { ex:"The short hand points to " + h + ", the long hand to 12.", vis:clockPic(h, 0), key:"ck|" + h }); },
+    () => { const h = 1 + Math.floor(Math.random() * 12); return Q3("What time does the clock show?", "Half past " + h, ["Half past " + ((h % 12) + 1), h + " o'clock", ((h % 12) + 1) + " o'clock"], { ex:"The long hand points to 6: half past " + h + ".", vis:clockPic(h, 30), key:"hp|" + h }); },
+    () => { const [k, n, u] = pick(S3TOOL); return Q3(`What is ${n.charAt(0).toLowerCase() + n.slice(1)} used for?`, u, S3TOOL.map(x => x[2]), { ex:u + ".", vis:bigIco(k, "#eaf6fd") }); },
+    () => { const [k, n, u] = pick(S3TOOL); return QP3(`Which tool is used for ${u.charAt(0).toLowerCase() + u.slice(1)}?`, [k, n], S3TOOL.map(x => [x[0], x[1]]), { ex:n + "." }); },
+    () => QO("Put these days in order.", S3DAYS.slice(1, 5).map(d => ({ h:"", txt:true, v:d, lab:d })), { ex:"Monday, Tuesday, Wednesday, Thursday." }),
+    () => QO("Put these months in order.", S3MONTHS.slice(0, 4).map(d => ({ h:"", txt:true, v:d, lab:d })), { ex:"January, February, March, April." }),
+    () => QO("Put these from shortest to longest.", ["1 minute", "1 hour", "1 day", "1 week"].map(d => ({ h:"", txt:true, v:d, lab:d })), { ex:"Minute, hour, day, week." }),
+    tf(S3TIMETF),
+    () => Q3("Which hand on a clock shows the hour?", "The short hand", ["The long hand", "The red hand only"], { ex:"The long hand shows minutes." }),
+    () => Q3("Where does the Sun rise?", "In the east", ["In the west", "In the north"], { ex:"And it sets in the west." }),
+    () => Q3("What is the first month of the year?", "January", ["March", "December"], { ex:"January to December." }),
+    () => Q3("What is the last month of the year?", "December", ["January", "June"], { ex:"Then a new year begins." }),
+    () => Q3("When is a shadow shortest?", "Around midday", ["Early morning", "Late evening"], { ex:"The Sun is high in the sky." })
+  ] };
+
+/* ---- 3. Light energy ---- */
+const S3SRC = [["sun", "The Sun", "Natural"], ["lightning", "Lightning", "Natural"], ["star", "The stars", "Natural"], ["fire", "A fire", "Natural"], ["bulb", "A bulb", "Made by people"], ["torch", "A torch", "Made by people"], ["candle", "A candle", "Made by people"], ["lantern", "A lantern", "Made by people"], ["tv", "A television screen", "Made by people"], ["phone", "A phone screen", "Made by people"]];
+const S3NOTSRC = [["mirror", "A mirror"], ["night", "The Moon"], ["spoon", "A shiny spoon"], ["book", "A book"], ["rock", "A stone"]];
+const S3SEE = [["window", "A clear glass window", "Transparent"], ["drop", "Clean water", "Transparent"], ["bottle", "A clear plastic bottle", "Transparent"], ["paper", "Tracing paper", "Translucent"], ["cloud", "A cloud", "Translucent"], ["wood", "A piece of wood", "Opaque"], ["book", "A book", "Opaque"], ["house", "A brick wall", "Opaque"], ["spoon", "A metal spoon", "Opaque"], ["hand", "Your hand", "Opaque"]];
+const S3LIGHTTF = [["The Sun is our main source of light.", true, "It gives light and heat."], ["The Moon makes its own light.", false, "The Moon reflects light from the Sun."], ["Light travels in straight lines.", true, "That's why we can't see round corners."],
+  ["Shadows form when an opaque object blocks light.", true, "Light cannot pass through it."], ["You can see clearly through transparent things.", true, "Like clean glass."], ["Wood lets light pass through.", false, "Wood is opaque."],
+  ["Shadows are longest in the early morning and evening.", true, "The Sun is low in the sky."], ["We see things when light enters our eyes.", true, "No light, no sight!"], ["Never look straight at the Sun.", true, "It can damage your eyes."],
+  ["A torch is a natural source of light.", false, "People made the torch."], ["Some animals, like fireflies, make their own light.", true, "Nature's little lamps."], ["Light is faster than sound.", true, "We see lightning before we hear thunder."]];
+const LIGHT3 = { nm:"Light energy", icon:"torch", c:"#fff1b8", ds:"The Sun, bulbs and fireflies give light! Light travels in straight lines, passes through some things, and makes shadows.",
+  facts:["The [Sun] is our main source of light.", "The Moon only [reflects] sunlight.", "Light travels in [straight] lines.", "[Transparent] things let light through clearly.", "[Opaque] things block light.", "A [shadow] forms where light is blocked."],
+  slides:[
+    { v:() => SV("0 0 400 260", `${SKY("#fff6d1")}<path d="M200 20 V230" stroke="${INK}" stroke-width="3" stroke-dasharray="6 6"/>${TAG(100, 28, "Natural", 14)}${TAG(300, 28, "Made by people", 14)}${[["sun", 60, 100], ["lightning", 140, 100], ["fire", 100, 180]].map(([k, x, y]) => put(k, x, y, 64)).join("")}${[["bulb", 260, 100], ["torch", 340, 100], ["candle", 260, 180], ["lantern", 340, 180]].map(([k, x, y]) => put(k, x, y, 60)).join("")}`),
+      t:"Light comes from light sources. Natural sources include the Sun, lightning, stars and fire. People make light sources too: bulbs, torches, candles and lanterns." },
+    { v:() => SV("0 0 400 260", `${starsBg()}${SUNC(70, 130, 40)}${ARW(120, 130, 260, 130, "#ffd43b", 5, true)}<circle cx="300" cy="130" r="34" fill="#dfe6ef" stroke="${INK}" stroke-width="4"/>${TAG(300, 200, "The Moon reflects sunlight", 12)}`), t:"The Moon is not a light source. It shines because it reflects light from the Sun." },
+    { v:() => SV("0 0 400 260", `${SKY("#3a4766")}${put("torch", 70, 130, 90)}<path d="M110 120 L360 70 L360 190 L110 140Z" fill="#ffd43b" opacity=".45"/>${TAG(250, 230, "Light travels in straight lines", 12)}`), t:"Light travels in straight lines. That is why a torch makes a straight beam, and why we cannot see round corners." },
+    { v:() => ringRow([["window", "Transparent"], ["paper", "Translucent"], ["wood", "Opaque"]], "How much light passes through?", "#eaf6fd"), t:"Transparent things, like clear glass, let light through, so we see clearly. Translucent things, like tracing paper, let some light through. Opaque things, like wood, block light." },
+    { v:() => SV("0 0 400 260", `${SKY()}${SUNC(60, 60, 30)}${HILL(200)}${put("tree", 180, 140, 120)}<path d="M200 200 L370 230 L360 214 L210 196Z" fill="#2a2540" opacity=".35"/>${TAG(300, 246, "A shadow", 13)}`), t:"A shadow forms when an opaque object blocks the light. The shadow is on the side away from the light." },
+    { v:() => superPic("Electricians and solar engineers", ["bulb", "solar", "torch", "sun"], { shirt:"#ffb02e" }),
+      t:"Science superpower! Electricians light up our homes and streets. Solar engineers put up solar street lights, so roads are safer at night." }],
+  home:{ nm:"Shadow puppets", steps:["In the evening, with a grown-up, shine a torch at a plain wall.", "Hold your hands between the torch and the wall. Make a bird, a dog or a rabbit!", "Move your hands closer to the torch. What happens to the shadow?", "Try a glass, a paper and a book. Which make the darkest shadows?"], q:"What happened when your hand moved closer to the torch?" },
+  gens:[
+    () => { const [k, n, t] = pick(S3SRC); return Q3(`Is ${n.charAt(0).toLowerCase() + n.slice(1)} a natural light source or one made by people?`, t, ["Natural", "Made by people"], { n:2, ex:n + ": " + t.toLowerCase() + ".", vis:bigIco(k, "#fff6d1") }); },
+    () => { const r = pick(S3SRC); return QP3("Which one is a source of light?", [r[0], r[1]], S3NOTSRC, { ex:r[1] + " gives light." }); },
+    () => { const r = pick(S3NOTSRC); return QP3("Which one is NOT a source of light?", r, S3SRC.map(x => [x[0], x[1]]), { ex:r[1] + " does not make its own light." }); },
+    () => { const [k, n, t] = pick(S3SEE); return Q3(`Is ${n.charAt(0).toLowerCase() + n.slice(1)} transparent, translucent or opaque?`, t, ["Transparent", "Translucent", "Opaque"], { ex:n + " is " + t.toLowerCase() + ".", vis:bigIco(k, "#eaf6fd") }); },
+    () => { const t = pick(["Transparent", "Opaque"]), r = pick(S3SEE.filter(x => x[2] === t)); return QP3(`Which one is ${t.toLowerCase()}?`, [r[0], r[1]], S3SEE.filter(x => x[2] !== t).map(x => [x[0], x[1]]), { ex:r[1] + " is " + t.toLowerCase() + ".", key:"tr|" + t + "|" + r[1] }); },
+    tf(S3LIGHTTF),
+    () => Q3("Why does the Moon shine?", "It reflects light from the Sun", ["It has bulbs", "It is on fire"], { ex:"The Moon is not a light source." }),
+    () => Q3("How does light travel?", "In straight lines", ["Round corners", "In circles"], { ex:"That's why we see beams." }),
+    () => Q3("What do we call things that block all light?", "Opaque", ["Transparent", "Translucent"], { ex:"Like wood or walls." }),
+    () => Q3("What do we call things we can see through clearly?", "Transparent", ["Opaque", "Translucent"], { ex:"Like clean glass." }),
+    () => Q3("What makes a shadow?", "An object blocking light", ["Light passing through glass", "Rain"], { ex:"Opaque objects make shadows." }),
+    () => Q3("Which insect makes its own light?", "A firefly", ["An ant", "A bee"], { ex:"Fireflies glow at night." }),
+    () => Q3("When are shadows longest?", "Early morning and late evening", ["At midday", "At midnight"], { ex:"When the Sun is low." }),
+    () => Q3("How do we see things?", "Light enters our eyes", ["Our eyes shoot out light", "We hear them"], { ex:"No light, no sight." }),
+    () => Q3("What happens to a shadow when you move closer to the torch?", "It gets bigger", ["It gets smaller", "It disappears"], { ex:"You block more light." })
+  ] };
+
+/* ---- 4. Mirrors and reflection ---- */
+const S3MWORDS = [["MOM", true], ["WOW", true], ["TOT", true], ["OTTO", true], ["AHA", true], ["CAT", false], ["BED", false], ["DOG", false], ["SUN", false], ["FISH", false], ["RAIN", false], ["BOOK", false]];
+const S3MREAD = ["SUN", "BAG", "DRUM", "FISH", "YAM", "RICE", "BEAN", "LEAF"];
+const S3MUSE = [["A driver's side mirror", "To see cars behind"], ["A dentist's little mirror", "To see the back of your teeth"], ["A periscope", "To see over a wall"], ["A bathroom mirror", "To see yourself when you brush and wash"], ["The shiny inside of a torch", "To make the beam brighter"]];
+const S3SHINY = [["mirror", "A mirror"], ["spoon", "A shiny spoon"], ["drop", "Still, clear water"], ["window", "A window at night"], ["coin", "A new coin"]];
+const S3DULL = [["wood", "A piece of wood"], ["book", "A book"], ["cottonwool", "Cotton wool"], ["claypot", "A clay pot"], ["sand", "Sand"]];
+const mirrorWord = w => SV("0 0 400 260", `${SKY("#eaf6fd")}<rect x="60" y="60" width="280" height="130" rx="12" fill="#dff4ff" stroke="${INK}" stroke-width="5"/><path d="M80 80 L120 70 M90 100 L150 76" stroke="#fff" stroke-width="5" stroke-linecap="round"/><g transform="translate(400 0) scale(-1 1)">${TX(200, 150, w, 54, INK)}</g>`);
+const S3MIRTF = [["A mirror reflects light.", true, "That's how we see our reflection."], ["In a mirror, left and right look swapped.", true, "Raise your right hand, and your image seems to raise its left."], ["A flat mirror makes you look much bigger.", false, "A flat mirror shows you the same size."],
+  ["Still water can act like a mirror.", true, "You can see trees reflected in a still pond."], ["A periscope uses two mirrors.", true, "To see over walls."], ["Broken mirrors are safe to play with.", false, "Broken glass is sharp. Tell a grown-up."],
+  ["Never shine a mirror into someone's eyes.", true, "Reflected sunlight can hurt eyes."], ["Shiny surfaces reflect more light than dull ones.", true, "That's why mirrors are shiny."], ["Dentists use small mirrors.", true, "To see the backs of your teeth."],
+  ["A mirror is made of wood.", false, "Most mirrors are glass with a shiny coating behind."], ["Cars have mirrors so drivers can see behind them.", true, "Wing mirrors and a rear-view mirror."], ["Your reflection is upside down in a flat mirror.", false, "It's the right way up, but left and right swap."]];
+const MIRROR3 = { nm:"Mirrors and reflection", icon:"mirror", c:"#dff4ff", ds:"How does a mirror work? Discover reflections, mirror writing, and how drivers, dentists and periscopes use mirrors.",
+  facts:["A mirror [reflects] light.", "In a mirror, left and right look [swapped].", "A flat mirror shows things the same [size].", "[Shiny] surfaces reflect light best.", "A [periscope] uses two mirrors.", "Never shine mirrors into [eyes]."],
+  slides:[
+    { v:() => SV("0 0 400 260", `${SKY("#eaf6fd")}<rect x="190" y="30" width="20" height="200" fill="#bfe8ff" stroke="${INK}" stroke-width="4"/>${kidArt("wave", { hy:180, s:.7, cx:110 })}<g transform="translate(400 0) scale(-1 1)">${kidArt("wave", { hy:180, s:.7, cx:110 })}</g>${TAG(110, 246, "You", 13)}${TAG(290, 246, "Your reflection", 13)}`), t:"A mirror reflects light, so we see our reflection. Wave your right hand, and your reflection seems to wave its left! In a mirror, left and right look swapped." },
+    { v:() => mirrorWord("SCIENCE"), t:"Mirror writing looks backwards. Hold it up to a mirror, and you can read it again!" },
+    { v:() => ringRow(S3SHINY.slice(0, 4).map(([k, n]) => [k, cap1(n.replace(/^An? /, "").replace("Still, clear water", "Still water").replace("window at night", "Window"))]), "Shiny things reflect", "#fff6d1"), t:"Shiny, smooth surfaces reflect light well: mirrors, shiny spoons, still water, and even a window at night." },
+    { v:() => ringRow([["car", "Driver"], ["tooth", "Dentist"], ["periscope", "Periscope"], ["mirror", "Bathroom"]], "We use mirrors", "#f1fbf5"), t:"We use mirrors every day. Drivers use them to see behind. Dentists use tiny mirrors to see your teeth. A periscope uses two mirrors to see over a wall." },
+    { v:() => SV("0 0 400 260", `${SKY("#ffe1d6")}${RING(110, 110, 50, "mirror")}${RING(290, 110, 50, "eye")}${BADGE(290, 44, 0, 16)}${TAG(110, 186, "Broken mirrors are sharp", 12)}${TAG(290, 186, "Don't shine into eyes", 12)}`), t:"Be safe with mirrors. Broken mirrors are sharp, so tell a grown-up. Never shine a mirror into someone's eyes or at a driver." },
+    { v:() => superPic("Dentists and drivers", ["tooth", "mirror", "car", "periscope"], { shirt:"#fff" }),
+      t:"Science superpower! Dentists use mirrors to check every tooth. Safe drivers check their mirrors before they turn. Submarine crews use periscopes to look above the water." }],
+  home:{ nm:"Mirror fun", steps:["With a grown-up, write your name on paper. Hold it up to a mirror. What do you see?", "Try to write a word backwards so it reads correctly in the mirror.", "Look into a shiny spoon. Is your face the right way up on both sides?", "Find 3 shiny things at home that show a reflection."], q:"What did your face look like in the spoon?" },
+  gens:[
+    () => { const w = pick(S3MREAD); return Q3("This word is in mirror writing. What does it say?", w, sample(S3MREAD.filter(x => x !== w), 3), { ex:"It says " + w + ".", vis:mirrorWord(w), key:"mw|" + w }); },
+    () => { const g = pick(S3MWORDS.filter(x => x[1])), b = sample(S3MWORDS.filter(x => !x[1]), 2); return Q3("Which word looks the same in a mirror?", g[0], b.map(x => x[0]), { ex:g[0] + " uses letters that look the same in a mirror, in a mirror-friendly order.", key:"sym|" + g[0] }); },
+    () => { const [t, u] = pick(S3MUSE); return Q3(`Why do we use ${t.charAt(0).toLowerCase() + t.slice(1)}?`, u, S3MUSE.map(x => x[1]), { ex:u + "." }); },
+    () => { const s = pick(S3SHINY); return QP3("Which one shows a clear reflection?", s, S3DULL, { ex:s[1] + " is shiny and smooth." }); },
+    () => { const s = pick(S3DULL); return QP3("Which one does NOT show a clear reflection?", s, S3SHINY, { ex:s[1] + " is dull." }); },
+    tf(S3MIRTF),
+    () => Q3("You raise your right hand in front of a mirror. Which hand does your reflection seem to raise?", "Its left hand", ["Its right hand", "Both hands"], { ex:"Left and right look swapped." }),
+    () => Q3("How many mirrors are in a simple periscope?", "Two", ["One", "Ten"], { ex:"One at the top and one at the bottom." }),
+    () => Q3("What does a mirror do to light?", "Reflects it", ["Eats it", "Makes it hot"], { ex:"Light bounces off." }),
+    () => Q3("Why do cars have side mirrors?", "So drivers can see behind", ["To look pretty", "To catch rain"], { ex:"Check before you turn!" }),
+    () => Q3("What should you do with a broken mirror?", "Tell a grown-up and don't touch it", ["Play with it", "Put it in your pocket"], { ex:"Broken glass is sharp." }),
+    () => Q3("Which surface makes the best mirror?", "Smooth and shiny", ["Rough and dull", "Soft and fluffy"], { ex:"Smooth, shiny surfaces reflect well." }),
+    () => Q3("Where can you see trees reflected outdoors?", "In a still pond", ["In a sand pile", "In a cloud of dust"], { ex:"Still water acts like a mirror." }),
+    () => Q3("Who uses a small mirror to check your teeth?", "A dentist", ["A baker", "A tailor"], { ex:"They see the backs of your teeth." })
+  ] };
+
+/* ---- 5. Local crafts and technology ---- */
+const S3CRAFT = [["Weaving aso-oke cloth", "Iseyin", "loom"], ["Dyeing cloth in ancient dye pits", "Kano", "dyepit"], ["Casting bronze heads and plaques", "Benin City", "bronzehead"], ["Making adire indigo cloth", "Abeokuta", "cloth"], ["Weaving Akwete cloth", "Akwete", "loom"], ["Carving calabashes", "Oyo", "claybowl"], ["Making pots, led by Ladi Kwali", "Abuja", "claypot"]];
+const S3MADE = [["A blacksmith", "Hoes and farm tools", "anvil"], ["A weaver", "Cloth", "loom"], ["A dyer", "Coloured cloth", "dyepit"], ["A potter", "Pots", "claypot"], ["A bronze caster", "Bronze heads and plaques", "bronzehead"], ["A leatherworker", "Bags, shoes and cushions", "bag"], ["A bead maker", "Beads", "beads"]];
+const S3LOCALNEW = [["Hand loom", "Weaving factory"], ["Grinding stone", "Grinding mill"], ["Dye pit", "Dyeing factory"], ["Blacksmith's forge", "Steel factory"], ["Hand fan", "Electric fan"], ["Clay pot", "Fridge"]];
+const S3CRAFTTF = [["Aso-oke is cloth woven on a loom.", true, "It is famous in Iseyin, Oyo State."], ["The Kano dye pits are hundreds of years old.", true, "Cloth is dyed deep blue with indigo."], ["Benin City is famous for bronze casting.", true, "Bronze casters still work on Igun Street."],
+  ["Blacksmiths heat iron to shape it.", true, "Hot iron is soft enough to hammer."], ["Local crafts are a kind of technology.", true, "People use tools and skill to make useful things."], ["Adire cloth is dyed with indigo.", true, "Abeokuta is famous for adire."],
+  ["Crafts are only done in other countries.", false, "Nigeria has many famous crafts."], ["Factories can make cloth faster than a hand loom.", true, "But hand-woven cloth is special and unique."], ["Leatherwork is famous in northern Nigeria.", true, "Kano and Sokoto leather is well known."],
+  ["Craftspeople learn their skills over many years.", true, "Often from their parents and grandparents."], ["Bronze is a kind of plastic.", false, "Bronze is a metal."], ["A loom is used for weaving.", true, "Threads go over and under."]];
+const CRAFT3 = { nm:"Local crafts and technology", icon:"loom", c:"#ffe1c2", ds:"Weaving, dyeing, bronze casting and blacksmithing! Nigerians have used clever technology for hundreds of years.",
+  facts:["Technology means using [tools] and skill to make things.", "Aso-oke is woven on a [loom].", "The [Kano] dye pits are hundreds of years old.", "[Benin City] is famous for bronze casting.", "[Blacksmiths] make hoes and farm tools.", "Factories make things [faster], but crafts are unique."],
+  slides:[
+    { v:() => SV("0 0 400 260", `${SKY("#fff6d1")}${put("loom", 120, 120, 150)}${put("cloth", 300, 120, 120)}${TAG(200, 230, "Weaving aso-oke", 13)}`), t:"Weaving is an old Nigerian technology. Weavers in Iseyin use looms to weave aso-oke, passing threads over and under. Akwete cloth is woven in Abia State." },
+    { v:() => SV("0 0 400 260", `${SKY("#ffe8c2")}${put("dyepit", 200, 120, 220)}${TAG(200, 230, "The Kano dye pits", 13)}`), t:"In Kano, dyers have used the same dye pits for hundreds of years. They dip cloth in indigo dye to make it deep blue. In Abeokuta, adire makers use indigo too." },
+    { v:() => SV("0 0 400 260", `${SKY("#eaf6fd")}${put("bronzehead", 120, 120, 150)}${put("anvil", 300, 130, 130)}${TAG(120, 222, "Bronze casting", 12)}${TAG(300, 222, "Blacksmithing", 12)}`), t:"Benin City is famous for bronze casting. Casters melt metal and pour it into clay moulds. Blacksmiths heat iron until it is soft, then hammer it into hoes and farm tools." },
+    { v:() => SV("0 0 400 260", `${SKY("#fff6d1")}${S3LOCALNEW.slice(0, 3).map(([a, b], j) => TAG(110, 50 + j * 64, a, 13) + ARW(178, 50 + j * 64, 228, 50 + j * 64, INK, 4) + TAG(300, 50 + j * 64, b, 13)).join("")}${TAG(200, 236, "Local and modern technology", 12)}`), t:"Local crafts are technology too! Today, factories can make cloth and grind grain much faster. But hand-made crafts are special, and they keep our culture alive." },
+    { v:() => ringRow([["bag", "Leather"], ["beads", "Beads"], ["claypot", "Pottery"], ["claybowl", "Calabash"]], "More Nigerian crafts", "#ffe1c2"), t:"Nigeria has many more crafts: leatherwork in Kano and Sokoto, beadwork, pottery, and calabash carving in Oyo." },
+    { v:() => superPic("Craftspeople and fashion designers", ["loom", "cloth", "anvil", "beads"], { shirt:"#2b4fae" }),
+      t:"Science superpower! Craftspeople know which materials to use and how heat, dye and tools change them. Nigerian fashion designers turn aso-oke and adire into clothes loved around the world." }],
+  home:{ nm:"Paper weaving", steps:["With a grown-up, cut 8 strips of coloured paper (a grown-up uses the scissors).", "Fold a sheet of paper in half and cut slits across it, stopping before the edge.", "Open it, and weave the strips over and under the slits.", "Each new strip starts the opposite way. You made a woven mat!"], q:"What pattern did your weaving make?" },
+  gens:[
+    () => { const [c, p] = pick(S3CRAFT); return Q3(`Which place is famous for ${c.charAt(0).toLowerCase() + c.slice(1)}?`, p, S3CRAFT.map(x => x[1]), { ex:p + "." }); },
+    () => { const [w, m, k] = pick(S3MADE); return Q3(`What does ${w.charAt(0).toLowerCase() + w.slice(1)} make?`, m, S3MADE.map(x => x[1]), { ex:w + " makes " + m.charAt(0).toLowerCase() + m.slice(1) + ".", vis:bigIco(k, "#ffe1c2") }); },
+    () => { const [w, m, k] = pick(S3MADE); return Q3(`Who makes ${m.charAt(0).toLowerCase() + m.slice(1)}?`, w, S3MADE.map(x => x[0]), { ex:w + "." }); },
+    () => { const [a, b] = pick(S3LOCALNEW); return Q3(`Which is the modern factory way, instead of a ${a.toLowerCase()}?`, b, S3LOCALNEW.map(x => x[1]), { ex:b + "." }); },
+    () => { const [a, b] = pick(S3LOCALNEW); return Q3(`Which is the older, local way, instead of ${an1(b.toLowerCase())}?`, a, S3LOCALNEW.map(x => x[0]), { ex:a + "." }); },
+    tf(S3CRAFTTF),
+    () => QP3("Which tool is used for weaving?", ["loom", "A loom"], [["anvil", "An anvil"], ["kscale", "A scale"], ["clock", "A clock"]], { ex:"Threads go over and under on a loom." }),
+    () => QP3("What does a blacksmith hammer iron on?", ["anvil", "An anvil"], [["loom", "A loom"], ["dyepit", "A dye pit"], ["claypot", "A clay pot"]], { ex:"An anvil is a heavy iron block." }),
+    () => Q3("What dye makes adire and Kano cloth deep blue?", "Indigo", ["Palm oil", "Tomato"], { ex:"Indigo comes from plants." }),
+    () => Q3("Why do blacksmiths heat iron?", "To make it soft enough to shape", ["To make it colder", "To make it float"], { ex:"Then they hammer it." }),
+    () => Q3("What is technology?", "Using tools and skill to make useful things", ["Only phones and computers", "Only things from other countries"], { ex:"Crafts are technology too!" }),
+    () => Q3("Why are hand-made crafts special?", "Each one is unique and keeps our culture alive", ["They are always cheaper", "They are made by machines"], { ex:"Skills passed down for generations." }),
+    () => Q3("What is bronze?", "A metal", ["A kind of cloth", "A kind of wood"], { ex:"It is melted and poured into moulds." })
+  ] };
+const P3T1 = [MASS3, TIME3, LIGHT3, MIRROR3, CRAFT3];
+
+/* ======================= SCHOOL P3: Second term ======================= */
+/* ---- 6. Wind and its uses ---- */
+const S3WUSE = [["Drying clothes on a line", "tshirt"], ["Flying a kite", "kite"], ["Turning a windmill", "windmill"], ["Pushing a sailing boat", "boat"], ["Carrying seeds to new places", "seed"], ["Cooling us on a hot day", "fan"], ["Blowing chaff off grain when farmers winnow", "maize"]];
+const S3WTOOL = [["windsock", "A windsock", "Shows which way the wind blows and how strong it is"], ["windvane", "A wind vane", "Points to the direction the wind comes from"], ["windmill", "A windmill", "Uses wind to pump water or make electricity"], ["kite", "A kite", "Is lifted by the wind"]];
+const S3WINDTF = [["Wind is moving air.", true, "Air moving from place to place."], ["Wind helps dry clothes.", true, "Moving air carries the water away."], ["A wind vane shows wind direction.", true, "It points into the wind."],
+  ["Wind cannot move anything.", false, "Wind can push boats, kites and seeds."], ["Some seeds are carried by the wind.", true, "Like the fluffy seeds of the silk-cotton tree."], ["Windsocks are used at airports.", true, "Pilots check the wind before landing."],
+  ["Wind turbines can make electricity.", true, "Clean energy from the wind."], ["Farmers use wind to winnow grain.", true, "The wind blows the light chaff away."], ["We can see wind.", false, "We see what it moves, like leaves and dust."],
+  ["Gentle wind is called a breeze.", true, "A strong wind is called a gale."], ["The harmattan is a dry wind.", true, "It blows from the Sahara Desert."], ["Wind always blows from the same side.", false, "Wind direction changes."]];
+const WIND3 = { nm:"Wind and its uses", icon:"windsock", c:"#dff4ff", ds:"Wind is moving air! It dries clothes, flies kites, pushes boats, spreads seeds and even makes electricity.",
+  facts:["Wind is moving [air].", "A gentle wind is a [breeze].", "A [wind vane] shows wind direction.", "A [windsock] shows direction and strength.", "Wind spreads some [seeds].", "Wind turbines make [electricity]."],
+  slides:[
+    { v:() => SV("0 0 400 260", `${SKY()}${HILL(210)}<g class="lp-blow">${[0, 1, 2].map(i => `<path d="M40 ${70 + i * 30} H180 Q200 ${70 + i * 30} 196 ${58 + i * 30}" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round"/>`).join("")}</g>${put("tree", 300, 130, 130)}${TAG(200, 246, "Wind is moving air", 13)}`), t:"Wind is moving air. We can't see it, but we see it move leaves, dust and clothes. A gentle wind is a breeze. A strong wind is a gale." },
+    { v:() => ringRow(S3WUSE.slice(0, 5).map(([u, k]) => [k, u.split(" ")[0]]), "Wind helps us", "#eaf6fd"), t:"Wind helps us. It dries clothes, flies kites, turns windmills, pushes sailing boats, and carries seeds to new places." },
+    { v:() => SV("0 0 400 260", `${SKY("#fff6d1")}${put("windsock", 110, 110, 140)}${put("windvane", 290, 110, 140)}${TAG(110, 210, "Windsock", 13)}${TAG(290, 210, "Wind vane", 13)}`), t:"A windsock shows which way the wind blows and how strong it is. Airports use them. A wind vane points to where the wind is coming from." },
+    { v:() => SV("0 0 400 260", `${SKY()}${HILL(210)}${[90, 200, 310].map(x => `<g>${put("windmill", x, 140, 130)}</g>`).join("")}${TAG(200, 246, "Wind turbines make electricity", 13)}`), t:"Wind turbines use the wind to make electricity. It is clean energy, with no smoke." },
+    { v:() => SV("0 0 400 260", `${SKY()}${HILL(214, "#e0bf94")}${kidArt("flex", { hy:150, s:.7, cx:140 })}<g class="lp-blow">${[0, 1, 2, 3].map(i => `<path d="M${210 + i * 20} ${80 + (i % 2) * 10} q10 -6 20 0" stroke="#d9b44a" stroke-width="3" fill="none"/>`).join("")}</g>${put("maize", 300, 180, 60)}${TAG(200, 246, "Winnowing: wind blows the chaff away", 12)}`), t:"Farmers winnow grain in the wind. They pour it from a tray, and the wind blows away the light chaff, while the heavy grain falls down." },
+    { v:() => superPic("Weather forecasters and engineers", ["windsock", "windvane", "windmill", "plane"], { shirt:"#3ea8e0" }),
+      t:"Science superpower! Weather forecasters at NiMet measure wind speed and direction. Engineers build wind turbines that make electricity from moving air." }],
+  home:{ nm:"Make a windsock", steps:["With a grown-up, roll a strip of card into a ring and tape it.", "Tape long strips of light paper or plastic to the ring.", "Tie string to the ring and hang it outside.", "Check it each day: which way does the wind blow, and is it strong or gentle?"], q:"Which way did the wind blow most days?" },
+  gens:[
+    () => { const [u, k] = pick(S3WUSE); return Q3("Which of these uses the wind?", u, ["Reading a book", "Boiling water", "Counting money", "Sleeping"], { ex:u + " uses wind.", vis:bigIco(k, "#eaf6fd"), key:"wu|" + u }); },
+    () => { const [k, n, j] = pick(S3WTOOL); return Q3(`What does ${n.charAt(0).toLowerCase() + n.slice(1)} do?`, j, S3WTOOL.map(x => x[2]), { ex:n + " " + j.charAt(0).toLowerCase() + j.slice(1) + ".", vis:bigIco(k, "#fff6d1") }); },
+    () => { const [k, n, j] = pick(S3WTOOL); return QP3(`Which one ${j.charAt(0).toLowerCase() + j.slice(1)}?`, [k, n], S3WTOOL.map(x => [x[0], x[1]]), { ex:n + "." }); },
+    tf(S3WINDTF),
+    () => Q3("What is wind?", "Moving air", ["Falling water", "Light from the Sun"], { ex:"Air on the move." }),
+    () => Q3("What is a gentle wind called?", "A breeze", ["A gale", "A flood"], { ex:"A strong wind is a gale." }),
+    () => Q3("Where do pilots check windsocks?", "At airports", ["In kitchens", "In classrooms"], { ex:"Wind matters for landing." }),
+    () => Q3("How do farmers use wind to clean grain?", "Winnowing: wind blows the chaff away", ["They bury the grain", "They wash it in a river"], { ex:"Heavy grain falls; light chaff blows away." }),
+    () => Q3("What can wind turbines make?", "Electricity", ["Rain", "Food"], { ex:"Clean energy from wind." }),
+    () => Q3("How does wind help some plants?", "It carries their seeds to new places", ["It waters them", "It paints them"], { ex:"Light seeds float on the wind." }),
+    () => Q3("Which dry wind blows from the Sahara?", "The harmattan", ["The sea breeze", "The monsoon rain"], { ex:"From about November to March." }),
+    () => Q3("Why do clothes dry faster on a windy day?", "Moving air carries the water away", ["Wind is wet", "Wind makes clothes heavy"], { ex:"Wind speeds up drying." }),
+    () => Q3("What pushes a sailing boat?", "The wind in its sail", ["Its engine only", "The fish"], { ex:"Sails catch the wind." })
+  ] };
+
+/* ---- 7. Harmful winds and storm safety ---- */
+const S3HARM = [["Blowing roofs off houses", "roofoff"], ["Knocking down trees", "tree"], ["Bringing down power lines", "wires"], ["Spreading bush fires", "fire"], ["Blowing dust into our eyes", "eye"], ["Damaging farm crops", "maize"], ["Making the sea rough for boats", "boat"]];
+const S3STSAFE = [["Go indoors when a storm comes", "Safe"], ["Stand under a tall tree in a storm", "Not safe"], ["Stay away from fallen power lines", "Safe"], ["Play outside in a strong storm", "Not safe"], ["Close windows and doors in a storm", "Safe"],
+  ["Cover your nose and eyes in a dust storm", "Safe"], ["Go fishing in a boat when a storm is coming", "Not safe"], ["Listen to weather warnings on the radio", "Safe"], ["Touch a fallen wire after a storm", "Not safe"], ["Tie down loose roofing sheets with a grown-up", "Safe"]];
+const S3HARMTF = [["Strong winds can blow roofs off houses.", true, "Builders fix roofs firmly."], ["Strong winds can spread bush fires.", true, "Wind pushes fire across dry grass."], ["You should shelter under a tall tree in a storm.", false, "Trees can fall or be struck by lightning."],
+  ["Fallen power lines can be very dangerous.", true, "Stay far away and tell a grown-up."], ["A tornado is a spinning column of wind.", true, "Tornadoes are rare in Nigeria."], ["Dust storms can make it hard to see and breathe.", true, "Cover your nose and mouth."],
+  ["Planting trees can slow down strong winds.", true, "Rows of trees are called windbreaks."], ["Storms are always harmless.", false, "Strong winds can cause damage."], ["Boats should stay ashore when a storm is coming.", true, "Rough water is dangerous."],
+  ["NiMet gives weather warnings.", true, "The Nigerian Meteorological Agency."], ["Strong winds can damage crops.", true, "Farmers plant windbreaks."], ["You should open all windows wide in a strong storm.", false, "Close windows and doors."]];
+const HARM3 = { nm:"Harmful winds and storm safety", icon:"tornado", c:"#e6e0ff", ds:"Strong winds can blow off roofs, knock down trees and spread fires. Learn what to do to stay safe!",
+  facts:["A very strong wind is a [gale] or storm.", "Strong winds can blow off [roofs].", "Wind can spread bush [fires].", "Go [indoors] in a storm.", "Never touch fallen power [lines].", "Rows of trees called [windbreaks] slow the wind."],
+  slides:[
+    { v:() => ringRow(S3HARM.slice(0, 4).map(([h, k]) => [k, h.split(" ").slice(-1)[0].replace(/^./, c => c.toUpperCase())]), "Strong winds can harm", "#e6e0ff"), t:"Strong winds can be harmful. They can blow roofs off houses, knock down trees, bring down power lines, and spread bush fires." },
+    { v:() => SV("0 0 400 260", `${SKY("#8a9bb0")}${HILL(214, "#5d8f4a")}${put("roofoff", 120, 150, 140)}${put("tree", 300, 160, 110)}<g class="lp-blow">${[0, 1, 2].map(i => `<path d="M20 ${60 + i * 26} H140" stroke="#fff" stroke-width="5" stroke-linecap="round"/>`).join("")}</g>${TAG(200, 246, "A storm can damage homes", 13)}`), t:"In a storm, strong winds can lift roofing sheets and break branches. Builders nail roofs down firmly to keep them safe." },
+    { v:() => SV("0 0 400 260", `${SKY("#e0c79a")}${HILL(214, "#c9b07a")}${put("fire", 120, 170, 100)}<g class="lp-blow">${[0, 1, 2].map(i => `<path d="M180 ${130 + i * 20} H330" stroke="#fff" stroke-width="5" stroke-linecap="round"/>`).join("")}</g>${TAG(200, 246, "Wind spreads bush fires", 13)}`), t:"In the dry season, strong winds can spread bush fires quickly across dry grass. That is one reason we must never burn bush." },
+    { v:() => ringRow([["house", "Go indoors"], ["window", "Close windows"], ["wires", "Avoid wires"], ["radio", "Listen to warnings"]], "Storm safety", "#e6f7e1"), t:"Stay safe in a storm. Go indoors and close the windows. Keep away from trees and fallen power lines. Listen to weather warnings from NiMet on the radio." },
+    { v:() => SV("0 0 400 260", `${SKY()}${HILL(214)}${[50, 100, 150, 200].map(x => put("tree", x, 150, 90)).join("")}${put("maize", 300, 180, 60)}${put("maize", 350, 180, 60)}<g class="lp-blow"><path d="M0 100 H40" stroke="#fff" stroke-width="5"/></g>${TAG(200, 246, "Windbreaks protect crops", 13)}`), t:"Farmers plant rows of trees called windbreaks. They slow down strong winds and protect crops and homes." },
+    { v:() => superPic("Weather forecasters and emergency workers", ["tornado", "radio", "windvane", "house"], { shirt:"#e53950" }),
+      t:"Science superpower! NiMet weather forecasters warn people when storms are coming. Emergency workers from NEMA help families whose homes are damaged." }],
+  home:{ nm:"Storm safety plan", steps:["With your family, decide the safest room in your home during a storm.", "Find the radio or phone you would use to hear weather warnings.", "Look outside for loose things that strong winds could blow away.", "Draw a poster: what to do when a storm comes."], q:"Which room is safest in your home?" },
+  gens:[
+    () => { const [h, k] = pick(S3HARM); return Q3("Which is a harmful effect of strong wind?", h, ["Drying clothes", "Flying kites", "Turning windmills", "Cooling us gently"], { ex:h + ".", vis:bigIco(k, "#e6e0ff"), key:"hm|" + h }); },
+    () => { const [d, s] = pick(S3STSAFE); return Q3(`${d}. Safe or not safe?`, s, ["Safe", "Not safe"], { n:2, ex:s === "Safe" ? "Yes, that keeps you safe." : "That is dangerous in a storm." }); },
+    () => { const g = pick(S3STSAFE.filter(x => x[1] === "Safe")), b = sample(S3STSAFE.filter(x => x[1] === "Not safe"), 2); return Q3("What should you do in a storm?", g[0], b.map(x => x[0]), { ex:g[0] + ".", key:"ss|" + g[0] }); },
+    tf(S3HARMTF),
+    () => Q3("What are rows of trees that slow the wind called?", "Windbreaks", ["Wind vanes", "Windsocks"], { ex:"They protect crops and homes." }),
+    () => Q3("Why must you never touch a fallen power line?", "It can give a deadly electric shock", ["It is too heavy", "It is dirty"], { ex:"Stay far away and tell a grown-up." }),
+    () => Q3("Why is a tall tree a bad place in a storm?", "It can fall or be struck by lightning", ["It is too cold", "Birds live there"], { ex:"Go indoors." }),
+    () => Q3("What can strong wind do to a bush fire?", "Spread it quickly", ["Put it out at once", "Turn it into rain"], { ex:"Never burn bush." }),
+    () => Q3("What should you cover in a dust storm?", "Your nose, mouth and eyes", ["Your feet", "Your ears only"], { ex:"Keep dust out." }),
+    () => Q3("Who gives weather warnings in Nigeria?", "NiMet", ["NAFDAC", "FRSC"], { ex:"The Nigerian Meteorological Agency." }),
+    () => Q3("What is a tornado?", "A spinning column of strong wind", ["A kind of rain", "A gentle breeze"], { ex:"Tornadoes are rare in Nigeria." }),
+    () => QP3("Which picture shows storm damage?", ["roofoff", "A roof blown off"], [["kite", "A kite"], ["windmill", "A windmill"], ["tshirt", "Drying clothes"]], { ex:"Strong winds can lift roofs." })
+  ] };
+
+/* ---- 8. Clean water ---- */
+const S3PURE = [["Boiling", "Kills germs"], ["Filtering through a clean cloth", "Removes dirt"], ["Letting it settle, then pouring off the clear water", "Lets mud sink to the bottom"], ["Adding water treatment tablets (with a grown-up)", "Kills germs"], ["Covering the container", "Keeps out dust and insects"]];
+const S3QUAL = [["What colour is clean water?", "Colourless", ["Brown", "Green"]], ["What does clean water smell like?", "It has no smell", ["Like fish", "Like smoke"]], ["What does clean water taste like?", "It has no taste", ["Salty", "Sweet"]], ["How does clean water look?", "Clear, with nothing floating in it", ["Cloudy with mud", "Oily on top"]]];
+const S3PACK = [["Check for a NAFDAC number", "Safe"], ["Check that the seal is not broken", "Safe"], ["Check the expiry date", "Safe"], ["Drink from a sachet that has a hole in it", "Not safe"], ["Drink water that smells strange", "Not safe"], ["Buy water left in hot sun all day", "Not safe"], ["Throw empty sachets in the bin", "Safe"], ["Throw empty sachets in the drain", "Not safe"]];
+const S3WATERTF = [["Clean water has no colour, smell or taste.", true, "Colourless, odourless and tasteless."], ["Clear water is always safe to drink.", false, "It can still have germs. Boil or treat it."], ["Boiling water kills germs.", true, "Let it cool, then cover it."],
+  ["Filtering removes dirt from water.", true, "But boil it too, to kill germs."], ["Packaged water should have a NAFDAC number.", true, "NAFDAC checks food and drinks are safe."], ["Empty water sachets should be thrown in drains.", false, "They block drains. Use a bin."],
+  ["Muddy water can be left to settle.", true, "The mud sinks to the bottom."], ["Dirty water can cause cholera and typhoid.", true, "Always drink safe water."], ["Water left in the hot sun is always fine.", false, "Store water in a cool, clean place."],
+  ["Water works clean water for towns.", true, "They settle, filter and treat it."], ["You should check the seal on bottled water.", true, "A broken seal means it may not be safe."], ["Old water should be stored uncovered.", false, "Keep water covered."]];
+const WATER3 = { nm:"Clean water", icon:"sachet", c:"#dff4ff", ds:"What makes water clean and safe? Learn to purify water, and how to check packaged water before you drink it.",
+  facts:["Clean water is colourless, [odourless] and tasteless.", "Clear water can still have [germs].", "[Boiling] kills germs.", "[Filtering] removes dirt.", "Packaged water should have a [NAFDAC] number.", "Put empty sachets in a [bin]."],
+  slides:[
+    { v:() => SV("0 0 400 260", `${SKY("#eaf6fd")}${put("drop", 110, 110, 110)}${["No colour", "No smell", "No taste"].map((t, j) => TAG(290, 70 + j * 44, t, 13)).join("")}${TAG(200, 230, "Clean water", 13)}`), t:"Clean water is colourless, odourless and tasteless. That means it has no colour, no smell and no taste. But even clear water can have germs!" },
+    { v:() => ringRow([["bucket", "Settle"], ["sieve", "Filter"], ["kettle", "Boil"], ["bottle", "Cover"]], "Making water safe", "#e6f7e1"), t:"To purify water: let it settle so mud sinks, filter it through a clean cloth, boil it to kill germs, let it cool, then keep it covered." },
+    { v:() => SV("0 0 400 260", `${SKY("#fff6d1")}${put("sachet", 110, 110, 130)}${put("bottle", 290, 110, 120)}${TAG(200, 200, "Check: NAFDAC number, seal, expiry date", 12)}`), t:"Before drinking sachet or bottled water, check three things: a NAFDAC number, an unbroken seal, and the expiry date. NAFDAC checks that food and drinks are safe." },
+    { v:() => SV("0 0 400 260", `${SKY("#e6f7e1")}${put("sachet", 110, 120, 90)}${ARW(170, 120, 240, 120, INK, 5)}${put("bin", 300, 120, 100)}${BADGE(300, 50, 1, 16)}${TAG(200, 220, "Empty sachets go in the bin", 13)}`), t:"Empty sachets and bottles go in the bin, never in drains. Blocked drains cause floods and dirty water." },
+    { v:() => SV("0 0 400 260", `${SKY()}${HILL(200)}${put("pump", 110, 150, 120)}${put("tap", 290, 140, 120)}${TAG(200, 246, "Water works clean water for towns", 13)}`), t:"Water works clean river or borehole water for whole towns. They let it settle, filter it, and treat it to kill germs, then pipe it to our taps." },
+    { v:() => superPic("Water scientists and NAFDAC inspectors", ["sachet", "drop", "pump", "sieve"], { shirt:"#3ea8e0" }),
+      t:"Science superpower! Water scientists test water for germs. NAFDAC inspectors check that packaged water and food factories are clean and safe." }],
+  home:{ nm:"Settle and filter", steps:["With a grown-up, stir a spoon of soil into a clear jar of water.", "Leave it still for an hour. What happens to the mud?", "Pour the top water slowly through a clean cloth into another jar.", "Is it clearer? Remember: it still needs boiling before drinking. Don't drink it!"], q:"How clear was your water after filtering?" },
+  gens:[
+    () => { const [m, j] = pick(S3PURE); return Q3(`What does "${m.toLowerCase()}" do to water?`, j, ["Kills germs", "Removes dirt", "Lets mud sink to the bottom", "Keeps out dust and insects", "Makes it salty"], { ex:j + "." }); },
+    () => { const [q, a, w] = pick(S3QUAL); return Q3(q, a, w, { ex:"Clean water: " + a.toLowerCase() + "." }); },
+    () => { const [d, s] = pick(S3PACK); return Q3(`${d}. Is that safe?`, s, ["Safe", "Not safe"], { n:2, ex:s === "Safe" ? "Yes, that keeps you safe." : "That is not safe." }); },
+    tf(S3WATERTF),
+    () => QO("Put the steps in order to make muddy water safe.", ["Let it settle", "Filter it", "Boil it", "Cool and cover it"].map(s => ({ h:"", txt:true, v:s, lab:s })), { ex:"Settle, filter, boil, then cool and cover." }),
+    () => Q3("What does NAFDAC check?", "That food, drinks and medicines are safe", ["How fast cars go", "The weather"], { ex:"Look for a NAFDAC number." }),
+    () => Q3("What should you check before drinking sachet water?", "A NAFDAC number, the seal and the expiry date", ["Only the colour of the pack", "Nothing"], { ex:"All three!" }),
+    () => Q3("Which method kills germs in water?", "Boiling", ["Filtering through cloth only", "Stirring"], { ex:"Boiling kills germs." }),
+    () => Q3("Which method removes bits of dirt?", "Filtering", ["Boiling", "Shaking"], { ex:"A clean cloth catches dirt." }),
+    () => Q3("What does colourless mean?", "Having no colour", ["Very colourful", "Blue"], { ex:"Clean water is colourless." }),
+    () => Q3("What does odourless mean?", "Having no smell", ["Smelling nice", "Smelling bad"], { ex:"Clean water is odourless." }),
+    () => Q3("Where should empty water sachets go?", "In a bin", ["In the drain", "On the road"], { ex:"Keep drains clear." }),
+    () => QP3("Which one helps make water safe?", ["kettle", "Boiling it"], [["bag", "A dirty bag"], ["fire", "Burning rubbish"], ["sand", "Adding sand"]], { ex:"Boiling kills germs." })
+  ] };
+
+/* ---- 9. Soil and living things ---- */
+const S3SPL = [["Holds plant roots firm", "Plants"], ["Gives plants water", "Plants"], ["Gives plants food (nutrients)", "Plants"], ["Gives a home to earthworms", "Animals"], ["Gives a home to ants and termites", "Animals"], ["Grows the grass that cows eat", "Animals"], ["Grows the crops that people eat", "People"], ["Gives clay for pots and bricks", "People"]];
+const S3SOILAN = [["worm", "Earthworm"], ["ant", "Ant"], ["mound", "Termites"], ["rat", "Rat in a burrow"], ["snake", "Snake in a hole"]];
+const S3NOTSOIL = [["bird", "Bird"], ["fish", "Fish"], ["butterfly", "Butterfly"], ["hawk", "Hawk"]];
+const S3SOILTF = [["Soil holds plant roots firm.", true, "So plants don't fall over."], ["Plants get water and food from the soil.", true, "Through their roots."], ["Earthworms live in soil.", true, "They mix it and let in air."],
+  ["Termites build mounds from soil.", true, "Termite mounds can be taller than a person!"], ["Soil is useless to animals.", false, "Many animals live in it, and it grows their food."], ["Dead leaves rot and feed the soil.", true, "This makes humus."],
+  ["Soil erosion means soil being washed or blown away.", true, "Bare soil erodes easily."], ["Planting trees and grass helps stop erosion.", true, "Roots hold soil together."], ["Bush burning makes soil healthier.", false, "It kills soil life and leaves soil bare."],
+  ["Farmers add manure to make soil rich.", true, "It adds food for plants."], ["All our food comes, in some way, from soil.", true, "Even meat comes from animals that eat plants."], ["Gully erosion is a problem in parts of south-east Nigeria.", true, "Running water cuts deep channels."]];
+const SOIL3 = { nm:"Soil and living things", icon:"mound", c:"#ffe1c2", ds:"Soil holds plants up, feeds them, and is home to worms, ants and termites. Without soil, there would be no food!",
+  facts:["Soil holds plant [roots] firm.", "Plants get water and [nutrients] from soil.", "[Earthworms] mix soil and let in air.", "Termites build [mounds] from soil.", "[Erosion] is soil washed or blown away.", "Trees and grass stop [erosion]."],
+  slides:[
+    { v:() => plantPic("Root"), t:"Soil is very important to plants. It holds their roots firm, and gives them water and nutrients, which are food for plants." },
+    { v:() => ringRow(S3SOILAN.slice(0, 4).map(([k, n]) => [k, n.split(" ")[0]]), "Animals that live in soil", "#ffe1c2"), t:"Soil is home to many animals: earthworms, ants, termites, and burrowing animals like rats." },
+    { v:() => SV("0 0 400 260", `${SKY()}${HILL(214, "#c9b07a")}${put("mound", 200, 140, 180)}${TAG(200, 246, "A termite mound", 13)}`), t:"Termites build huge mounds from soil and their saliva. Some termite mounds are taller than a grown-up!" },
+    { v:() => ringRow([["grass", "Grass"], ["cow", "Cow"], ["milk", "Milk for us"]], "All food comes from soil", "#e6f7e1"), t:"Soil grows grass that cows eat, and cows give us milk and meat. Soil grows our yam, maize and rice. Without soil, there would be no food!" },
+    { v:() => SV("0 0 400 260", `${SKY()}<path d="M-300 120 Q100 110 200 140 Q300 110 700 120 V700 H-300Z" fill="#a8774c" stroke="${INK}" stroke-width="4"/><path d="M180 140 Q200 220 210 260" stroke="#6b4428" stroke-width="18" fill="none"/>${put("seedling", 80, 110, 60)}${put("tree", 330, 80, 100)}${TAG(200, 40, "Erosion: soil washed away", 13)}`), t:"Erosion is when rain or wind washes or blows soil away. It can make deep gullies, like those in parts of south-east Nigeria. Planting trees and grass holds the soil." },
+    { v:() => superPic("Soil scientists and farmers", ["mound", "worm", "seedling", "maize"], { shirt:"#b5652f", ground:"#a8774c" }),
+      t:"Science superpower! Soil scientists test soil to tell farmers what it needs. Farmers add manure, plant cover crops, and plant trees to stop erosion." }],
+  home:{ nm:"Soil life hunt", steps:["With a grown-up, dig a small hole in the garden or a pot of soil.", "Look carefully. Can you find worms, ants, roots or dead leaves?", "Count the living things you see. Be gentle, and put them back.", "Wash your hands with soap afterwards."], q:"How many living things did you find?" },
+  gens:[
+    () => { const [d, w] = pick(S3SPL); return Q3(`Soil ${d.charAt(0).toLowerCase() + d.slice(1)}. Who does this help most?`, w, ["Plants", "Animals", "People"], { ex:"It helps " + w.toLowerCase() + "." }); },
+    () => { const a = pick(S3SOILAN); return QP3("Which one lives in or on the soil?", a, S3NOTSOIL, { ex:a[1] + " lives in soil." }); },
+    () => { const n = pick(S3NOTSOIL); return QP3("Which one does NOT live in the soil?", n, S3SOILAN, { ex:n[1] + " does not live in soil." }); },
+    tf(S3SOILTF),
+    () => Q3("What do plants get from the soil?", "Water and nutrients", ["Sunlight", "Oxygen only"], { ex:"Through their roots." }),
+    () => Q3("What are nutrients?", "Food for plants found in soil", ["A kind of insect", "A kind of rock"], { ex:"Manure adds nutrients." }),
+    () => Q3("What is soil erosion?", "Soil being washed or blown away", ["Soil getting richer", "Soil turning to water"], { ex:"Bare soil erodes easily." }),
+    () => Q3("How can we stop soil erosion?", "Plant trees and grass", ["Cut down trees", "Burn the bush"], { ex:"Roots hold soil together." }),
+    () => Q3("Which insects build tall mounds from soil?", "Termites", ["Bees", "Butterflies"], { ex:"Some are taller than a person." }),
+    () => Q3("How do earthworms help soil?", "They mix it and let in air", ["They make it hard", "They dry it out"], { ex:"Good for plant roots." }),
+    () => Q3("Why does bush burning harm soil?", "It kills soil life and leaves soil bare", ["It adds water", "It makes worms grow"], { ex:"Bare soil erodes." }),
+    () => Q3("What do dead leaves become in soil?", "Humus that feeds the soil", ["Plastic", "Stones"], { ex:"They rot and enrich the soil." })
+  ] };
+const P3T2 = [WIND3, HARM3, WATER3, SOIL3];
+
+/* ======================= SCHOOL P3: Third term ======================= */
+/* ---- 10. Living things: the seven signs of life ---- */
+const S3SIGN = [["Movement", "Moving the body or parts of it", "run"], ["Breathing", "Taking in air", "lungs"], ["Feeling", "Responding to things around them", "hand"], ["Growth", "Getting bigger", "seedling"], ["Reproduction", "Having young ones", "chick"], ["Getting rid of waste", "Removing waste from the body", "drop"], ["Feeding", "Taking in food", "jollof"]];
+const S3EX = [["A sunflower turning towards the Sun", "Feeling"], ["A baby goat getting bigger", "Growth"], ["A hen laying eggs", "Reproduction"], ["You breathing in and out", "Breathing"], ["A cow eating grass", "Feeding"], ["You sweating on a hot day", "Getting rid of waste"],
+  ["A dog running", "Movement"], ["Pulling your hand away from something hot", "Feeling"], ["A seed growing into a tree", "Growth"], ["A fish taking oxygen through its gills", "Breathing"], ["A plant's roots taking in water", "Feeding"], ["A cat having kittens", "Reproduction"]];
+const S3LV = [["goat", "A goat", 1], ["tree", "A tree", 1], ["mushroom", "A mushroom", 1], ["ant", "An ant", 1], ["fish", "A fish", 1], ["grass", "Grass", 1], ["car", "A car", 0], ["robot", "A robot", 0], ["fire", "A fire", 0], ["cloud", "A cloud", 0], ["rock", "A rock", 0], ["phone", "A phone", 0]];
+const S3LVTF = [["All living things grow.", true, "From babies or seeds to adults."], ["A car is living because it moves.", false, "A car does not grow, feed or reproduce."], ["Plants are living things.", true, "They show all seven signs of life."],
+  ["Plants can move parts of themselves.", true, "Leaves turn towards light, and some flowers open and close."], ["Fire is a living thing.", false, "Fire grows and moves, but it does not breathe, feed or reproduce like living things."], ["Living things get rid of waste.", true, "Like sweating and breathing out."],
+  ["A seed is alive.", true, "It can grow into a new plant."], ["Living things need food.", true, "Plants make theirs; animals eat theirs."], ["A stone can have young ones.", false, "Stones are non-living."],
+  ["Living things respond to things around them.", true, "Like blinking in bright light."], ["Mushrooms are living things.", true, "They are fungi."], ["To be alive, a thing must show all the signs of life.", true, "Not just one or two."]];
+const LIVE3 = { nm:"Living things", icon:"chick", c:"#c7f0d0", ds:"What makes something alive? Learn the seven signs of life, and why a car or a fire is not alive.",
+  facts:["Living things [move].", "Living things [breathe].", "Living things [feel] and respond.", "Living things [grow].", "Living things [reproduce] (have young).", "Living things feed and get rid of [waste]."],
+  slides:[
+    { v:() => ringRow(S3SIGN.slice(0, 4).map(([s, , k]) => [k, s]), "Signs of life (1)", "#e6f7e1"), t:"All living things show seven signs of life. They move, breathe, feel and respond, and grow." },
+    { v:() => ringRow(S3SIGN.slice(4).map(([s, , k]) => [k, s.replace("Getting rid of waste", "Waste")]), "Signs of life (2)", "#fff6d1"), t:"They also reproduce, which means having young ones. They get rid of waste. And they feed." },
+    { v:() => SV("0 0 400 260", `${SKY()}${HILL(214)}${put("tree", 110, 130, 150)}${SUNC(330, 50, 26)}${ARW(300, 70, 190, 110, "#ffb02e", 4, true)}${TAG(200, 246, "Plants move towards light", 13)}`), t:"Plants are alive too! They move slowly: leaves and stems turn towards the light. They take in air, water and nutrients, grow, and make seeds." },
+    { v:() => SV("0 0 400 260", `${SKY("#ffe1d6")}${RING(110, 110, 50, "car")}${RING(290, 110, 50, "fire")}${TAG(110, 186, "Moves, but not alive", 12)}${TAG(290, 186, "Grows, but not alive", 12)}`), t:"A car moves and a fire grows, but they are not alive. A car does not grow or have young. A fire does not feed and breathe like living things. Living things show all seven signs." },
+    { v:() => SV("0 0 400 260", `${SKY("#eaf6fd")}${put("seed", 110, 120, 90)}${ARW(170, 120, 230, 120, INK, 5, true)}${put("tree", 300, 110, 150)}${TAG(200, 230, "A seed is alive", 13)}`), t:"A seed may look like a stone, but it is alive! Give it water, air and warmth, and it grows into a new plant." },
+    { v:() => superPic("Biologists", ["magnifier", "microscope", "frog", "seedling"], { shirt:"#2bb673" }),
+      t:"Science superpower! Biologists are scientists who study living things. Some study plants, some study animals, and some study tiny living things with microscopes." }],
+  home:{ nm:"Alive or not?", steps:["With a grown-up, find 10 things in and around your home.", "For each one, check: does it move, breathe, feel, grow, reproduce, feed and get rid of waste?", "Put them in two groups: living and non-living.", "Which one was hardest to decide?"], q:"Which thing was hardest to decide, and why?" },
+  gens:[
+    () => { const [s, d] = pick(S3SIGN); return Q3(`Which sign of life means "${d.toLowerCase()}"?`, s, S3SIGN.map(x => x[0]), { ex:s + "." }); },
+    () => { const [e, s] = pick(S3EX); return Q3(`${e}. Which sign of life is this?`, s, S3SIGN.map(x => x[0]), { ex:s + "." }); },
+    () => { const [k, n, l] = pick(S3LV); return Q3(`Is ${n.charAt(0).toLowerCase() + n.slice(1)} living or non-living?`, l ? "Living" : "Non-living", ["Living", "Non-living"], { n:2, ex:n + " is " + (l ? "living." : "non-living."), vis:bigIco(k, "#e6f7e1") }); },
+    () => { const r = pick(S3LV.filter(x => x[2])); return QP3("Which one is a living thing?", [r[0], r[1]], S3LV.filter(x => !x[2]).map(x => [x[0], x[1]]), { ex:r[1] + " is living." }); },
+    () => { const r = pick(S3LV.filter(x => !x[2])); return QP3("Which one is NOT a living thing?", [r[0], r[1]], S3LV.filter(x => x[2]).map(x => [x[0], x[1]]), { ex:r[1] + " is non-living." }); },
+    () => { const s = pick(S3SIGN); return Q3("Which of these is a sign of life?", s[0], ["Being shiny", "Having wheels", "Being made in a factory", "Using batteries"], { ex:s[0] + " is a sign of life.", key:"sg|" + s[0] }); },
+    tf(S3LVTF),
+    () => Q3("How many signs of life are there?", "Seven", ["Three", "Ten"], { ex:"Move, breathe, feel, grow, reproduce, get rid of waste, feed." }),
+    () => Q3("What does reproduce mean?", "Have young ones", ["Run fast", "Eat food"], { ex:"Animals have babies; plants make seeds." }),
+    () => Q3("Why is a car not alive?", "It cannot grow or reproduce", ["It is too fast", "It is shiny"], { ex:"It needs a driver and fuel." }),
+    () => Q3("How do plants move?", "Slowly, turning towards light", ["They walk", "They fly"], { ex:"Leaves and stems turn to the Sun." }),
+    () => Q3("What do we call a scientist who studies living things?", "A biologist", ["A geologist", "A pilot"], { ex:"Bio means life." }),
+    () => Q3("Is a seed alive?", "Yes, it can grow into a plant", ["No, it is a stone", "Only on Sundays"], { ex:"It just needs water, air and warmth." })
+  ] };
+
+/* ---- 11. Types of plants and cash crops ---- */
+const S3PTYPE = [["tree", "A mango tree", "Tree"], ["palm", "An oil palm", "Tree"], ["shrub", "A hibiscus bush", "Shrub"], ["grass", "Elephant grass", "Grass"], ["climber", "A yam vine", "Climber"], ["ugu", "Ugu (fluted pumpkin)", "Climber"], ["maize", "Maize", "Grass"], ["flower", "A small flowering plant", "Herb"]];
+const S3TDESC = [["Tree", "Tall, with one thick woody trunk"], ["Shrub", "Woody, with many stems, shorter than a tree"], ["Herb", "Small and soft-stemmed"], ["Climber", "Has a weak stem that climbs up a support"], ["Grass", "Thin leaves and hollow or soft stems, growing close together"]];
+const S3CASH = [["cocoa", "Cocoa", "Chocolate and cocoa drinks"], ["groundnut", "Groundnut", "Groundnut oil and snacks"], ["cotton", "Cotton", "Cloth"], ["palm", "Oil palm", "Palm oil and palm kernel oil"], ["tree", "Rubber tree", "Rubber for tyres"], ["seed", "Sesame", "Sesame oil and seeds"]];
+const S3FOOD = [["yam", "Yam"], ["cassava", "Cassava"], ["maize", "Maize"], ["rice", "Rice"], ["beans", "Beans"], ["plantain", "Plantain"]];
+const S3FLOWER = [["mango", "Mango tree", "Flowering"], ["flower", "Hibiscus", "Flowering"], ["maize", "Maize", "Flowering"], ["orange", "Orange tree", "Flowering"], ["fern", "Fern", "Non-flowering"], ["mushroom", "Mushroom (not a plant: a fungus)", null]];
+const S3PLTF = [["A tree has one thick woody trunk.", true, "Like a mango or iroko tree."], ["A climber needs support to grow up.", true, "Like yam vines on stakes."], ["Cash crops are grown mainly to sell.", true, "They earn money for farmers and the country."],
+  ["Cocoa is used to make chocolate.", true, "Ondo State grows a lot of cocoa."], ["Ferns have flowers.", false, "Ferns are non-flowering plants."], ["Grasses have thin, narrow leaves.", true, "Maize and rice are grasses too!"],
+  ["Cotton is used to make cloth.", true, "It grows in northern Nigeria."], ["Rubber comes from the sap of the rubber tree.", true, "It is used for tyres and shoes."], ["A shrub is taller than most trees.", false, "Shrubs are shorter, with many stems."],
+  ["Food crops are grown mainly to eat.", true, "Like yam, cassava and maize."], ["Kano was once famous for its groundnut pyramids.", true, "Huge piles of groundnut sacks, in the 1960s."], ["Oil palm gives us palm oil.", true, "Used in cooking and soap."]];
+const PLANT3 = { nm:"Types of plants and cash crops", icon:"cocoa", c:"#c7f0d0", ds:"Trees, shrubs, herbs, climbers and grasses! Meet Nigeria's cash crops, like cocoa, groundnut, cotton and rubber.",
+  facts:["A [tree] has one thick woody trunk.", "A [shrub] has many woody stems.", "A [climber] grows up a support.", "Maize and rice are [grasses].", "[Cash crops] are grown mainly to sell.", "[Cocoa] is used to make chocolate."],
+  slides:[
+    { v:() => ringRow([["tree", "Tree"], ["shrub", "Shrub"], ["flower", "Herb"], ["climber", "Climber"], ["grass", "Grass"]], "Types of plants", "#e6f7e1"), t:"We can group plants by type. Trees are tall with one woody trunk. Shrubs have many woody stems. Herbs are small and soft. Climbers grow up a support. Grasses have thin leaves." },
+    { v:() => SV("0 0 400 260", `${SKY("#eaf6fd")}${put("flower", 110, 110, 110)}${put("fern", 290, 110, 120)}${TAG(110, 200, "Flowering", 13)}${TAG(290, 200, "Non-flowering", 13)}`), t:"Most plants are flowering plants: they make flowers and seeds. Some, like ferns and mosses, are non-flowering. They grow from tiny spores instead." },
+    { v:() => ringRow(S3CASH.slice(0, 4).map(([k, n]) => [k, n]), "Nigerian cash crops", "#fff6d1"), t:"Cash crops are grown mainly to sell. Nigeria grows cocoa in the south-west, groundnut and cotton in the north, and oil palm in the south." },
+    { v:() => ringRow([["yam", "Yam"], ["maize", "Maize"], ["rice", "Rice"], ["beans", "Beans"], ["plantain", "Plantain"]], "Food crops", "#ffe1d6"), t:"Food crops are grown mainly to eat, like yam, cassava, maize, rice and beans." },
+    { v:() => SV("0 0 400 260", `${SKY("#ffe8c2")}${put("cocoa", 110, 110, 130)}${ARW(170, 110, 230, 110, INK, 5, true)}${put("sweets", 290, 110, 110)}${TAG(200, 220, "Cocoa beans become chocolate", 13)}`), t:"Cocoa pods hold cocoa beans. The beans are dried, roasted and ground to make chocolate and cocoa drinks. Ondo State is one of Nigeria's biggest cocoa growers." },
+    { v:() => superPic("Farmers and agricultural scientists", ["cocoa", "groundnut", "cotton", "palm"], { shirt:"#2bb673", ground:"#a8774c" }),
+      t:"Science superpower! Agricultural scientists breed stronger cocoa, cassava and maize. Cocoa farmers in Ondo and groundnut farmers in Kano feed families and earn money for Nigeria." }],
+  home:{ nm:"Plant types walk", steps:["Walk around your area with a grown-up.", "Find a tree, a shrub, a herb, a climber and a grass.", "Ask what food crops grow nearby. Are any cash crops grown in your state?", "Draw one plant of each type."], q:"Which plant type did you see most?" },
+  gens:[
+    () => { const [k, n, t] = pick(S3PTYPE); return Q3(`What type of plant is ${n.charAt(0).toLowerCase() + n.slice(1)}?`, t, ["Tree", "Shrub", "Herb", "Climber", "Grass"], { ex:n + " is a " + t.toLowerCase() + ".", vis:bigIco(k, "#e6f7e1") }); },
+    () => { const [t, d] = pick(S3TDESC); return Q3(`Which type of plant is "${d.toLowerCase()}"?`, t, S3TDESC.map(x => x[0]), { ex:t + "." }); },
+    () => { const [k, n, u] = pick(S3CASH); return Q3(`What is ${/tree|palm/i.test(n) ? "the " : ""}${n.toLowerCase()} used for?`, u, S3CASH.map(x => x[2]), { ex:n + ": " + u.toLowerCase() + ".", vis:bigIco(k, "#fff6d1") }); },
+    () => { const c = pick(S3CASH.filter(x => !["tree", "seed"].includes(x[0]))); return QP3("Which one is a cash crop?", [c[0], c[1]], [["rock", "A stone"], ["chair", "A chair"], ["car", "A car"]], { ex:c[1] + " is grown to sell.", key:"cc|" + c[1] }); },
+    () => { const f = pick(S3FOOD); return Q3(`Is ${f[1].toLowerCase()} mainly a food crop or a cash crop?`, "Food crop", ["Food crop", "Cash crop"], { n:2, ex:f[1] + " is mainly grown for food.", key:"fc|" + f[1] }); },
+    () => { const [k, n, t] = pick(S3FLOWER.filter(x => x[2])); return Q3(`Is ${n.toLowerCase()} a flowering or non-flowering plant?`, t, ["Flowering", "Non-flowering"], { n:2, ex:n + ": " + t.toLowerCase() + "." }); },
+    tf(S3PLTF),
+    () => Q3("What are cash crops?", "Crops grown mainly to sell", ["Crops made of money", "Crops grown only for pets"], { ex:"Like cocoa and cotton." }),
+    () => Q3("Which Nigerian state grows a lot of cocoa?", "Ondo", ["Kano", "Borno"], { ex:"The south-west is cocoa country." }),
+    () => Q3("Which crop is used to make cloth?", "Cotton", ["Cocoa", "Yam"], { ex:"Cotton fibres are spun into thread." }),
+    () => Q3("What do we make from rubber tree sap?", "Rubber for tyres", ["Chocolate", "Paper"], { ex:"Rubber is stretchy and strong." }),
+    () => Q3("Which type of plant needs something to climb up?", "A climber", ["A tree", "A shrub"], { ex:"Like yam vines on stakes." }),
+    () => Q3("Which crop is used to make chocolate?", "Cocoa", ["Groundnut", "Cotton"], { ex:"Cocoa beans." }),
+    () => Q3("How do ferns make new plants?", "With tiny spores", ["With flowers", "With seeds in fruit"], { ex:"Ferns are non-flowering." }),
+    () => Q3("Which city was famous for groundnut pyramids?", "Kano", ["Lagos", "Calabar"], { ex:"Huge piles of groundnut sacks in the 1960s." })
+  ] };
+
+/* ---- 12. Animals and their food ---- */
+const S3DIET = [["cow", "A cow", "Plant-eater"], ["goat", "A goat", "Plant-eater"], ["sheep", "A sheep", "Plant-eater"], ["elephant", "An elephant", "Plant-eater"], ["grasshopper", "A grasshopper", "Plant-eater"], ["caterpillar", "A caterpillar", "Plant-eater"],
+  ["lion", "A lion", "Meat-eater"], ["hawk", "A hawk", "Meat-eater"], ["snake", "A snake", "Meat-eater"], ["croc", "A crocodile", "Meat-eater"], ["spider", "A spider", "Meat-eater"], ["owl", "An owl", "Meat-eater"],
+  ["hen", "A hen", "Eats both"], ["pig", "A pig", "Eats both"], ["person", "A person", "Eats both"], ["rat", "A rat", "Eats both"]];
+const S3DNAME = [["Plant-eater", "Herbivore"], ["Meat-eater", "Carnivore"], ["Eats both", "Omnivore"]];
+const S3CHAIN = [["Grass", "Goat", "Lion"], ["Leaves", "Caterpillar", "Bird"], ["Maize", "Rat", "Snake"], ["Grass", "Grasshopper", "Frog"], ["Seeds", "Chick", "Hawk"]];
+const S3TEETH = [["Sharp, pointed teeth for tearing meat", "Meat-eater"], ["Flat, wide teeth for grinding plants", "Plant-eater"], ["Both sharp and flat teeth", "Eats both"]];
+const S3DIETTF = [["A herbivore eats only plants.", true, "Like cows and goats."], ["A carnivore eats only plants.", false, "A carnivore eats meat."], ["An omnivore eats both plants and meat.", true, "Like people and pigs."],
+  ["Lions are carnivores.", true, "They hunt other animals."], ["Goats are carnivores.", false, "Goats eat plants. They are herbivores."], ["A food chain starts with a plant.", true, "Plants make food using sunlight."],
+  ["Meat-eaters usually have sharp teeth.", true, "For tearing meat."], ["Plant-eaters usually have flat teeth.", true, "For grinding leaves and grass."], ["People are omnivores.", true, "We eat plants and meat."],
+  ["Hawks eat chicks and mice.", true, "Hawks are meat-eaters."], ["All animals eat the same food.", false, "Different animals eat different food."], ["Caterpillars eat leaves.", true, "They are plant-eaters."]];
+const DIET3 = { nm:"Animals and their food", icon:"lion", c:"#fff1b8", ds:"Plant-eaters, meat-eaters, and animals that eat both! Find out who eats what, and build a food chain.",
+  facts:["Plant-eaters are called [herbivores].", "Meat-eaters are called [carnivores].", "Animals that eat both are [omnivores].", "Meat-eaters have [sharp] teeth.", "Plant-eaters have [flat] teeth.", "A food chain starts with a [plant]."],
+  slides:[
+    { v:() => ringRow([["cow", "Cow"], ["goat", "Goat"], ["grasshopper", "Grasshopper"], ["elephant", "Elephant"]], "Plant-eaters (herbivores)", "#e6f7e1"), t:"Plant-eaters eat only plants. They are called herbivores. Cows, goats, grasshoppers and elephants are herbivores. They have flat teeth for grinding." },
+    { v:() => ringRow([["lion", "Lion"], ["hawk", "Hawk"], ["snake", "Snake"], ["croc", "Crocodile"]], "Meat-eaters (carnivores)", "#ffe1d6"), t:"Meat-eaters eat other animals. They are called carnivores. Lions, hawks, snakes and crocodiles are carnivores. Many have sharp teeth or claws." },
+    { v:() => ringRow([["person", "People"], ["hen", "Hen"], ["pig", "Pig"], ["rat", "Rat"]], "Eat both (omnivores)", "#fff6d1"), t:"Some animals eat both plants and meat. They are called omnivores. People, hens, pigs and rats are omnivores." },
+    { v:() => SV("0 0 400 260", `${SKY()}${HILL(214)}${RING(70, 120, 40, "grass")}${ARW(116, 120, 156, 120, INK, 5, true)}${RING(200, 120, 40, "goat")}${ARW(246, 120, 286, 120, INK, 5, true)}${RING(330, 120, 40, "lion")}${TAG(70, 186, "Grass", 12)}${TAG(200, 186, "Goat", 12)}${TAG(330, 186, "Lion", 12)}${TAG(200, 236, "A food chain", 13)}`), t:"A food chain shows who eats what. Grass is eaten by a goat, and the goat may be eaten by a lion. Every food chain starts with a plant, which makes food from sunlight." },
+    { v:() => SV("0 0 400 260", `${SKY("#eaf6fd")}<path d="M60 90 l14 30 14 -30 14 30 14 -30 14 30 14 -30" fill="#fff" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/><rect x="230" y="90" width="120" height="30" rx="6" fill="#fff" stroke="${INK}" stroke-width="4"/><path d="M260 90 V120 M290 90 V120 M320 90 V120" stroke="${INK}" stroke-width="3"/>${TAG(110, 160, "Sharp: tearing meat", 12)}${TAG(290, 160, "Flat: grinding plants", 12)}`), t:"Teeth give clues. Meat-eaters have sharp, pointed teeth for tearing. Plant-eaters have flat teeth for grinding. Omnivores, like us, have both." },
+    { v:() => superPic("Zookeepers and wildlife scientists", ["lion", "goat", "grass", "hawk"], { shirt:"#2bb673" }),
+      t:"Science superpower! Zookeepers and wildlife scientists must know exactly what each animal eats to keep it healthy, from elephants at Yankari to birds in our forests." }],
+  home:{ nm:"Animal diet detective", steps:["With a grown-up, watch animals around you: goats, hens, lizards, birds, ants.", "What is each one eating? Plants, other animals, or both?", "Make a list of herbivores, carnivores and omnivores.", "Draw a food chain you can see near your home."], q:"What food chain did you find?" },
+  gens:[
+    () => { const [k, n, d] = pick(S3DIET); return Q3(`Is ${n.charAt(0).toLowerCase() + n.slice(1)} a plant-eater, a meat-eater, or does it eat both?`, d, ["Plant-eater", "Meat-eater", "Eats both"], { ex:n + ": " + d.toLowerCase() + ".", vis:bigIco(k, "#fff6d1") }); },
+    () => { const [a, b] = pick(S3DNAME); return Q3(`What is the science word for "${a.toLowerCase()}"?`, b, S3DNAME.map(x => x[1]), { ex:b + "." }); },
+    () => { const [a, b] = pick(S3DNAME); return Q3(`What does ${b.toLowerCase()} mean?`, a, S3DNAME.map(x => x[0]), { ex:b + ": " + a.toLowerCase() + "." }); },
+    () => { const d = pick(["Plant-eater", "Meat-eater", "Eats both"]), r = pick(S3DIET.filter(x => x[2] === d && ICO[x[0]])); const nm = { "Plant-eater":"plant-eater (herbivore)", "Meat-eater":"meat-eater (carnivore)", "Eats both":"omnivore" }[d];
+      return QP3(`Which one is a ${nm}?`, [r[0], r[1]], S3DIET.filter(x => x[2] !== d && ICO[x[0]]).map(x => [x[0], x[1]]), { ex:r[1] + ".", key:"dt|" + d + "|" + r[1] }); },
+    () => { const c = pick(S3CHAIN), i = Math.floor(Math.random() * 3); return Q3(`Complete the food chain: ${c.map((x, j) => j === i ? "?" : x).join(" → ")}`, c[i], [...new Set(S3CHAIN.map(x => x[i]))].filter(x => x !== c[i]), { ex:c.join(" → ") + ".", key:"fc|" + c.join() + "|" + i }); },
+    () => { const c = pick(S3CHAIN); return QO("Put the food chain in order, starting with the plant.", c.map(x => ({ h:"", txt:true, v:x, lab:x })), { ex:c.join(" → ") + "." }); },
+    () => { const [t, d] = pick(S3TEETH); return Q3(`An animal has ${t.charAt(0).toLowerCase() + t.slice(1)}. What does it probably eat?`, d === "Plant-eater" ? "Plants" : d === "Meat-eater" ? "Meat" : "Both plants and meat", ["Plants", "Meat", "Both plants and meat"], { ex:d + "." }); },
+    tf(S3DIETTF),
+    () => Q3("What does every food chain start with?", "A plant", ["A lion", "A rock"], { ex:"Plants make food from sunlight." }),
+    () => Q3("Which group do people belong to?", "Omnivores", ["Herbivores", "Carnivores"], { ex:"We eat plants and meat." }),
+    () => Q3("Why do lions have sharp teeth?", "To tear meat", ["To grind grass", "To dig holes"], { ex:"They are carnivores." }),
+    () => Q3("Why do cows have flat teeth?", "To grind grass and leaves", ["To tear meat", "To crack stones"], { ex:"They are herbivores." }),
+    () => Q3("In the chain grass → goat → lion, what does the goat eat?", "Grass", ["Lions", "Nothing"], { ex:"The goat is a plant-eater." })
+  ] };
+
+/* ---- 13. Animal homes and young ---- */
+const S3HOME = [["bird", "A bird", "A nest", "nest"], ["bee", "A bee", "A hive", "hive"], ["spider", "A spider", "A web", "web"], ["dog", "A dog", "A kennel", "kennel"], ["rat", "A rat", "A burrow", "burrow"], ["ant", "Termites", "A mound", "mound"], ["goat", "A goat", "A pen", "pen"], ["fish", "A fish", "A river or pond", "pond"]];
+const S3YOUNG = [["goat", "A goat", "A kid"], ["cow", "A cow", "A calf"], ["dog", "A dog", "A puppy"], ["cat", "A cat", "A kitten"], ["hen", "A hen", "A chick"], ["sheep", "A sheep", "A lamb"], ["lion", "A lion", "A cub"], ["frog", "A frog", "A tadpole"], ["duck", "A duck", "A duckling"]];
+const S3BIRTH = [["hen", "A hen", "Lays eggs"], ["croc", "A crocodile", "Lays eggs"], ["fish", "A fish", "Lays eggs"], ["snake", "A snake", "Lays eggs"], ["frog", "A frog", "Lays eggs"], ["butterfly", "A butterfly", "Lays eggs"], ["goat", "A goat", "Gives birth to live young"], ["cow", "A cow", "Gives birth to live young"], ["dog", "A dog", "Gives birth to live young"], ["elephant", "An elephant", "Gives birth to live young"], ["person", "A person", "Gives birth to live young"]];
+const S3HOMETF = [["Birds build nests for their eggs.", true, "From twigs, grass and leaves."], ["Bees live in hives.", true, "And make honey there."], ["A spider lives in a kennel.", false, "A spider spins a web. A dog lives in a kennel."],
+  ["A baby goat is called a kid.", true, "A baby cow is a calf."], ["Hens give birth to live chicks.", false, "Hens lay eggs; chicks hatch from them."], ["Mammals feed their young on milk.", true, "Like goats, cows and people."],
+  ["A baby frog is called a tadpole.", true, "It lives in water and grows legs later."], ["Termites build mounds.", true, "Mounds keep them cool and safe."], ["Animal homes keep them safe from danger and weather.", true, "And give a place for their young."],
+  ["A baby lion is called a cub.", true, "Cubs stay with their mothers."], ["All animals lay eggs.", false, "Many animals, like goats, give birth to live young."], ["Rats can live in burrows underground.", true, "Burrows are tunnels in the soil."]];
+const HOMES3 = { nm:"Animal homes and young", icon:"nest", c:"#ffe1c2", ds:"Nests, hives, webs and burrows! Where do animals live, which ones lay eggs, and what are their babies called?",
+  facts:["Birds build [nests].", "Bees live in a [hive].", "Spiders spin a [web].", "Some animals lay [eggs].", "Others give birth to [live] young.", "A baby goat is a [kid]."],
+  slides:[
+    { v:() => ringRow(S3HOME.slice(0, 5).map(x => [x[3], cap1(x[2].replace(/^An? /, ""))]), "Animal homes", "#ffe1c2"), t:"Animals need homes to stay safe and raise their young. Birds build nests. Bees live in hives. Spiders spin webs. Dogs have kennels. Rats dig burrows." },
+    { v:() => SV("0 0 400 260", `${SKY()}${HILL(214, "#c9b07a")}${put("mound", 120, 140, 160)}${put("pen", 300, 170, 120)}${put("goat", 300, 160, 60)}${TAG(120, 246, "Termite mound", 12)}${TAG(300, 246, "Goat pen", 12)}`), t:"Termites build mounds from soil. Farmers keep goats and sheep in pens, and hens in coops, to keep them safe." },
+    { v:() => SV("0 0 400 260", `${SKY("#fff6d1")}${RING(110, 100, 50, "egg")}${RING(290, 100, 50, "goat")}${TAG(110, 176, "Lay eggs", 13)}${TAG(290, 176, "Live young", 13)}${TAG(200, 230, "How animals have young", 13)}`), t:"Some animals lay eggs: birds, crocodiles, fish, snakes, frogs and insects. Others give birth to live young and feed them milk: goats, cows, dogs and people." },
+    { v:() => ringRow(S3YOUNG.slice(0, 5).map(([k, n, y]) => [k, cap1(y.replace(/^An? /, ""))]), "Baby animal names", "#eaf6fd"), t:"Baby animals have special names. A baby goat is a kid. A baby cow is a calf. A puppy is a baby dog. A kitten is a baby cat. A chick is a baby hen." },
+    { v:() => ringRow([["frog", "Frog"], ["tadpole", "Tadpole"], ["lion", "Lion"], ["sheep", "Sheep"]], "More babies", "#e6f7e1"), t:"A baby frog is a tadpole. It lives in water and grows legs later. A baby lion is a cub. A baby duck is a duckling. A baby sheep is a lamb." },
+    { v:() => superPic("Farmers, vets and bee keepers", ["hive", "nest", "goat", "hen"], { shirt:"#ffb02e" }),
+      t:"Science superpower! Bee keepers build hives so bees can make honey. Farmers build pens and coops for their animals. Vets help mother animals give birth safely." }],
+  home:{ nm:"Animal home hunt", steps:["With a grown-up, look around your compound and street.", "Find animal homes: a nest, a web, an anthill, a hole in the ground, a goat pen.", "Look, but don't touch or disturb them!", "Draw each home and the animal that lives there."], q:"Which animal home did you find?" },
+  gens:[
+    () => { const [k, n, h, hk] = pick(S3HOME); return Q3(`Where does ${n.charAt(0).toLowerCase() + n.slice(1)} live?`, h, S3HOME.map(x => x[2]), { ex:n + " lives in " + h.charAt(0).toLowerCase() + h.slice(1) + ".", vis:bigIco(k, "#ffe1c2") }); },
+    () => { const [k, n, h, hk] = pick(S3HOME); return QP3(`Which is the home of ${n.charAt(0).toLowerCase() + n.slice(1)}?`, [hk, h], S3HOME.map(x => [x[3], x[2]]), { ex:h + "." }); },
+    () => { const [k, n, y] = pick(S3YOUNG); return Q3(`What is the baby of ${n.charAt(0).toLowerCase() + n.slice(1)} called?`, y, S3YOUNG.map(x => x[2]), { ex:y + ".", vis:bigIco(k, "#eaf6fd") }); },
+    () => { const [k, n, y] = pick(S3YOUNG); return Q3(`${y} grows up into which animal?`, n, S3YOUNG.map(x => x[1]), { ex:y + " grows into " + n.charAt(0).toLowerCase() + n.slice(1) + ".", key:"gu|" + y }); },
+    () => { const [k, n, b] = pick(S3BIRTH); return Q3(`Does ${n.charAt(0).toLowerCase() + n.slice(1)} lay eggs or give birth to live young?`, b, ["Lays eggs", "Gives birth to live young"], { n:2, ex:n + " " + b.charAt(0).toLowerCase() + b.slice(1) + "." }); },
+    () => { const r = pick(S3BIRTH.filter(x => x[2] === "Lays eggs")); return QP3("Which animal lays eggs?", [r[0], r[1]], S3BIRTH.filter(x => x[2] !== "Lays eggs").map(x => [x[0], x[1]]), { ex:r[1] + " lays eggs." }); },
+    tf(S3HOMETF),
+    () => Q3("Why do animals need homes?", "To stay safe and raise their young", ["To watch television", "To store money"], { ex:"Homes protect them." }),
+    () => Q3("What do mammals feed their babies?", "Milk", ["Seeds", "Leaves"], { ex:"Like goats and cows." }),
+    () => Q3("What do bees make in their hives?", "Honey", ["Milk", "Webs"], { ex:"Bee keepers collect it." }),
+    () => Q3("What do birds use to build nests?", "Twigs, grass and leaves", ["Bricks and cement", "Glass"], { ex:"Some use mud too." }),
+    () => Q3("Where does a tadpole live?", "In water", ["In a tree", "In a kennel"], { ex:"It grows into a frog." }),
+    () => Q3("What should you do if you find a bird's nest?", "Look, but don't touch it", ["Take the eggs", "Knock it down"], { ex:"Let the parents care for their young." })
+  ] };
+const P3T3 = [LIVE3, PLANT3, DIET3, HOMES3];
+const P3 = { nm:"Primary 3", subj:"Basic Science", terms:[
+  { nm:"First term", icon:"kscale", c:"#fff1b8", topics:P3T1 },
+  { nm:"Second term", icon:"windsock", c:"#dff4ff", topics:P3T2 },
+  { nm:"Third term", icon:"nest", c:"#c7f0d0", topics:P3T3 }] };
+
+/* ======================= SCHOOL P3: extra question banks ======================= */
+LIGHT3.gens.push(
+  () => Q3("Which is a natural source of light?", "The Sun", ["A bulb", "A torch"], { ex:"Nature made the Sun." }),
+  () => Q3("Which light source did people make?", "A lantern", ["Lightning", "The stars"], { ex:"People made lanterns." }),
+  () => Q3("What is tracing paper?", "Translucent: it lets some light through", ["Opaque: it blocks all light", "A light source"], { ex:"You can see shapes through it, but not clearly." }),
+  () => Q3("Why can't you see round a corner?", "Light travels in straight lines", ["Corners are too dark", "Walls are transparent"], { ex:"Light cannot bend round the wall." }),
+  () => Q3("Which side of an object is its shadow on?", "The side away from the light", ["The side facing the light", "On top of it"], { ex:"The object blocks the light." }));
+
+S3MUSE.push(["A mirror in a shop doorway", "To see round a corner"], ["A rear-view mirror in a bus", "To see passengers behind"]);
+MIRROR3.gens.push(
+  () => Q3("What do we call the picture you see in a mirror?", "A reflection", ["A shadow", "A painting"], { ex:"Light bounces back to your eyes." }),
+  () => Q3("Is your reflection in a flat mirror the same size as you?", "Yes", ["No, it is smaller", "No, it is bigger"], { n:3, ex:"A flat mirror shows you the same size." }),
+  () => Q3("Which can act like a mirror on a calm day?", "A still pond", ["A pile of sand", "A brick wall"], { ex:"Still water reflects." }),
+  () => Q3("What does a periscope help you do?", "See over walls or round corners", ["Hear far away", "Weigh things"], { ex:"Two mirrors bend the path of light." }),
+  () => Q3("Why should you never shine a mirror at a driver?", "The bright light could make them crash", ["It makes the car faster", "It is boring"], { ex:"Reflected sunlight dazzles." }),
+  () => Q3("What happens to a mirror image of the word SUN?", "The letters look back to front", ["The letters turn upside down", "The word disappears"], { ex:"Left and right swap." }),
+  () => Q3("What makes a surface reflect well?", "Being smooth and shiny", ["Being rough", "Being dark and dull"], { ex:"Like a mirror or polished metal." }),
+  () => Q3("What is most of a mirror made of?", "Glass with a shiny coating", ["Wood", "Cloth"], { ex:"Handle it carefully." }),
+  () => QP3("Which one uses mirrors?", ["periscope", "A periscope"], [["kscale", "A scale"], ["drum", "A drum"], ["book", "A book"]], { ex:"A periscope has two mirrors." }),
+  () => QP3("Which one shows the best reflection?", ["mirror", "A mirror"], [["wood", "Wood"], ["book", "A book"], ["cloth", "Cloth"]], { ex:"Mirrors are smooth and shiny." }),
+  () => Q3("If you write your name and hold it to a mirror, how does it look?", "Back to front", ["Exactly the same", "Bigger"], { ex:"That's mirror writing." }),
+  () => Q3("Where can you see your face at home besides a mirror?", "In a shiny spoon", ["In a clay pot", "In a towel"], { ex:"Shiny metal reflects." }),
+  () => Q3("Which person checks mirrors before turning?", "A careful driver", ["A baker", "A farmer planting yam"], { ex:"Mirrors show cars behind." }),
+  () => Q3("What lets you see behind you in a car?", "The rear-view mirror", ["The radio", "The seat belt"], { ex:"And the side mirrors." }),
+  () => Q3("Which word reads the same in a mirror: TOT or CAT?", "TOT", ["CAT", "Neither"], { ex:"T and O look the same in a mirror." }));
+
+S3CRAFTTF.push(["Iseyin in Oyo State is famous for aso-oke.", true, "Weavers there have woven for generations."], ["Indigo dye comes from plants.", true, "Its leaves are fermented to make the dye."], ["Calabashes come from a plant.", true, "They are dried gourds."], ["A blacksmith works with wood.", false, "A blacksmith works with iron and other metals."]);
+CRAFT3.gens.push(
+  () => Q3("What does a weaver use?", "A loom", ["An anvil", "A kiln"], { ex:"Threads go over and under." }),
+  () => Q3("What does a blacksmith work with?", "Iron and other metals", ["Clay", "Thread"], { ex:"Heated and hammered." }),
+  () => Q3("Where do bronze casters still work in Benin City?", "Igun Street", ["Broad Street, Lagos", "Kano dye pits"], { ex:"A famous street of bronze casters." }),
+  () => Q3("What is aso-oke?", "Hand-woven cloth", ["A kind of pot", "A metal tool"], { ex:"Woven on a loom." }),
+  () => Q3("What are calabashes made from?", "Dried gourds from a plant", ["Metal", "Plastic"], { ex:"They are carved and decorated." }),
+  () => Q3("What colour do indigo dye pits make cloth?", "Deep blue", ["Bright red", "Yellow"], { ex:"Indigo is a deep blue dye." }),
+  () => Q3("What do bronze casters pour into clay moulds?", "Melted metal", ["Water", "Sand"], { ex:"It cools and hardens." }),
+  () => Q3("Who taught most craftspeople their skills?", "Older family members and masters", ["Robots", "Nobody"], { ex:"Skills passed down for generations." }),
+  () => Q3("Which craft uses a forge?", "Blacksmithing", ["Weaving", "Bead making"], { ex:"A forge is a very hot fire for metal." }),
+  () => QP3("Which one is used by a dyer?", ["dyepit", "A dye pit"], [["anvil", "An anvil"], ["loom", "A loom"], ["kiln", "A kiln"]], { ex:"Cloth is dipped in the dye." }),
+  () => QP3("Which one is made by a potter?", ["claypot", "A clay pot"], [["cloth", "Woven cloth"], ["hoe", "A hoe"], ["bronzehead", "A bronze head"]], { ex:"Potters work with clay." }),
+  () => QP3("Which one is made by a blacksmith?", ["hoe", "A hoe"], [["cloth", "Woven cloth"], ["claypot", "A clay pot"], ["beads", "Beads"]], { ex:"Blacksmiths make farm tools." }));
+
+S3WINDTF.push(["A strong wind is called a gale.", true, "A gentle wind is a breeze."], ["Wind can turn a windmill to pump water.", true, "Useful on farms."], ["Some insects ride on the wind.", true, "Tiny insects can be blown far."], ["Wind can carry pollen to help plants make seeds.", true, "Like maize."]);
+S3WUSE.push(["Spreading pollen to help maize make seeds", "maize"], ["Making electricity in wind turbines", "windmill"]);
+WIND3.gens.push(
+  () => Q3("What does a windsock tell us?", "Wind direction and strength", ["The time", "The temperature"], { ex:"A full, straight windsock means strong wind." }),
+  () => Q3("What does a wind vane point to?", "The direction the wind comes from", ["The nearest river", "The Sun"], { ex:"It turns in the wind." }),
+  () => Q3("Which tool shows wind strength at an airport?", "A windsock", ["A thermometer", "A clock"], { ex:"Pilots check it before landing." }),
+  () => Q3("What is a strong, fast wind called?", "A gale", ["A breeze", "A puddle"], { ex:"Gales can cause damage." }),
+  () => Q3("Which part of the maize plant does wind help?", "Carrying its pollen", ["Digging its roots", "Peeling its cob"], { ex:"Maize pollen blows on the wind." }),
+  () => Q3("How do we know the wind is blowing?", "We see leaves and dust move", ["We can see air", "The Sun gets bigger"], { ex:"We see what it moves." }),
+  () => Q3("Which energy does wind have?", "Movement energy", ["Light energy", "Sound energy only"], { ex:"Moving air can push things." }),
+  () => Q3("What do farmers separate by winnowing?", "Grain from chaff", ["Water from oil", "Eggs from chicks"], { ex:"The wind blows the light chaff away." }),
+  () => Q3("Which toy needs the wind?", "A kite", ["A drum", "A doll"], { ex:"Wind lifts the kite." }),
+  () => Q3("Why are wind turbines good for the planet?", "They make electricity without smoke", ["They make lots of smoke", "They burn petrol"], { ex:"Clean energy!" }),
+  () => Q3("When does the harmattan blow in Nigeria?", "About November to March", ["Only in June", "Every night of the year"], { ex:"In the dry season." }),
+  () => Q3("Which way does a wind vane's arrow point?", "Into the wind", ["Away from the wind", "Straight down"], { ex:"It shows where the wind comes from." }),
+  () => QP3("Which one tells us wind direction?", ["windvane", "Wind vane"], [["clock", "Clock"], ["thermo", "Thermometer"], ["kscale", "Scale"]], { ex:"A wind vane." }),
+  () => QP3("Which one uses wind to move?", ["boat", "Sailing boat"], [["car", "Car"], ["bicycle", "Bicycle"], ["lorry", "Lorry"]], { ex:"Its sail catches the wind." }),
+  () => QP3("Which one makes electricity from wind?", ["windmill", "Wind turbine"], [["generator", "Generator"], ["solar", "Solar panel"], ["battery", "Battery"]], { ex:"Wind turns its blades." }),
+  () => Q3("Why do clothes flap on a line?", "The wind pushes them", ["They are alive", "The Sun pulls them"], { ex:"Moving air pushes things." }),
+  () => Q3("What does gentle wind feel like on a hot day?", "Cool and pleasant", ["Burning hot", "Wet and muddy"], { ex:"A cool breeze." }),
+  () => Q3("Where do sea breezes blow?", "From the sea onto the land", ["From space", "Only inside houses"], { ex:"Coastal towns like Lagos get them." }));
+
+S3HARM.push(["Making it hard to see on the road in a dust storm", "car"]);
+S3STSAFE.push(["Park a car away from trees in a storm", "Safe"], ["Fly a kite in a thunderstorm", "Not safe"], ["Keep away from windows during strong winds", "Safe"], ["Climb onto the roof to fix it during a storm", "Not safe"]);
+S3HARMTF.push(["Dust storms can cause road accidents.", true, "Drivers cannot see far."], ["Strong winds can knock over electric poles.", true, "Stay away from fallen wires."], ["Storms can make rivers and seas rough.", true, "Fishermen stay ashore."]);
+HARM3.gens.push(
+  () => Q3("What is a gale?", "A very strong wind", ["A gentle breeze", "A kind of rain cloud"], { ex:"Gales can damage homes." }),
+  () => Q3("Where is the safest place in a strong storm?", "Inside a strong building", ["Under a tree", "On a roof"], { ex:"Stay indoors." }),
+  () => Q3("What should fishermen do when a storm is coming?", "Stay on land", ["Sail further out", "Swim"], { ex:"Rough water is dangerous." }),
+  () => Q3("Why do builders nail roofs down firmly?", "So strong winds can't lift them", ["To make the roof shiny", "To keep rain in"], { ex:"Loose roofs blow away." }),
+  () => Q3("How can farmers protect crops from strong wind?", "Plant rows of trees as windbreaks", ["Cut down all trees", "Burn the farm"], { ex:"Trees slow the wind." }),
+  () => Q3("What can a dust storm do on the road?", "Make it hard for drivers to see", ["Clean the cars", "Make the road wet"], { ex:"Drivers should slow down." }),
+  () => Q3("What should you do after a storm?", "Stay away from fallen wires and trees", ["Play with fallen wires", "Climb fallen trees"], { ex:"Tell a grown-up about damage." }),
+  () => Q3("Why is bush burning dangerous on a windy day?", "The wind can spread the fire fast", ["The wind puts it out", "Fire likes calm days"], { ex:"Never burn bush." }),
+  () => Q3("Which agency helps people after disasters in Nigeria?", "NEMA", ["NAFDAC", "NYSC"], { ex:"The National Emergency Management Agency." }),
+  () => Q3("What do strong winds do to dry leaves and dust?", "Blow them about", ["Glue them down", "Turn them into water"], { ex:"Close windows to keep dust out." }),
+  () => QP3("Which one shows something strong wind can do?", ["tornado", "A whirlwind"], [["kite", "Fly a kite gently"], ["tshirt", "Dry clothes"], ["boat", "Sail a boat"]], { ex:"A spinning column of wind can damage homes." }),
+  () => QP3("Which one should you stay away from after a storm?", ["wires", "Fallen wires"], [["book", "A book"], ["cup", "A cup"], ["ball", "A ball"]], { ex:"They could still carry electricity." }),
+  () => Q3("What should you listen to when a storm is coming?", "Weather warnings on the radio", ["Loud music", "Nothing"], { ex:"NiMet gives warnings." }),
+  () => Q3("Which is safer in a storm: a car or an open field?", "A car with its windows closed", ["An open field", "A tree top"], { ex:"Stay inside." }));
+
+S3WATERTF.push(["Water can look clean but still carry germs.", true, "Boil or treat drinking water."], ["Sachet water is sometimes called pure water.", true, "It should still have a NAFDAC number."], ["Water tanks should be cleaned regularly.", true, "Dirt and germs can build up."], ["Muddy water is safe if it tastes fine.", false, "Never drink muddy water."]);
+S3PACK.push(["Check that the bottle cap is sealed", "Safe"], ["Drink from a sachet you found on the ground", "Not safe"], ["Keep packaged water in a cool place", "Safe"], ["Buy water that has no label", "Not safe"]);
+WATER3.gens.push(
+  () => Q3("What is sachet water often called in Nigeria?", "Pure water", ["Sea water", "Rain water"], { ex:"Check the NAFDAC number!" }),
+  () => Q3("What does the expiry date tell you?", "The last day it is safe to use", ["The day it was made", "The price"], { ex:"Don't drink after that date." }),
+  () => Q3("Why should water tanks be covered?", "To keep out dirt, insects and germs", ["To make the water hot", "To hide the water"], { ex:"Covered water stays clean." }),
+  () => Q3("Which can still have germs in it?", "Water that looks clear", ["Boiled and covered water", "Sealed water with a NAFDAC number"], { ex:"Looks can fool you." }),
+  () => Q3("What happens when muddy water is left still?", "The mud sinks to the bottom", ["It turns into juice", "It gets muddier"], { ex:"This is called settling." }),
+  () => Q3("What should we do after boiling water?", "Let it cool and keep it covered", ["Drink it boiling hot", "Pour in sand"], { ex:"Then it is safe to drink." }),
+  () => Q3("What does tasteless mean?", "Having no taste", ["Tasting sweet", "Tasting salty"], { ex:"Clean water is tasteless." }),
+  () => Q3("Why should we never throw sachets in drains?", "They block the drains and cause floods", ["They make drains cleaner", "They feed the fish"], { ex:"Use a bin." }),
+  () => Q3("Who checks that packaged water factories are clean?", "NAFDAC", ["FRSC", "NiMet"], { ex:"The National Agency for Food and Drug Administration and Control." }),
+  () => Q3("Which illnesses can dirty water spread?", "Cholera and typhoid", ["Short sight", "Toothache"], { ex:"Drink safe water." }),
+  () => Q3("What can you use to filter water at home?", "A clean cloth", ["A sieve full of sand and leaves", "Your hand"], { ex:"Then boil it too." }),
+  () => QP3("Which one should have a NAFDAC number?", ["sachet", "Sachet water"], [["rock", "A stone"], ["tree", "A tree"], ["cloud", "A cloud"]], { ex:"Packaged food and drinks need one." }),
+  () => QP3("Which one kills germs in water?", ["kettle", "Boiling in a kettle"], [["sieve", "Filtering only"], ["bucket", "Leaving it in a bucket"], ["sand", "Adding sand"]], { ex:"Boiling kills germs." }),
+  () => Q3("After muddy water settles, what should you do next?", "Pour off the clear water, then filter and boil it", ["Drink the mud", "Stir it up again"], { ex:"Settle, pour off, filter, boil." }),
+  () => Q3("Where should packaged water be stored?", "In a cool, clean place", ["In the hot sun all day", "Next to kerosene"], { ex:"Heat and chemicals can spoil it." }),
+  () => Q3("What should you do if packaged water smells strange?", "Don't drink it, and tell a grown-up", ["Drink it quickly", "Share it"], { ex:"It may not be safe." }));
+
+S3SOILTF.push(["Moles and rats dig burrows in soil.", true, "Burrows are tunnels."], ["Plants cannot grow without soil, water and light.", true, "Most plants need all three."], ["Soil that is rich in humus is dark.", true, "Dark soil is often rich."], ["Cover crops protect soil from rain.", true, "Their leaves shield the soil."]);
+SOIL3.gens.push(
+  () => Q3("How does soil help plants stand up?", "It holds their roots firm", ["It pushes them up", "It ties them with string"], { ex:"Roots grip the soil." }),
+  () => Q3("Where do plants get their water?", "From the soil, through their roots", ["From the air only", "From the leaves of other plants"], { ex:"Roots soak up water." }),
+  () => Q3("Which animal makes tunnels in soil?", "A rat", ["A fish", "A hawk"], { ex:"Its tunnels are called burrows." }),
+  () => Q3("What can heavy rain do to bare soil?", "Wash it away", ["Make it fly", "Turn it to rock"], { ex:"That is erosion." }),
+  () => Q3("What are deep channels cut by running water called?", "Gullies", ["Hills", "Lakes"], { ex:"Gully erosion damages roads and homes." }),
+  () => Q3("What do cows eat that grows in soil?", "Grass", ["Stones", "Sand"], { ex:"Soil grows their food." }),
+  () => Q3("What are cover crops?", "Plants grown to protect soil", ["Plastic covers", "Roofs"], { ex:"Like beans that spread over the ground." }),
+  () => Q3("What colour is soil rich in humus?", "Dark brown or black", ["White", "Bright red"], { ex:"Humus makes soil dark and rich." }),
+  () => Q3("What do farmers add to make soil richer?", "Manure or compost", ["Plastic", "Salt"], { ex:"They add nutrients." }),
+  () => Q3("Which living things break down dead leaves in soil?", "Worms and tiny living things", ["Birds", "Fish"], { ex:"They turn leaves into humus." }),
+  () => Q3("Why is soil important to people?", "It grows our food", ["It makes our phones", "It makes the rain"], { ex:"Yam, maize, rice and more." }),
+  () => QP3("Which animal lives in a burrow?", ["rat", "A rat"], [["bird", "A bird"], ["fish", "A fish"], ["bee", "A bee"]], { ex:"Burrows are tunnels in soil." }),
+  () => QP3("Which one helps stop erosion?", ["tree", "Planting trees"], [["fire", "Burning bush"], ["car", "Driving on grass"], ["bin", "Emptying the bin"]], { ex:"Roots hold soil." }),
+  () => QP3("Which one is made from soil?", ["claypot", "A clay pot"], [["bottle", "A plastic bottle"], ["spoon", "A metal spoon"], ["tshirt", "A T-shirt"]], { ex:"Clay is a kind of soil." }),
+  () => Q3("Why should we not cut down all the trees on a hill?", "The soil would wash away", ["The hill would grow", "The rain would stop"], { ex:"Roots hold the soil." }),
+  () => Q3("Which insects live in big groups in soil mounds?", "Termites", ["Butterflies", "Bees"], { ex:"Termite mounds can be huge." }),
+  () => Q3("What do we call food for plants in soil?", "Nutrients", ["Vitamins tablets", "Sugar cubes"], { ex:"Roots take them in with water." }));
+
+S3PLTF.push(["Iroko is a tall Nigerian tree.", true, "Its strong wood is used for furniture."], ["Rice is a kind of grass.", true, "So are maize and millet."], ["Sesame is a Nigerian cash crop.", true, "Its seeds and oil are sold abroad."]);
+PLANT3.gens.push(
+  () => Q3("Which type of plant is the iroko?", "A tree", ["A herb", "A climber"], { ex:"Tall, with one thick trunk." }),
+  () => Q3("Which type of plant is rice?", "A grass", ["A tree", "A shrub"], { ex:"Rice, maize and millet are grasses." }),
+  () => Q3("What do yam farmers give their yam vines to climb?", "Stakes", ["Stones", "Water"], { ex:"Yam vines are climbers." }),
+  () => Q3("Which crop gives us palm oil?", "Oil palm", ["Cotton", "Cocoa"], { ex:"From its fruits." }),
+  () => Q3("What is a food crop?", "A crop grown mainly to eat", ["A crop grown only for clothes", "A plastic plant"], { ex:"Like yam and cassava." }),
+  () => Q3("Which part of the cotton plant is used to make cloth?", "The fluffy fibres around the seeds", ["The roots", "The leaves"], { ex:"They are spun into thread." }),
+  () => Q3("Which crop grows mostly in northern Nigeria?", "Groundnut", ["Cocoa", "Rubber"], { ex:"Also cotton and millet." }),
+  () => Q3("Which is a non-flowering plant?", "A fern", ["A mango tree", "Maize"], { ex:"Ferns use spores." }),
+  () => Q3("Which crop earns money when sold to other countries?", "Cocoa", ["Grass", "Weeds"], { ex:"It is an export crop." }),
+  () => QP3("Which one is a climber?", ["climber", "A yam vine on a stake"], [["tree", "A mango tree"], ["grass", "Grass"], ["shrub", "A bush"]], { ex:"It climbs up a support." }),
+  () => QP3("Which one is a shrub?", ["shrub", "A hibiscus bush"], [["tree", "An iroko tree"], ["climber", "A climbing vine"], ["grass", "Grass"]], { ex:"Many woody stems, shorter than a tree." }),
+  () => QP3("Which crop is used to make chocolate?", ["cocoa", "Cocoa"], [["cotton", "Cotton"], ["groundnut", "Groundnut"], ["maize", "Maize"]], { ex:"Cocoa beans." }),
+  () => Q3("What is a herb?", "A small plant with a soft stem", ["A tall tree", "A kind of rock"], { ex:"Many herbs are used in cooking." }),
+  () => Q3("Which plant gives us rubber?", "The rubber tree", ["The cocoa tree", "The cotton plant"], { ex:"From its milky sap." }));
+SOIL3.gens.push(
+  () => Q3("Which do plant roots take from the soil?", "Water and nutrients", ["Light", "Sound"], { ex:"Leaves take in light." }),
+  () => Q3("Why do earthworms make soil better for roots?", "Their tunnels let in air and water", ["They harden the soil", "They eat the roots"], { ex:"Worms are soil helpers." }),
+  () => Q3("What happens to a plant pulled out of the soil?", "It wilts and dies without water", ["It grows faster", "It flies away"], { ex:"Soil gives it water." }),
+  () => Q3("Which crop grows its food under the soil?", "Cassava", ["Mango", "Orange"], { ex:"We dig up its roots." }),
+  () => Q3("What makes soil rich after leaves fall?", "The leaves rot into humus", ["The leaves turn to plastic", "The leaves blow away"], { ex:"Humus feeds plants." }),
+  () => Q3("What should we do with bare soil around our school?", "Plant grass or trees", ["Leave it bare", "Pour oil on it"], { ex:"Plants protect soil." }),
+  () => Q3("How do termites help soil?", "They mix it and break down dead plants", ["They make it rain", "They stop plants growing"], { ex:"Termites recycle dead wood." }),
+  () => Q3("Which is NOT a way soil helps living things?", "It makes electricity", ["It holds plants up", "It gives animals homes"], { ex:"Soil holds plants up and gives homes." }));
+WIND3.gens.push(
+  () => Q3("Which seeds are often carried by the wind?", "Light, fluffy seeds", ["Heavy coconuts", "Big yams"], { ex:"Fluff helps them float." }),
+  () => Q3("What happens to smoke on a windy day?", "It is blown away by the wind", ["It stays still", "It turns to water"], { ex:"Wind moves smoke." }),
+  () => Q3("Which instrument is shaped like a long cone of cloth?", "A windsock", ["A wind vane", "A windmill"], { ex:"It fills with wind." }),
+  () => Q3("Which way does smoke lean when the wind blows from the east?", "Towards the west", ["Towards the east", "Straight up"], { ex:"Wind pushes it away from where the wind comes from." }),
+  () => Q3("What can pump water from a well using wind?", "A windmill", ["A drum", "A loom"], { ex:"Used on some farms." }),
+  () => Q3("What do we call air moving from the sea to the land?", "A sea breeze", ["A dust storm", "A whirlwind"], { ex:"It cools coastal towns." }));
+WATER3.gens.push(
+  () => Q3("Which method lets mud sink to the bottom?", "Settling", ["Boiling", "Shaking"], { ex:"Leave the water still." }),
+  () => Q3("What do water treatment tablets do?", "Kill germs in water", ["Make water sweet", "Turn water blue"], { ex:"Use them with a grown-up." }),
+  () => Q3("Which water is safest to drink?", "Boiled, cooled and covered water", ["River water straight from the river", "Puddle water"], { ex:"Boil and cover." }),
+  () => Q3("What does NAFDAC stand for?", "National Agency for Food and Drug Administration and Control", ["Nigerian Air Force", "National Football Club"], { ex:"It checks food and drink safety." }));
+
 /* ======================= SCHOOL SCIENCE: engine ======================= */
 const I_BULB = `<svg viewBox="0 0 24 24" fill="none" stroke="#2a2540" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17h6M10 20.5h4M12 3a6 6 0 0 0-3.6 10.8c.7.6 1.1 1.3 1.1 2.2h5c0-.9.4-1.6 1.1-2.2A6 6 0 0 0 12 3z" fill="#ffd43b"/></svg>`;
 const I_HOME = `<svg viewBox="0 0 24 24" fill="none" stroke="#2a2540" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"><path d="M3 11.5 12 4l9 7.5" /><path d="M5.5 10v10h13V10" fill="#fff"/><rect x="10" y="14" width="4" height="6" fill="#ffd43b"/></svg>`;
@@ -9565,7 +10259,7 @@ const I_PRINT = `<svg viewBox="0 0 24 24" fill="none" stroke="#2a2540" stroke-wi
 const I_TROPHY = `<svg viewBox="0 0 64 64"><path d="M18 8h28v14a14 14 0 0 1-28 0z" fill="#ffd43b" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/><path d="M18 14H8q0 14 12 16M46 14h10q0 14-12 16" fill="none" stroke="${INK}" stroke-width="4"/><path d="M28 36h8v10h-8z" fill="#ffd43b" stroke="${INK}" stroke-width="4"/><rect x="18" y="46" width="28" height="9" rx="3" fill="#8a5a3c" stroke="${INK}" stroke-width="4"/></svg>`;
 const termBadge = (n, on, col) => `<svg viewBox="0 0 64 64"><path d="M20 4h10l4 16h-8zM44 4H34l-4 16h8z" fill="${on ? "#e5484d" : "#8b93a8"}" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/><circle cx="32" cy="38" r="20" fill="${on ? col : "#c9d1e0"}" stroke="${INK}" stroke-width="4"/><circle cx="32" cy="38" r="13" fill="none" stroke="${INK}" stroke-width="2" stroke-dasharray="3 3" opacity=".5"/><text x="32" y="45" text-anchor="middle" font-family="Grandstander,sans-serif" font-weight="900" font-size="20" fill="${INK}">${n}</text></svg>`;
 const TERM_COL = ["#d98c4a", "#c9d1e0", "#ffd43b"];
-const SCHOOL = { 1:P1, 2:P2 };
+const SCHOOL = { 1:P1, 2:P2, 3:P3 };
 let schProg = store.get("school", {}), SC = { c:1, t:0 };
 const SCHW = {};
 function schW(c, t){
